@@ -1,0 +1,345 @@
+.doctor-detail-container {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  
+  .content-wrapper {
+    padding: 20rpx;
+    padding-bottom: 120rpx;
+  }
+  
+  .doctor-card {
+    background-color: #ffffff;
+    border-radius: 12rpx;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+    
+    .doctor-header {
+      display: flex;
+      align-items: center;
+      position: relative;
+      
+      .doctor-avatar {
+        width: 120rpx;
+        height: 120rpx;
+        border-radius: 12rpx;
+        margin-right: 20rpx;
+      }
+      
+      .doctor-info {
+        flex: 1;
+        
+        .doctor-name-title {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10rpx;
+          
+          .doctor-name {
+            font-size: 34rpx;
+            font-weight: bold;
+            color: #333333;
+            margin-right: 16rpx;
+          }
+          
+          .doctor-title {
+            font-size: 24rpx;
+            color: #666666;
+          }
+        }
+        
+        .doctor-hospital, .doctor-department {
+          font-size: 26rpx;
+          color: #666666;
+          margin-bottom: 6rpx;
+        }
+      }
+      
+      .doctor-status {
+        position: absolute;
+        right: 0;
+        top: 0;
+        
+        .status-text {
+          font-size: 24rpx;
+          color: #19be6b;
+          background-color: rgba(25, 190, 107, 0.1);
+          padding: 4rpx 12rpx;
+          border-radius: 4rpx;
+        }
+      }
+    }
+    
+    .doctor-rating {
+      display: flex;
+      align-items: center;
+      margin: 20rpx 0;
+      
+      .rating-stars {
+        display: flex;
+        margin-right: 10rpx;
+      }
+      
+      .rating-value {
+        font-size: 28rpx;
+        color: #ff9900;
+        margin-right: 10rpx;
+      }
+      
+      .rating-count {
+        font-size: 24rpx;
+        color: #999999;
+      }
+    }
+    
+    .doctor-tags {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20rpx;
+      
+      .tag-item {
+        font-size: 24rpx;
+        color: #2979ff;
+        background-color: rgba(41, 121, 255, 0.1);
+        padding: 6rpx 16rpx;
+        border-radius: 30rpx;
+        margin-right: 16rpx;
+        margin-bottom: 10rpx;
+      }
+    }
+    
+    .doctor-statistics {
+      display: flex;
+      justify-content: space-around;
+      padding: 20rpx 0;
+      border-top: 1px solid #f5f5f5;
+      border-bottom: 1px solid #f5f5f5;
+      margin-bottom: 20rpx;
+      
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .stat-value {
+          font-size: 32rpx;
+          color: #333333;
+          font-weight: bold;
+          margin-bottom: 6rpx;
+        }
+        
+        .stat-label {
+          font-size: 24rpx;
+          color: #999999;
+        }
+      }
+    }
+    
+    .doctor-price {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 26rpx;
+      color: #666666;
+      
+      .price-value {
+        font-size: 32rpx;
+        color: #ff9900;
+        font-weight: bold;
+        margin-left: 10rpx;
+      }
+    }
+  }
+  
+  .info-card {
+    background-color: #ffffff;
+    border-radius: 12rpx;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+    
+    .card-title {
+      position: relative;
+      padding-left: 20rpx;
+      margin-bottom: 20rpx;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      text {
+        font-size: 32rpx;
+        font-weight: bold;
+        color: #333333;
+      }
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 8rpx;
+        width: 6rpx;
+        height: 30rpx;
+        background-color: #2979ff;
+        border-radius: 3rpx;
+      }
+      
+      .view-all {
+        font-size: 26rpx;
+        color: #2979ff;
+        font-weight: normal;
+      }
+    }
+    
+    .card-content {
+      &.bio-content {
+        font-size: 28rpx;
+        color: #666666;
+        line-height: 1.8;
+      }
+      
+      .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .skill-item {
+          font-size: 26rpx;
+          color: #666666;
+          background-color: #f5f5f5;
+          padding: 10rpx 20rpx;
+          border-radius: 6rpx;
+          margin-right: 16rpx;
+          margin-bottom: 16rpx;
+        }
+      }
+      
+      .schedule-list {
+        .schedule-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20rpx 0;
+          border-bottom: 1px solid #f5f5f5;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .day {
+            font-size: 28rpx;
+            color: #333333;
+            font-weight: bold;
+            width: 160rpx;
+          }
+          
+          .time {
+            flex: 1;
+            font-size: 26rpx;
+            color: #666666;
+          }
+          
+          .status {
+            font-size: 24rpx;
+            color: #999999;
+            
+            &.available {
+              color: #19be6b;
+            }
+          }
+        }
+      }
+      
+      .review-list {
+        .review-item {
+          padding: 20rpx 0;
+          border-bottom: 1px solid #f5f5f5;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16rpx;
+            
+            .reviewer-info {
+              display: flex;
+              align-items: center;
+              
+              .reviewer-avatar {
+                width: 60rpx;
+                height: 60rpx;
+                border-radius: 50%;
+                margin-right: 10rpx;
+              }
+              
+              .reviewer-name {
+                font-size: 26rpx;
+                color: #333333;
+              }
+            }
+          }
+          
+          .review-content {
+            font-size: 26rpx;
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 10rpx;
+          }
+          
+          .review-time {
+            font-size: 24rpx;
+            color: #999999;
+          }
+        }
+      }
+      
+      .empty-reviews {
+        padding: 30rpx 0;
+        text-align: center;
+        font-size: 28rpx;
+        color: #999999;
+      }
+    }
+  }
+  
+  .footer-action-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+    padding: 20rpx 30rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+    
+    .action-buttons {
+      display: flex;
+      
+      .action-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 40rpx;
+        
+        text {
+          font-size: 24rpx;
+          color: #999999;
+          margin-top: 6rpx;
+        }
+      }
+    }
+    
+    .main-buttons {
+      display: flex;
+      
+      .u-button {
+        margin-left: 20rpx;
+        min-width: 180rpx;
+      }
+    }
+  }
+}

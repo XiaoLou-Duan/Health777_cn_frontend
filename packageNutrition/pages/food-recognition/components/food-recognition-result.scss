@@ -1,0 +1,86 @@
+.food-recognition-result {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  
+  .result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+    
+    .result-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+  }
+  
+  .food-info {
+    margin-bottom: 30rpx;
+    
+    .food-name {
+      font-size: 36rpx;
+      font-weight: bold;
+      color: #333333;
+      margin-bottom: 20rpx;
+      display: block;
+    }
+    
+    .nutrition-data {
+      display: flex;
+      flex-wrap: wrap;
+      
+      .nutrition-item {
+        width: 50%;
+        margin-bottom: 16rpx;
+        
+        .label {
+          font-size: 26rpx;
+          color: #999999;
+          margin-right: 10rpx;
+        }
+        
+        .value {
+          font-size: 28rpx;
+          color: #333333;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  
+  .portion-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30rpx;
+    
+    .portion-label {
+      font-size: 28rpx;
+      color: #666666;
+      margin-right: 20rpx;
+    }
+    
+    .stepper-container {
+      display: flex;
+      align-items: center;
+      
+      .unit {
+        font-size: 28rpx;
+        color: #666666;
+        margin-left: 10rpx;
+      }
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    
+    .u-button {
+      width: 48%;
+    }
+  }
+}

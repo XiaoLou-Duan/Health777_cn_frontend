@@ -1,0 +1,109 @@
+/* mixins.scss - 混合样式 */
+
+// 超出文本省略号显示
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本省略
+@mixin ellipsis-multi($line) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 清除浮动
+@mixin clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 绝对定位居中
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 固定宽高比的容器
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    display: block;
+    padding-top: ($height / $width) * 100%;
+  }
+  
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// 渐变背景
+@mixin gradient-bg($start-color, $end-color, $direction: to right) {
+  background-image: linear-gradient($direction, $start-color, $end-color);
+}
+
+// 三角形
+@mixin triangle($direction, $size, $color) {
+  width: 0;
+  height: 0;
+  
+  @if $direction == 'up' {
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-bottom: $size solid $color;
+  } @else if $direction == 'down' {
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-top: $size solid $color;
+  } @else if $direction == 'left' {
+    border-top: $size solid transparent;
+    border-bottom: $size solid transparent;
+    border-right: $size solid $color;
+  } @else if $direction == 'right' {
+    border-top: $size solid transparent;
+    border-bottom: $size solid transparent;
+    border-left: $size solid $color;
+  }
+}
+
+// 老年人友好的大字体尺寸
+@mixin elderly-font($size: 32rpx) {
+  font-size: $size;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+// 老年人友好的高对比度文本
+@mixin elderly-text($color: #333) {
+  color: $color;
+  letter-spacing: 1px;
+}
+
+// 无障碍点击区域（增大点击面积但不改变视觉大小）
+@mixin accessible-click($size: 20rpx) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -$size;
+    right: -$size;
+    bottom: -$size;
+    left: -$size;
+  }
+}
