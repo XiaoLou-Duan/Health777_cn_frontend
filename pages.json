@@ -239,34 +239,34 @@
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [
-      {
+{
         "pagePath": "pages/index/index",
-        "iconPath": "static/icons/home.png",
-        "selectedIconPath": "static/icons/home-active.png",
+        "iconPath": "static/icons/home.svg",
+        "selectedIconPath": "static/icons/home-active.svg",
         "text": "首页"
       },
       {
         "pagePath": "packageNutrition/pages/index/index",
-        "iconPath": "static/icons/nutrition.png",
-        "selectedIconPath": "static/icons/nutrition-active.png",
+        "iconPath": "static/icons/nutrition.svg",
+        "selectedIconPath": "static/icons/nutrition-active.svg",
         "text": "营养"
       },
       {
         "pagePath": "packageExercise/pages/exercise-detection/exercise-detection",
-        "iconPath": "static/icons/exercise.png",
-        "selectedIconPath": "static/icons/exercise-active.png",
+        "iconPath": "static/icons/exercise.svg",
+        "selectedIconPath": "static/icons/exercise-active.svg",
         "text": "运动"
       },
       {
         "pagePath": "packageMedical/pages/consultation/consultation",
-        "iconPath": "static/icons/medical.png",
-        "selectedIconPath": "static/icons/medical-active.png",
+        "iconPath": "static/icons/medical.svg",
+        "selectedIconPath": "static/icons/medical-active.svg",
         "text": "医疗"
       },
       {
         "pagePath": "packageSocial/pages/community/community",
-        "iconPath": "static/icons/community.png",
-        "selectedIconPath": "static/icons/community-active.png",
+        "iconPath": "static/icons/community.svg",
+        "selectedIconPath": "static/icons/community-active.svg",
         "text": "社区"
       }
     ]
