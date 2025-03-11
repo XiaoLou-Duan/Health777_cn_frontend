@@ -45,10 +45,17 @@ export default {
         title: '加载中...'
       });
       
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      const header = {
+        'Authorization': 'Bearer ' + token
+      };
+      
       // 获取蛋白质摄入汇总数据
       uni.request({
-        url: '/api/nutrition/protein-summary',
+        url: '/api/nutrition/protein-stats/summary',
         method: 'GET',
+        header: header,
         success: (res) => {
           if (res.data.code === 0) {
             this.proteinSummary = res.data.data;
@@ -58,8 +65,9 @@ export default {
       
       // 获取周蛋白质摄入数据
       uni.request({
-        url: '/api/nutrition/protein-weekly',
+        url: '/api/nutrition/protein-stats/weekly',
         method: 'GET',
+        header: header,
         success: (res) => {
           if (res.data.code === 0) {
             this.weeklyProteinData = res.data.data;
@@ -69,8 +77,9 @@ export default {
       
       // 获取蛋白质摄入建议
       uni.request({
-        url: '/api/nutrition/protein-suggestions',
+        url: '/api/nutrition/diet-suggestions',
         method: 'GET',
+        header: header,
         success: (res) => {
           if (res.data.code === 0) {
             this.proteinSuggestions = res.data.data;

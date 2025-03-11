@@ -61,23 +61,25 @@ export default {
     },
     
     onConfirm() {
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
       // 计算调整后的营养数据
-      const adjustedResult = {
-        foodName: this.result.foodName,
-        calories: Math.round(this.result.calories * this.portion),
-        protein: (this.result.protein * this.portion).toFixed(1),
-        carbs: (this.result.carbs * this.portion).toFixed(1),
-        fat: (this.result.fat * this.portion).toFixed(1),
-        portion: this.portion
-      };
+      const adjustedAmount = Math.round(this.result.amount * this.portion);
       
       // 提交数据
       uni.request({
-        url: '/api/nutrition/add-food-record',
+        url: '/api/nutrition/food-intake',
         method: 'POST',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
         data: {
-          food: adjustedResult,
-          recordTime: new Date().getTime()
+          foodId: this.result.foodId, // 确保结果中包含foodId
+          amount: adjustedAmount,
+          mealType: 'meal', // 可以添加选择餐食类型的功能
+          timestamp: new Date().toISOString(),
+          notes: `通过AI识别添加，置信度: ${this.result.confidence || '未知'}`
         },
         success: (res) => {
           if (res.data.code === 0) {

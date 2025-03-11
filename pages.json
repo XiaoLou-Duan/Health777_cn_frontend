@@ -108,6 +108,12 @@
       "root": "packageNutrition",
       "pages": [
         {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "营养健康"
+          }
+        },
+        {
           "path": "pages/food-recognition/food-recognition",
           "style": {
             "navigationBarTitleText": "AI食物识别"
@@ -129,6 +135,18 @@
           "path": "pages/whey-protein/whey-protein",
           "style": {
             "navigationBarTitleText": "乳清蛋白管理"
+          }
+        },
+        {
+          "path": "pages/food-library/food-library",
+          "style": {
+            "navigationBarTitleText": "食物库"
+          }
+        },
+        {
+          "path": "pages/nutrition-history/nutrition-history",
+          "style": {
+            "navigationBarTitleText": "营养记录"
           }
         }
       ]
@@ -228,7 +246,7 @@
         "text": "首页"
       },
       {
-        "pagePath": "packageNutrition/pages/food-recognition/food-recognition",
+        "pagePath": "packageNutrition/pages/index/index",
         "iconPath": "static/icons/nutrition.png",
         "selectedIconPath": "static/icons/nutrition-active.png",
         "text": "营养"

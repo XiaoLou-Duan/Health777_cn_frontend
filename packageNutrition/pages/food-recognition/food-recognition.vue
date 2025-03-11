@@ -28,40 +28,88 @@ export default {
   },
   methods: {
     onCaptureSuccess(imageData) {
-      // 模拟识别过程
+      // 显示加载
       uni.showLoading({
         title: '识别中...'
       });
       
-      setTimeout(() => {
-        uni.hideLoading();
-        // 调用API获取识别结果
-        uni.request({
-          url: '/api/nutrition/recognize-food',
-          method: 'POST',
-          data: {
-            imageData: imageData
-          },
-          success: (res) => {
-            if (res.data.code === 0) {
-              this.recognitionResult = res.data.data;
-            } else {
-              uni.showToast({
-                title: res.data.message || '识别失败',
-                icon: 'none'
-              });
-              this.showManualInput = true;
-            }
-          },
-          fail: () => {
+      // 先上传图片，再进行识别
+      this.uploadImage(imageData);
+    },
+    
+    // 上传图片
+    uploadImage(imagePath) {
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
+      uni.uploadFile({
+        url: '/api/nutrition/upload-food-image',
+        filePath: imagePath,
+        name: 'foodImage',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        success: (uploadRes) => {
+          // 解析上传响应
+          const response = JSON.parse(uploadRes.data);
+          if (response.code === 0 && response.data && response.data.url) {
+            // 上传成功，进行食物识别
+            this.recognizeFood(response.data.url);
+          } else {
+            uni.hideLoading();
             uni.showToast({
-              title: '网络请求失败',
+              title: response.message || '图片上传失败',
               icon: 'none'
             });
             this.showManualInput = true;
           }
-        });
-      }, 1500);
+        },
+        fail: () => {
+          uni.hideLoading();
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+          this.showManualInput = true;
+        }
+      });
+    },
+    
+    // 识别食物
+    recognizeFood(imageUrl) {
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
+      uni.request({
+        url: '/api/nutrition/recognize-food',
+        method: 'POST',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        data: {
+          imageUrl: imageUrl
+        },
+        success: (res) => {
+          uni.hideLoading();
+          if (res.data.code === 0) {
+            this.recognitionResult = res.data.data;
+          } else {
+            uni.showToast({
+              title: res.data.message || '识别失败',
+              icon: 'none'
+            });
+            this.showManualInput = true;
+          }
+        },
+        fail: () => {
+          uni.hideLoading();
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+          this.showManualInput = true;
+        }
+      });
     },
     
     onManualSubmit(foodData) {
@@ -70,10 +118,21 @@ export default {
         title: '提交中...'
       });
       
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
       uni.request({
-        url: '/api/nutrition/add-food-record',
+        url: '/api/nutrition/food-intake',
         method: 'POST',
-        data: foodData,
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        data: {
+          foodId: foodData.foodId,
+          amount: foodData.amount,
+          mealType: foodData.mealType || 'snack',
+          notes: foodData.notes || ''
+        },
         success: (res) => {
           uni.hideLoading();
           if (res.data.code === 0) {

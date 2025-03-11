@@ -11,6 +11,9 @@
 		  <u-icon name="bell-fill" size="24" color="#666"></u-icon>
 		  <view class="badge" v-if="notificationCount > 0">{{notificationCount}}</view>
 		</view>
+		<view class="setting-icon" @click="navigateTo('/pages/setting/setting')">
+		  <u-icon name="setting-fill" size="24" color="#666"></u-icon>
+		</view>
 	  </view>
 	  
 	  <!-- 健康数据卡片 -->
@@ -323,6 +326,10 @@
 		border-radius: 15rpx;
 		padding: 0 6rpx;
 	  }
+	}
+	
+	.setting-icon {
+	  margin-left: 20rpx;
 	}
   }
   
