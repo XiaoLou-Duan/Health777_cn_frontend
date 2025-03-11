@@ -155,6 +155,18 @@
       "root": "packageExercise",
       "pages": [
         {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "运动健康"
+          }
+        },
+        {
+          "path": "pages/exercise-guidance/exercise-guidance",
+          "style": {
+            "navigationBarTitleText": "运动检测与指导"
+          }
+        },
+        {
           "path": "pages/exercise-detection/exercise-detection",
           "style": {
             "navigationBarTitleText": "简易运动检测"
@@ -239,7 +251,7 @@
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [
-{
+      {
         "pagePath": "pages/index/index",
         "iconPath": "static/icons/home.svg",
         "selectedIconPath": "static/icons/home-active.svg",
@@ -252,7 +264,7 @@
         "text": "营养"
       },
       {
-        "pagePath": "packageExercise/pages/exercise-detection/exercise-detection",
+        "pagePath": "packageExercise/pages/index/index",
         "iconPath": "static/icons/exercise.svg",
         "selectedIconPath": "static/icons/exercise-active.svg",
         "text": "运动"
