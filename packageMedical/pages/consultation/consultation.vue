@@ -27,11 +27,11 @@
       <!-- 筛选条件 -->
       <view class="filter-options">
         <view class="filter-item" @click="showSortPopup = true">
-          <text>{{ sortOptions[currentSort].text }}</text>
+          <text>{{ sortOptions[currentSort] ? sortOptions[currentSort].text : '综合排序' }}</text>
           <u-icon name="arrow-down" size="24" color="#666"></u-icon>
         </view>
         <view class="filter-item" @click="showLevelPopup = true">
-          <text>{{ currentLevel ? levelOptions.find(item => item.value === currentLevel).text : '医生级别' }}</text>
+          <text>{{ currentLevel && levelOptions.find(item => item.value === currentLevel) ? levelOptions.find(item => item.value === currentLevel).text : '医生级别' }}</text>
           <u-icon name="arrow-down" size="24" color="#666"></u-icon>
         </view>
       </view>

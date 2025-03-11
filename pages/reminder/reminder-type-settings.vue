@@ -85,20 +85,27 @@
         <view class="section-desc">自定义提醒时的显示文本</view>
         
         <view class="custom-text">
-          <u-field 
-            v-model="reminderTitle" 
-            label="提醒标题" 
-            placeholder="请输入提醒标题"
+          <u-form-item
+            label="提醒标题"
             :disabled="!typeEnabled"
-          ></u-field>
-          <u-field 
-            v-model="reminderContent" 
-            type="textarea" 
-            label="提醒内容" 
-            placeholder="请输入提醒内容"
-            :height="120"
+          >
+            <u-input 
+              v-model="reminderTitle"
+              placeholder="请输入提醒标题"
+              :disabled="!typeEnabled"
+            />
+          </u-form-item>
+          <u-form-item
+            label="提醒内容"
             :disabled="!typeEnabled"
-          ></u-field>
+          >
+            <u-textarea
+              v-model="reminderContent"
+              placeholder="请输入提醒内容"
+              height="120"
+              :disabled="!typeEnabled"
+            />
+          </u-form-item>
         </view>
       </view>
       
