@@ -31,7 +31,7 @@
       <view class="section protein-section">
         <view class="section-header">
           <text class="section-title">蛋白质摄入</text>
-          <u-button size="mini" type="primary" @click="navToProteinAnalysis">详细分析</u-button>
+          <u-button size="mini" plain type="primary" icon="arrow-right" @click="navToProteinAnalysis">详细</u-button>
         </view>
         <view class="protein-chart-container">
           <!-- 临时替换图表组件，使用uView的统计卡片替代 -->
@@ -71,7 +71,7 @@
       <view class="section diet-plan-section">
         <view class="section-header">
           <text class="section-title">营养计划进度</text>
-          <u-button size="mini" type="primary" @click="navToDietSuggestion">查看建议</u-button>
+          <u-button size="mini" plain type="primary" icon="arrow-right" @click="navToDietSuggestion">建议</u-button>
         </view>
         <view class="diet-plan-progress">
           <view class="plan-item" v-for="(item, index) in dietPlan" :key="index">
@@ -99,13 +99,13 @@
             <u-icon name="star-fill" size="32" color="#2979ff"></u-icon>
             <text class="action-title">蛋白补充</text>
           </view>
-          <view class="action-item" @click="navToFoodLibrary">
-            <u-icon name="grid-fill" size="32" color="#2979ff"></u-icon>
-            <text class="action-title">食物库</text>
-          </view>
           <view class="action-item" @click="navToNutritionHistory">
             <u-icon name="calendar" size="32" color="#2979ff"></u-icon>
             <text class="action-title">历史记录</text>
+          </view>
+          <view class="action-item" @click="showManualRecordPopup">
+            <u-icon name="edit-pen" size="32" color="#2979ff"></u-icon>
+            <text class="action-title">手动记录</text>
           </view>
         </view>
       </view>
@@ -127,22 +127,48 @@
     
     <!-- 悬浮按钮 - 添加食物记录 -->
     <view class="floating-button">
-      <u-button type="primary" shape="circle" icon="plus" @click="showAddFoodPopup"></u-button>
+      <u-button type="primary" shape="circle" icon="plus" @click="navToFoodRecognition"></u-button>
     </view>
     
-    <!-- 添加食物记录弹窗 -->
-    <u-popup v-model="showAddFood" mode="bottom" border-radius="16">
+    <!-- 手动记录食物弹窗 -->
+    <u-popup v-model="showManualRecord" mode="bottom" border-radius="16">
       <view class="add-food-popup">
         <view class="popup-header">
-          <text class="popup-title">添加食物记录</text>
-          <u-icon name="close" @click="showAddFood = false"></u-icon>
+          <text class="popup-title">手动记录食物</text>
+          <u-icon name="close" @click="showManualRecord = false"></u-icon>
         </view>
         <view class="popup-content">
-          <!-- 这里可以添加选择食物的表单 -->
-          <text class="hint-text">选择添加食物的方式:</text>
-          <view class="popup-actions">
-            <u-button type="primary" @click="navToFoodRecognition">AI识别食物</u-button>
-            <u-button type="info" @click="navToFoodLibrary">从食物库选择</u-button>
+          <!-- 手动记录表单 -->
+          <u-form :model="manualFoodData" ref="manualFoodForm" label-width="160">
+            <u-form-item label="食物名称" required>
+              <u-input v-model="manualFoodData.name" placeholder="请输入食物名称"></u-input>
+            </u-form-item>
+            <u-form-item label="数量(克)" required>
+              <u-number-box v-model="manualFoodData.amount" :min="1" :max="2000"></u-number-box>
+            </u-form-item>
+            <u-form-item label="热量(卡路里)">
+              <u-input v-model="manualFoodData.calories" placeholder="请输入热量" type="number"></u-input>
+            </u-form-item>
+            <u-form-item label="蛋白质(克)">
+              <u-input v-model="manualFoodData.protein" placeholder="请输入蛋白质" type="number"></u-input>
+            </u-form-item>
+            <u-form-item label="脂肪(克)">
+              <u-input v-model="manualFoodData.fat" placeholder="请输入脂肪" type="number"></u-input>
+            </u-form-item>
+            <u-form-item label="碳水(克)">
+              <u-input v-model="manualFoodData.carbs" placeholder="请输入碳水" type="number"></u-input>
+            </u-form-item>
+            <u-form-item label="餐食类型">
+              <u-radio-group v-model="manualFoodData.mealType">
+                <u-radio label="早餐" name="breakfast"></u-radio>
+                <u-radio label="午餐" name="lunch"></u-radio>
+                <u-radio label="晚餐" name="dinner"></u-radio>
+                <u-radio label="加餐" name="snack"></u-radio>
+              </u-radio-group>
+            </u-form-item>
+          </u-form>
+          <view class="form-actions">
+            <u-button type="primary" @click="submitManualFood">确认添加</u-button>
           </view>
         </view>
       </view>
@@ -241,7 +267,19 @@ export default {
       recommendedFoods: [],
       
       // 控制弹窗
-      showAddFood: false
+      showAddFood: false,
+      
+      // 手动记录食物
+      showManualRecord: false,
+      manualFoodData: {
+        name: '',
+        amount: 100,
+        calories: '',
+        protein: '',
+        fat: '',
+        carbs: '',
+        mealType: 'lunch'
+      },
     }
   },
   onLoad() {
@@ -385,6 +423,83 @@ export default {
       this.showAddFood = true;
     },
     
+    // 显示手动记录弹窗
+    showManualRecordPopup() {
+      this.showManualRecord = true;
+    },
+    
+    // 提交手动记录的食物
+    submitManualFood() {
+      // 验证必填字段
+      if (!this.manualFoodData.name || !this.manualFoodData.amount) {
+        uni.showToast({
+          title: '请填写食物名称和数量',
+          icon: 'none'
+        });
+        return;
+      }
+      
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
+      // 构建食物摄入数据
+      const foodData = {
+        name: this.manualFoodData.name,
+        amount: this.manualFoodData.amount,
+        calories: parseFloat(this.manualFoodData.calories) || 0,
+        protein: parseFloat(this.manualFoodData.protein) || 0,
+        fat: parseFloat(this.manualFoodData.fat) || 0,
+        carbs: parseFloat(this.manualFoodData.carbs) || 0,
+        mealType: this.manualFoodData.mealType,
+        timestamp: new Date().toISOString(),
+        notes: '手动添加'
+      };
+      
+      // 提交数据
+      uni.request({
+        url: '/api/nutrition/manual-food-intake',
+        method: 'POST',
+        header: {
+          'Authorization': 'Bearer ' + token
+        },
+        data: foodData,
+        success: (res) => {
+          if (res.data.code === 0) {
+            uni.showToast({
+              title: '记录成功',
+              icon: 'success'
+            });
+            
+            // 关闭弹窗并重置表单
+            this.showManualRecord = false;
+            this.manualFoodData = {
+              name: '',
+              amount: 100,
+              calories: '',
+              protein: '',
+              fat: '',
+              carbs: '',
+              mealType: 'lunch'
+            };
+            
+            // 刷新数据
+            this.loadNutritionData();
+          } else {
+            uni.showToast({
+              title: res.data.message || '记录失败',
+              icon: 'none'
+            });
+          }
+        },
+        fail: () => {
+          uni.showToast({
+            title: '网络请求失败',
+            icon: 'none'
+          });
+        }
+      });
+    },
+    
     // 导航到食物识别页面
     navToFoodRecognition() {
       this.showAddFood = false;
@@ -411,14 +526,6 @@ export default {
     navToWheyProtein() {
       uni.navigateTo({
         url: '/packageNutrition/pages/whey-protein/whey-protein'
-      });
-    },
-    
-    // 导航到食物库页面
-    navToFoodLibrary() {
-      this.showAddFood = false;
-      uni.navigateTo({
-        url: '/packageNutrition/pages/food-library/food-library'
       });
     },
     
@@ -694,7 +801,7 @@ export default {
   z-index: 999;
 }
 
-/* 添加食物弹窗样式 */
+/* 手动记录食物弹窗样式 */
 .add-food-popup {
   padding: 30rpx;
 }

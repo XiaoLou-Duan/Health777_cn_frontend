@@ -90,9 +90,13 @@ export default {
           imageUrl: imageUrl
         },
         success: (res) => {
-          uni.hideLoading();
           if (res.data.code === 0) {
             this.recognitionResult = res.data.data;
+            
+            // 自动记录食物摄入，无需用户确认
+            if (res.data.data && res.data.data.length > 0) {
+              this.autoRecordFoodIntake(res.data.data);
+            }
           } else {
             uni.showToast({
               title: res.data.message || '识别失败',
@@ -100,6 +104,7 @@ export default {
             });
             this.showManualInput = true;
           }
+          uni.hideLoading();
         },
         fail: () => {
           uni.hideLoading();
@@ -110,6 +115,83 @@ export default {
           this.showManualInput = true;
         }
       });
+    },
+    
+    // 自动记录食物摄入
+    autoRecordFoodIntake(recognizedFoods) {
+      // 获取认证信息
+      const token = uni.getStorageSync('token') || '';
+      
+      let successCount = 0;
+      let totalCount = recognizedFoods.length;
+      
+      recognizedFoods.forEach(food => {
+        // 构建食物摄入数据
+        const foodIntakeData = {
+          foodId: food.id || food.foodId, // 确保包含食物ID
+          amount: food.amount || 100, // 默认100g
+          mealType: this.getCurrentMealType(), // 根据当前时间确定餐食类型
+          timestamp: new Date().toISOString(),
+          notes: `通过AI识别自动添加，置信度: ${food.confidence || '未知'}`
+        };
+        
+        // 提交数据
+        uni.request({
+          url: '/api/nutrition/food-intake',
+          method: 'POST',
+          header: {
+            'Authorization': 'Bearer ' + token
+          },
+          data: foodIntakeData,
+          success: (res) => {
+            if (res.data.code === 0) {
+              successCount++;
+              
+              // 所有食物都处理完毕
+              if (successCount === totalCount) {
+                uni.showToast({
+                  title: `成功记录${successCount}种食物`,
+                  icon: 'success'
+                });
+                
+                // 返回上一页
+                setTimeout(() => {
+                  uni.navigateBack();
+                }, 1500);
+              }
+            } else {
+              uni.showToast({
+                title: res.data.message || '记录失败',
+                icon: 'none'
+              });
+            }
+          },
+          fail: () => {
+            uni.showToast({
+              title: '网络请求失败',
+              icon: 'none'
+            });
+          }
+        });
+      });
+    },
+    
+    // 根据当前时间确定餐食类型
+    getCurrentMealType() {
+      const now = new Date();
+      const hour = now.getHours();
+      
+      if (hour >= 5 && hour < 10) {
+        return 'breakfast';
+      } else if (hour >= 10 && hour < 14) {
+        return 'lunch';
+      } else if (hour >= 14 && hour < 17) {
+        return 'snack';
+      } else if (hour >= 17 && hour < 21) {
+        return 'dinner';
+      } else {
+        return 'snack';
+      }
     },
     
     onManualSubmit(foodData) {

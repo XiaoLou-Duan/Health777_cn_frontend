@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "hearthgood": "file:",
     "uview-ui": "^2.0.38"
   }
 }
