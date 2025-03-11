@@ -9,18 +9,18 @@
           <text class="section-title">营养摄入概览</text>
           <text class="today-date">{{todayFormatted}}</text>
         </view>
-        <view class="nutrition-cards">
+        <view class="nutrition-grid">
           <view class="nutrition-card" v-for="(item, index) in nutritionMetrics" :key="index">
             <view class="card-header">
               <text class="card-title">{{item.name}}</text>
               <u-icon :name="item.icon" size="24" color="#2979ff"></u-icon>
             </view>
             <view class="card-content">
-              <text class="value">{{item.value}}</text>
+              <text class="value" :class="getNutritionStatusClass(item.percentage)">{{item.value}}</text>
               <text class="unit">{{item.unit}}</text>
             </view>
             <view class="card-progress">
-              <u-line-progress :percentage="item.percentage" :striped="true" :stripedActive="true" height="8"></u-line-progress>
+              <u-line-progress :percentage="item.percentage" :striped="true" :stripedActive="true" height="14" :activeColor="getNutritionStatusColor(item.percentage)"></u-line-progress>
               <text class="target-text">目标: {{item.target}}{{item.unit}}</text>
             </view>
           </view>
@@ -31,7 +31,7 @@
       <view class="section protein-section">
         <view class="section-header">
           <text class="section-title">蛋白质摄入</text>
-          <u-button size="mini" plain type="primary" icon="arrow-right" @click="navToProteinAnalysis">详细</u-button>
+          <text class="right-link" @click="navToProteinAnalysis">详细 ></text>
         </view>
         <view class="protein-chart-container">
           <!-- 临时替换图表组件，使用uView的统计卡片替代 -->
@@ -71,7 +71,7 @@
       <view class="section diet-plan-section">
         <view class="section-header">
           <text class="section-title">营养计划进度</text>
-          <u-button size="mini" plain type="primary" icon="arrow-right" @click="navToDietSuggestion">建议</u-button>
+          <text class="right-link" @click="navToDietSuggestion">建议 ></text>
         </view>
         <view class="diet-plan-progress">
           <view class="plan-item" v-for="(item, index) in dietPlan" :key="index">
@@ -80,7 +80,7 @@
               <u-tag :text="item.completed ? '已完成' : '待完成'" :type="item.completed ? 'success' : 'warning'" size="mini"></u-tag>
             </view>
             <text class="plan-item-description">{{item.description}}</text>
-            <u-line-progress :percentage="item.progress" :striped="true" height="6"></u-line-progress>
+            <u-line-progress :percentage="item.progress" :striped="true" height="10"></u-line-progress>
           </view>
         </view>
       </view>
@@ -187,35 +187,35 @@ export default {
       nutritionMetrics: [
         {
           name: '热量',
-          icon: 'fire-fill',
-          value: 0,
+          icon: 'eye',
+          value: 354,
           target: 2000,
           unit: 'kcal',
-          percentage: 0
+          percentage: 2
         },
         {
           name: '蛋白质',
           icon: 'star',
-          value: 0,
+          value: 23,
           target: 70,
           unit: 'g',
-          percentage: 0
+          percentage: 23
         },
         {
           name: '脂肪',
           icon: 'heart',
-          value: 0,
+          value: 38,
           target: 65,
           unit: 'g',
-          percentage: 0
+          percentage: 65
         },
         {
           name: '碳水',
           icon: 'arrow-upward',
-          value: 0,
+          value: 544,
           target: 250,
           unit: 'g',
-          percentage: 0
+          percentage: 150
         }
       ],
       
@@ -534,308 +534,33 @@ export default {
       uni.navigateTo({
         url: '/packageNutrition/pages/nutrition-history/nutrition-history'
       });
+    },
+    
+    // 获取营养摄入状态对应的样式类名
+    getNutritionStatusClass(percentage) {
+      if (percentage > 100) {
+        return 'value-warning-high';
+      } else if (percentage < 50) {
+        return 'value-warning-low';
+      }
+      return '';
+    },
+    
+    // 获取营养摄入状态对应的颜色
+    getNutritionStatusColor(percentage) {
+      if (percentage > 100) {
+        return '#ff4d4f';  // 红色
+      } else if (percentage < 50) {
+        return '#fa8c16';  // 橙色
+      }
+      return '#2979ff';    // 默认蓝色
     }
   }
 }
 </script>
 
 <style lang="scss">
-.nutrition-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f7fa;
-  position: relative;
-}
+@import './nutrition-index.scss';
 
-.content-wrapper {
-  flex: 1;
-  padding: 20rpx;
-  margin-bottom: 100rpx;
-}
 
-.section {
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-}
-
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-}
-
-.today-date {
-  font-size: 26rpx;
-  color: #666666;
-}
-
-/* 营养指标卡片样式 */
-.nutrition-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.nutrition-card {
-  width: 48%;
-  background-color: #f8f9fc;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin-bottom: 20rpx;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10rpx;
-}
-
-.card-title {
-  font-size: 28rpx;
-  color: #333333;
-}
-
-.card-content {
-  display: flex;
-  align-items: baseline;
-  margin-bottom: 10rpx;
-}
-
-.value {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #2979ff;
-}
-
-.unit {
-  font-size: 24rpx;
-  color: #666666;
-  margin-left: 4rpx;
-}
-
-.target-text {
-  font-size: 22rpx;
-  color: #999999;
-  margin-top: 8rpx;
-}
-
-/* 蛋白质摄入样式 */
-.protein-chart-container {
-  height: 400rpx;
-  width: 100%;
-  margin-bottom: 20rpx;
-}
-
-.protein-chart-alternative {
-  .chart-bars {
-    display: flex;
-    justify-content: space-between;
-    padding: 20rpx;
-  }
-  
-  .chart-bar-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 14%;
-  }
-  
-  .chart-bar {
-    width: 100%;
-    background-color: #2979ff;
-    border-radius: 10rpx;
-  }
-  
-  .chart-label {
-    font-size: 22rpx;
-    color: #666666;
-    margin-top: 10rpx;
-  }
-  
-  .chart-value {
-    font-size: 24rpx;
-    color: #333333;
-    font-weight: bold;
-    margin-top: 10rpx;
-  }
-  
-  .chart-legend {
-    display: flex;
-    justify-content: space-between;
-    padding: 20rpx;
-  }
-  
-  .legend-item {
-    display: flex;
-    align-items: center;
-  }
-  
-  .legend-color {
-    width: 20rpx;
-    height: 20rpx;
-    background-color: #2979ff;
-    border-radius: 50%;
-    margin-right: 10rpx;
-  }
-  
-  .legend-text {
-    font-size: 24rpx;
-    color: #666666;
-  }
-}
-
-.protein-summary {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 20rpx;
-  border-top: 1px solid #f0f0f0;
-}
-
-.summary-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.label {
-  font-size: 24rpx;
-  color: #666666;
-  margin-bottom: 6rpx;
-}
-
-/* 营养计划样式 */
-.plan-item {
-  margin-bottom: 30rpx;
-}
-
-.plan-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10rpx;
-}
-
-.plan-item-title {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333333;
-}
-
-.plan-item-description {
-  font-size: 24rpx;
-  color: #666666;
-  margin-bottom: 16rpx;
-}
-
-/* 快捷功能区样式 */
-.action-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.action-item {
-  width: 23%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20rpx 0;
-  border-radius: 12rpx;
-  background-color: #f8f9fc;
-}
-
-.action-title {
-  font-size: 24rpx;
-  color: #333333;
-  margin-top: 16rpx;
-}
-
-/* 推荐食物区域样式 */
-.food-scroll {
-  white-space: nowrap;
-}
-
-.food-item {
-  display: inline-block;
-  width: 180rpx;
-  margin-right: 20rpx;
-}
-
-.food-image {
-  width: 180rpx;
-  height: 180rpx;
-  border-radius: 12rpx;
-  margin-bottom: 10rpx;
-}
-
-.food-name {
-  font-size: 26rpx;
-  color: #333333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.food-protein {
-  font-size: 22rpx;
-  color: #666666;
-}
-
-/* 悬浮按钮样式 */
-.floating-button {
-  position: fixed;
-  right: 40rpx;
-  bottom: 40rpx;
-  z-index: 999;
-}
-
-/* 手动记录食物弹窗样式 */
-.add-food-popup {
-  padding: 30rpx;
-}
-
-.popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30rpx;
-}
-
-.popup-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-}
-
-.popup-content {
-  padding: 20rpx 0;
-}
-
-.hint-text {
-  font-size: 28rpx;
-  color: #666666;
-  margin-bottom: 30rpx;
-  display: block;
-}
-
-.popup-actions {
-  display: flex;
-  flex-direction: column;
-}
-
-.popup-actions .u-button {
-  margin-bottom: 20rpx;
-}
 </style>

@@ -2,10 +2,12 @@
 	<view class="container">
 	  <!-- 顶部用户信息 -->
 	  <view class="user-info-bar">
-		<image class="avatar" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill"></image>
+		<view @click="goToEditProfile">
+		  <default-avatar :imageUrl="''" size="80rpx"></default-avatar>
+		</view>
 		<view class="greeting">
 		  <text class="hello">您好，</text>
-		  <text class="username">{{userInfo.nickName || '未登录'}}</text>
+		  <text class="username" @click="goToEditProfile">{{userInfo.nickName || '未登录'}}</text>
 		</view>
 		<view class="notification" @click="goToNotifications">
 		  <u-icon name="bell-fill" size="24" color="#666"></u-icon>
@@ -17,30 +19,7 @@
 	  </view>
 	  
 	  <!-- 健康数据卡片 -->
-	  <view class="health-card">
-		<view class="card-header">
-		  <text class="card-title">健康概览</text>
-		  <text class="today-date">{{todayDate}}</text>
-		</view>
-		<view class="health-data-grid">
-		  <view class="health-data-item" @click="navigateTo('/packageNutrition/pages/protein-analysis/protein-analysis')">
-			<view class="data-value">{{healthData.proteinIntake}}<text class="unit">g</text></view>
-			<view class="data-label">今日蛋白质</view>
-		  </view>
-		  <view class="health-data-item" @click="navigateTo('/packageExercise/pages/exercise-stats/exercise-stats')">
-			<view class="data-value">{{healthData.exerciseMinutes}}<text class="unit">分钟</text></view>
-			<view class="data-label">今日运动</view>
-		  </view>
-		  <view class="health-data-item">
-			<view class="data-value">{{healthData.muscleScore}}<text class="unit">分</text></view>
-			<view class="data-label">肌肉健康</view>
-		  </view>
-		  <view class="health-data-item">
-			<view class="data-value">{{healthData.steps}}<text class="unit">步</text></view>
-			<view class="data-label">今日步数</view>
-		  </view>
-		</view>
-	  </view>
+	  <health-overview :healthData="healthData" :date="todayDate"></health-overview>
 	  
 	  <!-- 肌少症趋势卡片 -->
 	  <view class="trend-card">
@@ -80,7 +59,7 @@
 	  <view class="reminder-card" v-if="reminders.length > 0">
 		<view class="card-header">
 		  <text class="card-title">今日提醒</text>
-		  <text class="view-more" @click="navigateTo('/pages/reminder/reminder-settings')">全部</text>
+		  <text class="view-more" @click="navigateTo('/pages/reminder/reminder-settings')">设置</text>
 		</view>
 		<view class="reminder-list">
 		  <view class="reminder-item" v-for="(item, index) in reminders" :key="index" @click="handleReminder(item)">
@@ -91,7 +70,7 @@
 			  <text class="reminder-title">{{item.title}}</text>
 			  <text class="reminder-time">{{item.time}}</text>
 			</view>
-			<u-icon name="right" size="18" color="#ccc"></u-icon>
+			<u-icon name="arrow-right" size="18" color="#ccc"></u-icon>
 		  </view>
 		</view>
 	  </view>
@@ -105,7 +84,7 @@
 		<view class="community-list">
 		  <view class="community-item" v-for="(item, index) in communityPosts" :key="index" @click="navigateTo('/packageSocial/pages/community/post-detail/post-detail?id=' + item.id)">
 			<view class="post-header">
-			  <image class="post-avatar" :src="item.avatar" mode="aspectFill"></image>
+			  <default-avatar class="post-avatar" :imageUrl="''" size="80rpx"></default-avatar>
 			  <view class="post-info">
 				<text class="post-author">{{item.author}}</text>
 				<text class="post-time">{{item.time}}</text>
@@ -140,11 +119,16 @@
   </template>
   
   <script>
+  import HealthOverview from '@/components/health-overview/health-overview.vue';
+  
   export default {
+    components: {
+      HealthOverview
+    },
 	data() {
 	  return {
 		userInfo: {
-		  avatar: '',
+		  avatar: '/static/svg/default-avatar.svg',
 		  nickName: '张先生'
 		},
 		notificationCount: 3,
@@ -157,7 +141,7 @@
 		},
 		trendAnalysis: '您的肌肉健康指数较上周有5%的提升，继续保持！',
 		functionList: [
-		  { name: '健康检测', icon: 'staff', path: '/pages/health/check', bgColor: '#4CD964' },
+		  { name: '健康检测', icon: 'question', path: '/pages/health/check', bgColor: '#4CD964' },
 		  { name: '食物识别', icon: 'camera', path: '/packageNutrition/pages/food-recognition/food-recognition', bgColor: '#FD9426' },
 		  { name: '运动指导', icon: 'info', path: '/packageExercise/pages/exercise-video/exercise-video', bgColor: '#007AFF' },
 		  { name: '医生咨询', icon: 'phone', path: '/packageMedical/pages/consultation/consultation', bgColor: '#DD524D' }
@@ -175,7 +159,10 @@
 			time: '10分钟前',
 			title: '老年人如何科学增肌？',
 			content: '年龄增长肌肉流失是不可避免的，但我们可以通过科学的训练方法来减缓这一过程...',
-			images: ['/static/images/exercise1.jpg', '/static/images/exercise2.jpg'],
+			images: [
+			  'https://img.freepik.com/free-photo/senior-man-doing-fitness-training-gym_651396-1379.jpg',
+			  'https://img.freepik.com/free-photo/elderly-people-doing-exercises-gym_23-2149525409.jpg'
+			],
 			likes: 18,
 			comments: 5
 		  },
@@ -186,9 +173,29 @@
 			time: '2小时前',
 			title: '增肌期间的蛋白质摄入指南',
 			content: '正确的蛋白质摄入对于肌肉生长至关重要。以下是几种优质蛋白质来源...',
-			images: ['/static/images/food1.jpg', '/static/images/food2.jpg', '/static/images/food3.jpg', '/static/images/food4.jpg'],
+			images: [
+			  'https://img.freepik.com/free-photo/healthy-food-with-nutritional-ingredients_23-2148541329.jpg',
+			  'https://img.freepik.com/free-photo/protein-sources-vegetarians-concept_23-2148301546.jpg',
+			  'https://img.freepik.com/free-photo/greek-yogurt-with-granola-berries_144627-46363.jpg',
+			  'https://img.freepik.com/free-photo/various-beans-assortment_144627-36212.jpg'
+			],
 			likes: 45,
 			comments: 12
+		  },
+		  {
+			id: '3',
+			author: '健康生活家',
+			avatar: '/static/images/avatar3.png',
+			time: '昨天',
+			title: '居家锻炼必备的5种器材',
+			content: '即使在家中，也能进行高效的力量训练。这里推荐几种性价比高的居家健身器材...',
+			images: [
+			  'https://img.freepik.com/free-photo/dumbbells-floor-gym_23-2147949747.jpg',
+			  'https://img.freepik.com/free-photo/resistance-bands-wooden-floor_23-2148285459.jpg',
+			  'https://img.freepik.com/free-photo/fitness-equipment-gym_1303-5538.jpg'
+			],
+			likes: 32,
+			comments: 8
 		  }
 		],
 		chartData: {
@@ -245,6 +252,11 @@
 		  url: url
 		});
 	  },
+	  goToEditProfile() {
+		uni.navigateTo({
+		  url: '/pages/user/edit/edit'
+		});
+	  },
 	  goToNotifications() {
 		uni.navigateTo({
 		  url: '/pages/notification/notification'
@@ -274,349 +286,5 @@
   </script>
   
   <style lang="scss">
-  .container {
-	padding: 20rpx;
-	background-color: #f5f5f5;
-  }
-  
-  // 用户信息栏
-  .user-info-bar {
-	display: flex;
-	align-items: center;
-	padding: 20rpx 0;
-	margin-bottom: 20rpx;
-	
-	.avatar {
-	  width: 80rpx;
-	  height: 80rpx;
-	  border-radius: 50%;
-	  margin-right: 20rpx;
-	}
-	
-	.greeting {
-	  flex: 1;
-	  
-	  .hello {
-		font-size: 28rpx;
-		color: #666;
-	  }
-	  
-	  .username {
-		font-size: 36rpx;
-		font-weight: bold;
-		color: #333;
-		margin-left: 10rpx;
-	  }
-	}
-	
-	.notification {
-	  position: relative;
-	  
-	  .badge {
-		position: absolute;
-		top: -8rpx;
-		right: -8rpx;
-		background-color: #FF5A5F;
-		color: #fff;
-		font-size: 20rpx;
-		min-width: 30rpx;
-		height: 30rpx;
-		line-height: 30rpx;
-		text-align: center;
-		border-radius: 15rpx;
-		padding: 0 6rpx;
-	  }
-	}
-	
-	.setting-icon {
-	  margin-left: 20rpx;
-	}
-  }
-  
-  // 卡片通用样式
-  .health-card, .trend-card, .reminder-card, .community-card {
-	background-color: #fff;
-	border-radius: 20rpx;
-	padding: 30rpx;
-	margin-bottom: 30rpx;
-	box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
-  }
-  
-  .card-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20rpx;
-	
-	.card-title {
-	  font-size: 32rpx;
-	  font-weight: bold;
-	  color: #333;
-	}
-	
-	.today-date, .view-more {
-	  font-size: 24rpx;
-	  color: #999;
-	}
-  }
-  
-  // 健康数据网格
-  .health-data-grid {
-	display: flex;
-	flex-wrap: wrap;
-	
-	.health-data-item {
-	  width: 50%;
-	  padding: 20rpx 0;
-	  text-align: center;
-	  
-	  .data-value {
-		font-size: 48rpx;
-		color: #333;
-		font-weight: bold;
-		
-		.unit {
-		  font-size: 24rpx;
-		  color: #999;
-		  margin-left: 4rpx;
-		}
-	  }
-	  
-	  .data-label {
-		font-size: 26rpx;
-		color: #666;
-		margin-top: 10rpx;
-	  }
-	}
-  }
-  
-  // 简易趋势图
-  .trend-simple-chart {
-	height: 300rpx;
-	margin: 30rpx 0;
-	position: relative;
-	
-	.month-labels {
-	  display: flex;
-	  justify-content: space-between;
-	  margin-bottom: 10rpx;
-	  
-	  .month-label {
-		font-size: 24rpx;
-		color: #999;
-		text-align: center;
-		width: 16.66%;
-	  }
-	}
-	
-	.chart-bars {
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: flex-end;
-	  height: 250rpx;
-	  
-	  .chart-bar {
-		width: 40rpx;
-		border-radius: 20rpx 20rpx 0 0;
-		display: flex;
-		justify-content: center;
-		align-items: flex-start;
-		
-		.bar-value {
-		  font-size: 20rpx;
-		  color: #fff;
-		  margin-top: 5rpx;
-		}
-	  }
-	}
-  }
-  
-  .trend-summary {
-	padding: 20rpx 0 0;
-	
-	.trend-text {
-	  font-size: 28rpx;
-	  color: #666;
-	  line-height: 1.5;
-	}
-  }
-  
-  // 功能入口
-  .function-entries {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 30rpx;
-	
-	.function-item {
-	  display: flex;
-	  flex-direction: column;
-	  align-items: center;
-	  width: 25%;
-	  
-	  .function-icon {
-		width: 100rpx;
-		height: 100rpx;
-		border-radius: 20rpx;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-bottom: 16rpx;
-	  }
-	  
-	  .function-name {
-		font-size: 26rpx;
-		color: #333;
-	  }
-	}
-  }
-  
-  // 提醒列表
-  .reminder-list {
-	.reminder-item {
-	  display: flex;
-	  align-items: center;
-	  padding: 20rpx 0;
-	  border-bottom: 1rpx solid #f0f0f0;
-	  
-	  &:last-child {
-		border-bottom: none;
-	  }
-	  
-	  .reminder-icon {
-		width: 70rpx;
-		height: 70rpx;
-		border-radius: 50%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-right: 20rpx;
-		
-		&.medicine {
-		  background-color: #FF9500;
-		}
-		
-		&.exercise {
-		  background-color: #4CD964;
-		}
-		
-		&.appointment {
-		  background-color: #007AFF;
-		}
-	  }
-	  
-	  .reminder-content {
-		flex: 1;
-		
-		.reminder-title {
-		  font-size: 30rpx;
-		  color: #333;
-		  margin-bottom: 6rpx;
-		}
-		
-		.reminder-time {
-		  font-size: 24rpx;
-		  color: #999;
-		}
-	  }
-	}
-  }
-  
-  // 社区动态
-  .community-list {
-	.community-item {
-	  padding: 20rpx 0;
-	  border-bottom: 1rpx solid #f0f0f0;
-	  
-	  &:last-child {
-		border-bottom: none;
-	  }
-	  
-	  .post-header {
-		display: flex;
-		align-items: center;
-		margin-bottom: 16rpx;
-		
-		.post-avatar {
-		  width: 60rpx;
-		  height: 60rpx;
-		  border-radius: 50%;
-		  margin-right: 16rpx;
-		}
-		
-		.post-info {
-		  .post-author {
-			font-size: 28rpx;
-			color: #333;
-			font-weight: bold;
-			margin-right: 16rpx;
-		  }
-		  
-		  .post-time {
-			font-size: 24rpx;
-			color: #999;
-		  }
-		}
-	  }
-	  
-	  .post-title {
-		font-size: 32rpx;
-		color: #333;
-		font-weight: bold;
-		margin-bottom: 10rpx;
-	  }
-	  
-	  .post-content {
-		font-size: 28rpx;
-		color: #666;
-		margin-bottom: 16rpx;
-		line-height: 1.5;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		overflow: hidden;
-	  }
-	  
-	  .post-images {
-		display: flex;
-		margin-bottom: 16rpx;
-		position: relative;
-		
-		.post-image {
-		  width: 180rpx;
-		  height: 180rpx;
-		  margin-right: 10rpx;
-		  border-radius: 8rpx;
-		}
-		
-		.image-count {
-		  position: absolute;
-		  right: 0;
-		  bottom: 0;
-		  background-color: rgba(0, 0, 0, 0.5);
-		  color: #fff;
-		  font-size: 24rpx;
-		  padding: 4rpx 16rpx;
-		  border-radius: 0 0 8rpx 0;
-		}
-	  }
-	  
-	  .post-stats {
-		display: flex;
-		
-		.stat-item {
-		  display: flex;
-		  align-items: center;
-		  margin-right: 30rpx;
-		  
-		  text {
-			font-size: 24rpx;
-			color: #999;
-			margin-left: 6rpx;
-		  }
-		}
-	  }
-	}
-  }
+  @import './index.scss';
   </style>
-  
