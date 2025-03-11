@@ -240,16 +240,16 @@
         "text": "运动"
       },
       {
+        "pagePath": "packageMedical/pages/consultation/consultation",
+        "iconPath": "static/icons/medical.png",
+        "selectedIconPath": "static/icons/medical-active.png",
+        "text": "医疗"
+      },
+      {
         "pagePath": "packageSocial/pages/community/community",
         "iconPath": "static/icons/community.png",
         "selectedIconPath": "static/icons/community-active.png",
         "text": "社区"
-      },
-      {
-        "pagePath": "pages/setting/setting",
-        "iconPath": "static/icons/setting.png",
-        "selectedIconPath": "static/icons/setting-active.png",
-        "text": "设置"
       }
     ]
   },
