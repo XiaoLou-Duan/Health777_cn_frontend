@@ -157,12 +157,12 @@
               </u-radio-group>
             </view>
             <view class="notes-input">
-              <u-field 
+              <u-form-item> 
                 v-model="intakeNotes" 
                 label="备注" 
                 placeholder="添加备注信息"
                 :border-bottom="false"
-              ></u-field>
+              ></u-form-item>
             </view>
             <u-button type="primary" @click="addFoodIntake">确认添加</u-button>
           </view>

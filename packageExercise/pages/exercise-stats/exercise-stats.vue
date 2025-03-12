@@ -41,11 +41,62 @@
           <text class="chart-title">运动趋势</text>
         </view>
         <view class="chart-wrapper">
-          <qiun-data-charts 
-            type="line"
-            :chartData="chartData"
-            background="#FFFFFF"
-          />
+          <!-- 替换为自定义折线图 -->
+          <view class="custom-line-chart">
+            <view class="chart-legend">
+              <view v-for="(item, index) in chartData.series" :key="index" class="legend-item">
+                <view class="legend-color" :style="{ backgroundColor: item.color }"></view>
+                <text class="legend-text">{{ item.name }}</text>
+              </view>
+            </view>
+            <view class="chart-area">
+              <view class="y-axis">
+                <text v-for="(val, index) in yAxisValues" :key="index" class="y-axis-label">{{ val }}</text>
+              </view>
+              <view class="chart-content" v-if="chartData.categories.length > 0">
+                <view 
+                  v-for="(series, sIndex) in chartData.series" 
+                  :key="sIndex" 
+                  class="line-series"
+                >
+                  <view 
+                    class="data-point" 
+                    v-for="(value, index) in series.data" 
+                    :key="index"
+                    :style="{
+                      left: `${index * (100 / (chartData.categories.length - 1))}%`,
+                      bottom: `${(value / maxValue) * 100}%`,
+                      borderColor: series.color
+                    }"
+                  ></view>
+                  <view 
+                    v-for="(value, index) in series.data" 
+                    :key="`line-${index}`"
+                    v-if="index < series.data.length - 1"
+                    class="data-line"
+                    :style="{
+                      left: `${index * (100 / (chartData.categories.length - 1))}%`,
+                      width: `${100 / (chartData.categories.length - 1)}%`,
+                      bottom: `${(value / maxValue) * 100}%`,
+                      height: `${((series.data[index+1] - value) / maxValue) * 100}%`,
+                      background: `linear-gradient(to right, ${series.color}, ${series.color})`,
+                      transform: series.data[index+1] > value ? 'skew(30deg)' : 'skew(-30deg)'
+                    }"
+                  ></view>
+                </view>
+              </view>
+              <view class="x-axis">
+                <text 
+                  v-for="(category, index) in chartData.categories" 
+                  :key="index" 
+                  class="x-axis-label"
+                  :style="{ left: `${index * (100 / (chartData.categories.length - 1))}%` }"
+                >
+                  {{ category }}
+                </text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
       
@@ -54,11 +105,37 @@
           <text class="distribution-title">运动类型分布</text>
         </view>
         <view class="distribution-chart">
-          <qiun-data-charts 
-            type="pie"
-            :chartData="pieChartData"
-            background="#FFFFFF"
-          />
+          <!-- 替换为自定义饼图 -->
+          <view class="custom-pie-chart">
+            <view class="pie-container">
+              <view 
+                v-for="(segment, index) in pieSegments" 
+                :key="index" 
+                class="pie-segment"
+                :style="{
+                  transform: `rotate(${segment.startAngle}deg)`,
+                  'clip-path': `polygon(50% 50%, 50% 0%, ${calculateCoordinates(segment.angle)} 50% 0%)`,
+                  'background-color': pieColors[index % pieColors.length]
+                }"
+              ></view>
+            </view>
+            <view class="pie-legend">
+              <view 
+                v-for="(item, index) in pieChartData.series[0].data" 
+                :key="index" 
+                class="legend-item"
+              >
+                <view 
+                  class="legend-color" 
+                  :style="{ backgroundColor: pieColors[index % pieColors.length] }"
+                ></view>
+                <view class="legend-info">
+                  <text class="legend-name">{{ item.name }}</text>
+                  <text class="legend-value">{{ item.value }}次 ({{ getPercentage(item.value) }}%)</text>
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
       
@@ -120,9 +197,119 @@ export default {
         series: []
       },
       pieChartData: {
-        series: []
+        series: [{
+          data: []
+        }]
       },
-      recentRecords: []
+      recentRecords: [],
+      pieColors: ['#2979ff', '#19be6b', '#ff9900', '#fa3534', '#9c26b0', '#0081ef', '#3dc7be'],
+      maxValue: 100,
+      yAxisValues: [0, 25, 50, 75, 100],
+      // 示例数据
+      mockData: {
+        overview: {
+          week: { totalCount: 5, totalDuration: 150, totalCalories: 452 },
+          month: { totalCount: 18, totalDuration: 573, totalCalories: 1734 },
+          all: { totalCount: 42, totalDuration: 1253, totalCalories: 3762 }
+        },
+        trend: {
+          week: {
+            dates: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            durations: [30, 0, 45, 0, 25, 20, 30],
+            calories: [95, 0, 135, 0, 76, 56, 90]
+          },
+          month: {
+            dates: ['第1周', '第2周', '第3周', '第4周'],
+            durations: [125, 150, 98, 200],
+            calories: [370, 452, 312, 600]
+          },
+          all: {
+            dates: ['1月', '2月', '3月', '4月', '5月', '6月'],
+            durations: [230, 180, 315, 210, 175, 143],
+            calories: [690, 540, 945, 630, 525, 432]
+          }
+        },
+        distribution: {
+          week: [
+            { type: '跑步', count: 2 },
+            { type: '瑜伽', count: 1 },
+            { type: '健身', count: 1 },
+            { type: '游泳', count: 1 }
+          ],
+          month: [
+            { type: '跑步', count: 7 },
+            { type: '瑜伽', count: 4 },
+            { type: '健身', count: 5 },
+            { type: '游泳', count: 2 }
+          ],
+          all: [
+            { type: '跑步', count: 18 },
+            { type: '瑜伽', count: 9 },
+            { type: '健身', count: 11 },
+            { type: '游泳', count: 4 }
+          ]
+        },
+        records: [
+          { 
+            type: '跑步', 
+            time: Date.now() - 86400000, 
+            duration: 30, 
+            calories: 95, 
+            accuracy: 92 
+          },
+          { 
+            type: '瑜伽', 
+            time: Date.now() - 86400000 * 3, 
+            duration: 45, 
+            calories: 135, 
+            accuracy: 88 
+          },
+          { 
+            type: '健身', 
+            time: Date.now() - 86400000 * 5, 
+            duration: 25, 
+            calories: 76, 
+            accuracy: 75 
+          },
+          { 
+            type: '游泳', 
+            time: Date.now() - 86400000 * 6, 
+            duration: 20, 
+            calories: 56, 
+            accuracy: 95 
+          },
+          { 
+            type: '跑步', 
+            time: Date.now() - 86400000 * 7, 
+            duration: 30, 
+            calories: 90, 
+            accuracy: 82 
+          }
+        ]
+      },
+      // 是否使用示例数据（在实际开发中可以设置为false调用真实API）
+      useMockData: true
+    }
+  },
+  computed: {
+    pieSegments() {
+      if (!this.pieChartData.series[0] || !this.pieChartData.series[0].data.length) {
+        return [];
+      }
+      
+      const total = this.pieChartData.series[0].data.reduce((sum, item) => sum + item.value, 0);
+      let startAngle = 0;
+      
+      return this.pieChartData.series[0].data.map(item => {
+        const angle = (item.value / total) * 360;
+        const segment = {
+          value: item.value,
+          startAngle,
+          angle
+        };
+        startAngle += angle;
+        return segment;
+      });
     }
   },
   onLoad() {
@@ -134,6 +321,59 @@ export default {
         title: '加载中...'
       });
       
+      if (this.useMockData) {
+        // 使用示例数据
+        setTimeout(() => {
+          // 获取概览数据
+          this.overviewData = this.mockData.overview[this.currentTimeRange];
+          
+          // 获取趋势图数据
+          const trendData = this.mockData.trend[this.currentTimeRange];
+          this.chartData = {
+            categories: trendData.dates,
+            series: [
+              {
+                name: '运动时长(分钟)',
+                data: trendData.durations,
+                color: '#2979ff'
+              },
+              {
+                name: '消耗热量(千卡)',
+                data: trendData.calories,
+                color: '#ff9900'
+              }
+            ]
+          };
+          
+          // 计算Y轴最大值
+          const allValues = [...trendData.durations, ...trendData.calories];
+          if (allValues.length) {
+            const max = Math.max(...allValues);
+            this.maxValue = Math.ceil(max / 25) * 25; // 向上取整到最近的25的倍数
+            this.yAxisValues = Array(5).fill(0).map((_, i) => Math.round(this.maxValue / 4 * i));
+          }
+          
+          // 获取运动类型分布
+          this.pieChartData = {
+            series: [
+              {
+                data: this.mockData.distribution[this.currentTimeRange].map(item => ({
+                  name: item.type,
+                  value: item.count
+                }))
+              }
+            ]
+          };
+          
+          // 获取最近运动记录
+          this.recentRecords = this.mockData.records;
+          
+          uni.hideLoading();
+        }, 500); // 模拟网络延迟
+        return;
+      }
+      
+      // 以下是原来的API调用代码
       // 获取概览数据
       uni.request({
         url: '/api/exercise/stats/overview',
@@ -173,6 +413,14 @@ export default {
                 }
               ]
             };
+            
+            // 计算Y轴最大值
+            const allValues = [...data.durations, ...data.calories];
+            if (allValues.length) {
+              const max = Math.max(...allValues);
+              this.maxValue = Math.ceil(max / 25) * 25; // 向上取整到最近的25的倍数
+              this.yAxisValues = Array(5).fill(0).map((_, i) => Math.round(this.maxValue / 4 * i));
+            }
           }
         }
       });
@@ -221,6 +469,28 @@ export default {
         }
       });
     },
+    calculateCoordinates(angle) {
+      // 计算饼图分段的坐标点
+      if (angle >= 180) {
+        return '100% 0%,';
+      } else if (angle > 90) {
+        const rads = (angle - 90) * Math.PI / 180;
+        const y = 50 + 50 * Math.tan(rads);
+        return `100% ${y}%,`;
+      } else {
+        const rads = (90 - angle) * Math.PI / 180;
+        const x = 50 + 50 * Math.tan(rads);
+        return `${x}% 0%,`;
+      }
+    },
+    getPercentage(value) {
+      if (!this.pieChartData.series[0] || !this.pieChartData.series[0].data.length) {
+        return 0;
+      }
+      
+      const total = this.pieChartData.series[0].data.reduce((sum, item) => sum + item.value, 0);
+      return Math.round((value / total) * 100);
+    },
     switchTimeRange(range) {
       this.currentTimeRange = range;
       this.loadStatsData();
@@ -258,192 +528,5 @@ export default {
 </script>
 
 <style lang="scss">
-.exercise-stats-container {
-  min-height: 100vh;
-  background-color: #f8f8f8;
-  
-  .content-wrapper {
-    padding: 20rpx;
-  }
-  
-  .stats-overview {
-    background-color: #ffffff;
-    border-radius: 12rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-    
-    .overview-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30rpx;
-      
-      .overview-title {
-        font-size: 32rpx;
-        font-weight: bold;
-        color: #333333;
-      }
-      
-      .time-selector {
-        display: flex;
-        
-        .time-item {
-          padding: 6rpx 20rpx;
-          font-size: 24rpx;
-          color: #666666;
-          margin-left: 10rpx;
-          border-radius: 30rpx;
-          
-          &.active {
-            background-color: rgba(41, 121, 255, 0.1);
-            color: #2979ff;
-          }
-        }
-      }
-    }
-    
-    .overview-cards {
-      display: flex;
-      justify-content: space-between;
-      
-      .overview-card {
-        flex: 1;
-        background-color: #f8f8f8;
-        padding: 20rpx;
-        border-radius: 8rpx;
-        margin: 0 10rpx;
-        
-        &:first-child {
-          margin-left: 0;
-        }
-        
-        &:last-child {
-          margin-right: 0;
-        }
-        
-        .card-label {
-          font-size: 24rpx;
-          color: #999999;
-          display: block;
-          margin-bottom: 10rpx;
-        }
-        
-        .card-value {
-          font-size: 36rpx;
-          font-weight: bold;
-          color: #333333;
-        }
-      }
-    }
-  }
-  
-  .stats-chart, .exercise-distribution {
-    background-color: #ffffff;
-    border-radius: 12rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-    
-    .chart-header, .distribution-header {
-      margin-bottom: 20rpx;
-      
-      .chart-title, .distribution-title {
-        font-size: 32rpx;
-        font-weight: bold;
-        color: #333333;
-      }
-    }
-    
-    .chart-wrapper, .distribution-chart {
-      height: 500rpx;
-    }
-  }
-  
-  .exercise-records {
-    background-color: #ffffff;
-    border-radius: 12rpx;
-    padding: 30rpx;
-    margin-bottom: 20rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-    
-    .records-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30rpx;
-      
-      .records-title {
-        font-size: 32rpx;
-        font-weight: bold;
-        color: #333333;
-      }
-      
-      .view-all {
-        font-size: 26rpx;
-        color: #2979ff;
-      }
-    }
-    
-    .record-list {
-      .record-item {
-        padding: 20rpx 0;
-        border-bottom: 1px solid #f5f5f5;
-        
-        &:last-child {
-          border-bottom: none;
-        }
-        
-        .record-info {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 16rpx;
-          
-          .record-type {
-            .type-name {
-              font-size: 28rpx;
-              font-weight: 500;
-              color: #333333;
-              display: block;
-              margin-bottom: 6rpx;
-            }
-            
-            .record-time {
-              font-size: 24rpx;
-              color: #999999;
-            }
-          }
-          
-          .record-data {
-            text-align: right;
-            
-            .data-item {
-              font-size: 26rpx;
-              color: #666666;
-              display: block;
-              margin-bottom: 6rpx;
-              
-              &:last-child {
-                margin-bottom: 0;
-              }
-            }
-          }
-        }
-        
-        .record-progress {
-          .progress-text {
-            font-size: 24rpx;
-            color: #999999;
-            margin-top: 6rpx;
-            display: block;
-          }
-        }
-      }
-      
-      .empty-records {
-        padding: 30rpx 0;
-      }
-    }
-  }
-}
+	@import "./exercise-stats.scss";
 </style>

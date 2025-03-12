@@ -24,13 +24,13 @@
 			<view class="function-grid">
 				<view class="function-item" @click="navigateTo('/packageExercise/pages/exercise-guidance/exercise-guidance')">
 					<view class="icon-wrapper">
-						<u-icon name="play-right-fill" size="38" color="#3cc51f" class="function-icon"></u-icon>
+						<u-icon name="play-right-fill" size="38" color="#3cc51f"></u-icon>
 					</view>
 					<text class="function-name">运动检测与指导</text>
 				</view>
 				<view class="function-item" @click="navigateTo('/packageExercise/pages/exercise-stats/exercise-stats')">
 					<view class="icon-wrapper">
-						<u-icon name="list-dot" size="38" color="#3cc51f" class="function-icon"></u-icon>
+						<u-icon name="list-dot" size="38" color="#3cc51f"></u-icon>
 					</view>
 					<text class="function-name">运动成果统计</text>
 				</view>
@@ -43,12 +43,12 @@
 			<view class="monthly-card">
 				<view class="monthly-progress">
 					<view class="progress-circle">
-						<u-circle :percent="monthlyProgress.percent" :size="110" activeColor="#3cc51f">
+						<my-circle :percent="monthlyProgress.percent" :size="110" activeColor="#3cc51f">
 							<view class="progress-inner">
 								<text class="percent-value">{{ monthlyProgress.percent }}%</text>
 								<text class="percent-label">完成度</text>
 							</view>
-						</u-circle>
+						 </my-circle>
 					</view>
 					<view class="progress-info">
 						<view class="info-item">
@@ -91,12 +91,22 @@
 		<view class="exercise-stats-preview">
 			<view class="section-title">近期运动统计</view>
 			<view class="stats-card">
-				<qiun-data-charts 
-					type="column"
-					:chartData="weeklyChartData"
-					:opts="weeklyChartOpts"
-					:canvas2d="true"
-				/>
+				<!-- 使用简单替代方案，避免依赖缺失的qiun-data-charts组件 -->
+				<view class="chart-alternative">
+					<view class="chart-bars">
+						<view class="chart-bar-item" v-for="(item, idx) in weeklyChartData.series[0].data" :key="idx">
+							<view class="chart-bar" :style="{height: (item / Math.max(...weeklyChartData.series[0].data) * 150) + 'rpx'}"></view>
+							<text class="chart-label">{{weeklyChartData.categories[idx]}}</text>
+							<text class="chart-value">{{item}}分钟</text>
+						</view>
+					</view>
+					<view class="chart-legend">
+						<view class="legend-item">
+							<view class="legend-color"></view>
+							<text class="legend-text">运动时长(分钟)</text>
+						</view>
+					</view>
+				</view>
 				
 				<view class="stats-summary">
 					<view class="summary-item">
@@ -118,7 +128,14 @@
 </template>
 
 <script>
+	// 导入自定义圆环进度组件
+	import myCircle from '@/components/myCircle/myCircle.vue'
+	
 	export default {
+		// 注册组件
+		components: {
+			myCircle
+		},
 		data() {
 			return {
 				todayStats: {
@@ -316,4 +333,65 @@
 
 <style>
 	@import "./index.scss";
+	
+	/* 添加图表替代样式 */
+	.chart-alternative {
+		padding: 20rpx 0;
+	}
+	
+	.chart-bars {
+		display: flex;
+		justify-content: space-between;
+		padding: 20rpx;
+	}
+	
+	.chart-bar-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 14%;
+	}
+	
+	.chart-bar {
+		width: 100%;
+		background-color: #3cc51f;
+		border-radius: 10rpx;
+	}
+	
+	.chart-label {
+		font-size: 22rpx;
+		color: #666666;
+		margin-top: 10rpx;
+	}
+	
+	.chart-value {
+		font-size: 24rpx;
+		color: #333333;
+		font-weight: bold;
+		margin-top: 10rpx;
+	}
+	
+	.chart-legend {
+		display: flex;
+		justify-content: center;
+		padding: 10rpx 20rpx;
+	}
+	
+	.legend-item {
+		display: flex;
+		align-items: center;
+	}
+	
+	.legend-color {
+		width: 20rpx;
+		height: 20rpx;
+		background-color: #3cc51f;
+		border-radius: 50%;
+		margin-right: 10rpx;
+	}
+	
+	.legend-text {
+		font-size: 24rpx;
+		color: #666666;
+	}
 </style>
