@@ -174,26 +174,115 @@ export default {
       pageNum: 1,
       pageSize: 20,
       lastMessageTime: 0,
-      
+
       // 输入相关
       messageText: '',
       isRecording: false,
       recordTip: '按住说话',
       recordStartTime: 0,
       showMorePanel: false,
-      
+
       // 语音播放相关
       currentPlayingId: '',
-      audioContext: null
+      audioContext: null,
+
+      // 测试数据
+      testDoctors: {
+        '1001': {
+          id: '1001',
+          name: '张医生',
+          title: '主任医师',
+          hospital: '北京协和医院',
+          department: '骨科',
+          avatar: '/static/images/doctor1.jpg',
+          isOnline: true
+        },
+        '1002': {
+          id: '1002',
+          name: '李医生',
+          title: '副主任医师',
+          hospital: '上海市第一人民医院',
+          department: '康复科',
+          avatar: '/static/images/doctor2.jpg',
+          isOnline: false
+        },
+        '1003': {
+          id: '1003',
+          name: '王医生',
+          title: '主治医师',
+          hospital: '广州市第一人民医院',
+          department: '营养科',
+          avatar: '/static/images/doctor3.jpg',
+          isOnline: true
+        },
+        '1004': {
+          id: '1004',
+          name: '刘医生',
+          title: '主任医师',
+          hospital: '四川大学华西医院',
+          department: '内科',
+          avatar: '/static/images/doctor4.jpg',
+          isOnline: false
+        },
+        '1005': {
+          id: '1005',
+          name: '陈医生',
+          title: '副主任医师',
+          hospital: '浙江大学医学院附属第一医院',
+          department: '运动医学科',
+          avatar: '/static/images/doctor5.jpg',
+          isOnline: true
+        }
+      },
+
+      // 医生的默认回复
+      doctorReplies: {
+        '1001': [
+          '您好，我是骨科张医生，请问您有什么骨科方面的问题需要咨询？',
+          '您的骨科问题具体是什么情况？能详细描述一下症状吗？',
+          '根据您的描述，可能是韧带拉伤，建议您先冰敷，抬高患处，并减少活动。',
+          '如果疼痛持续超过3天，或者出现明显肿胀和瘀斑，建议您及时来医院做进一步检查。',
+          '需要拍个X光片看看骨头有没有问题，如果只是软组织损伤，一般休息2-3周就能恢复。'
+        ],
+        '1002': [
+          '您好，我是李医生，专注于康复医学领域，请问您需要什么康复指导？',
+          '您的康复进展如何？请描述一下您目前的感受和困难。',
+          '康复是个需要耐心的过程，建议您按照我之前提供的训练计划，每天坚持做康复训练。',
+          '肌肉酸痛是正常现象，但如果出现剧烈疼痛，请立即停止训练并联系我。',
+          '可以尝试热敷加按摩来缓解肌肉紧张，每天坚持15-20分钟。'
+        ],
+        '1003': [
+          '您好，我是营养科王医生，请问您有什么饮食或营养方面的问题？',
+          '您的饮食情况如何？能否详细介绍一下您平时的饮食习惯？',
+          '建议增加蛋白质摄入，每天保证摄入足够的新鲜蔬果，减少精制碳水化合物。',
+          '运动后30分钟内补充适量蛋白质和碳水，可以帮助肌肉恢复和生长。',
+          '根据您的情况，我可以为您定制一份详细的营养计划，帮助您达到健康目标。'
+        ],
+        '1004': [
+          '您好，我是内分泌科刘医生，请问您有什么内分泌方面的问题需要咨询？',
+          '您的血糖、血脂、甲状腺等指标最近检查过吗？有检查报告可以提供吗？',
+          '根据您提供的症状，建议您尽快进行空腹血糖和糖化血红蛋白的检查。',
+          '如果是甲状腺问题，需要检查TSH、FT3、FT4等指标，并进行甲状腺彩超。',
+          '这些症状可能与内分泌失调有关，建议您来院做个全面检查，明确诊断后再制定治疗方案。'
+        ],
+        '1005': [
+          '您好，我是运动医学科陈医生，请问您有什么运动相关的问题需要咨询？',
+          '您平时参加什么运动？运动强度和频率是怎样的？',
+          '根据您的情况，建议调整训练计划，先减少高强度训练，增加柔韧性练习。',
+          '运动损伤需要科学恢复，盲目坚持可能会加重伤势，建议您先休息一周。',
+          '可以考虑结合物理治疗和适当的运动康复训练，加速损伤恢复。'
+        ]
+      }
     }
   },
+
   onLoad(options) {
     if (options.doctorId) {
       this.doctorId = options.doctorId;
       this.loadDoctorInfo();
       this.loadMessages();
     }
-    
+
     // 获取用户头像
     uni.getStorage({
       key: 'userInfo',
@@ -203,7 +292,7 @@ export default {
         }
       }
     });
-    
+
     // 初始化音频播放器
     this.audioContext = uni.createInnerAudioContext();
     this.audioContext.onEnded(() => {
@@ -218,6 +307,7 @@ export default {
       this.currentPlayingId = '';
     });
   },
+
   onUnload() {
     // 释放音频资源
     if (this.audioContext) {
@@ -225,97 +315,130 @@ export default {
       this.audioContext.destroy();
     }
   },
+
   methods: {
     // 加载医生信息
     loadDoctorInfo() {
-      uni.request({
-        url: '/api/medical/doctors/' + this.doctorId,
-        method: 'GET',
-        success: (res) => {
-          if (res.data.code === 0) {
-            this.doctorInfo = res.data.data;
-          }
-        }
-      });
+      // 使用测试数据替代网络请求
+      if (this.testDoctors[this.doctorId]) {
+        this.doctorInfo = this.testDoctors[this.doctorId];
+      } else {
+        uni.showToast({
+          title: '未找到医生信息',
+          icon: 'none'
+        });
+      }
     },
-    
+
     // 加载消息记录
     loadMessages() {
-      uni.request({
-        url: '/api/medical/messages',
-        method: 'GET',
-        data: {
-          doctorId: this.doctorId,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize
-        },
-        success: (res) => {
-          if (res.data.code === 0) {
-            const messages = res.data.data.list;
-            
-            if (this.pageNum === 1) {
-              this.messageList = messages;
-              
-              // 滚动到最新消息
-              this.$nextTick(() => {
-                if (messages.length > 0) {
-                  this.scrollIntoView = 'msg-' + messages[messages.length - 1].id;
-                }
-              });
-            } else {
-              this.messageList = [...messages, ...this.messageList];
-            }
-            
-            this.hasMore = messages.length >= this.pageSize;
-            
-            if (messages.length > 0) {
-              this.lastMessageTime = messages[0].time;
-            }
+      this.isLoadingMore = true;
+
+      // 使用模拟数据代替网络请求
+      setTimeout(() => {
+        let messages = [];
+
+        // 首次加载，添加欢迎消息
+        if (this.pageNum === 1) {
+          const welcomeMessage = {
+            id: `welcome-${this.doctorId}`,
+            type: 'text',
+            content: this.doctorReplies[this.doctorId][0],
+            time: Date.now() - 3600000, // 1小时前
+            isSelf: false,
+            status: 'sent'
+          };
+
+          messages.push(welcomeMessage);
+
+          // 如果是第一页，不需要更多历史消息
+          this.hasMore = false;
+        } else {
+          // 对于加载更多的情况，可以添加一些历史消息
+          const baseTime = Date.now() - (this.pageNum * 86400000); // 每页往前推一天
+
+          // 生成5条模拟历史消息
+          for (let i = 0; i < 5; i++) {
+            const isSelf = i % 2 === 0;
+            const time = baseTime + (i * 600000); // 每条消息间隔10分钟
+            const historyMessage = {
+              id: `history-${this.pageNum}-${i}`,
+              type: 'text',
+              content: isSelf
+                ? `这是第${this.pageNum}页的历史消息${i + 1}`
+                : this.doctorReplies[this.doctorId][i % this.doctorReplies[this.doctorId].length],
+              time: time,
+              isSelf: isSelf,
+              status: 'sent'
+            };
+
+            messages.push(historyMessage);
           }
-        },
-        complete: () => {
-          this.isLoadingMore = false;
+
+          // 模拟没有更多数据了
+          if (this.pageNum >= 3) {
+            this.hasMore = false;
+          }
         }
-      });
+
+        if (this.pageNum === 1) {
+          this.messageList = messages;
+
+          // 滚动到最新消息
+          this.$nextTick(() => {
+            if (messages.length > 0) {
+              this.scrollIntoView = 'msg-' + messages[messages.length - 1].id;
+            }
+          });
+        } else {
+          this.messageList = [...messages, ...this.messageList];
+        }
+
+        if (messages.length > 0) {
+          this.lastMessageTime = messages[0].time;
+        }
+
+        this.isLoadingMore = false;
+      }, 1000); // 模拟网络请求延迟
     },
-    
+
     // 加载更多消息
     loadMoreMessages() {
       if (!this.hasMore || this.isLoadingMore) return;
-      
+
       this.isLoadingMore = true;
       this.pageNum++;
       this.loadMessages();
     },
-    
+
     // 显示时间分割线
     showTimeDivider(index) {
       if (index === 0) return true;
-      
+
       const currentMsg = this.messageList[index];
       const prevMsg = this.messageList[index - 1];
-      
+
       // 如果两条消息相隔5分钟以上，显示时间分割线
       return currentMsg.time - prevMsg.time > 5 * 60 * 1000;
     },
-    
+
     // 格式化聊天时间
     formatChatTime(timestamp) {
       const date = new Date(timestamp);
       const now = new Date();
-      
+
       // 是否是今天
       const isToday = date.toDateString() === now.toDateString();
-      
+
       // 是否是昨天
       const yesterday = new Date(now);
       yesterday.setDate(yesterday.getDate() - 1);
       const isYesterday = date.toDateString() === yesterday.toDateString();
-      
+
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       const timeStr = `${hours}:${minutes}`;
-      
+
       if (isToday) {
         return `今天 ${timeStr}`;
       } else if (isYesterday) {
@@ -326,18 +449,18 @@ export default {
         return `${month}-${day} ${timeStr}`;
       }
     },
-    
+
     // 切换录音模式
     toggleRecording() {
       this.isRecording = !this.isRecording;
       this.showMorePanel = false;
     },
-    
+
     // 开始录音
     startRecord() {
       this.recordTip = '松开发送';
       this.recordStartTime = Date.now();
-      
+
       uni.startRecord({
         success: (res) => {
           console.log('开始录音');
@@ -351,21 +474,21 @@ export default {
         }
       });
     },
-    
+
     // 停止录音并发送
     stopRecord() {
       this.recordTip = '按住说话';
-      
+
       if (Date.now() - this.recordStartTime < 1000) {
         uni.showToast({
           title: '说话时间太短',
           icon: 'none'
         });
-        
+
         uni.stopRecord();
         return;
       }
-      
+
       uni.stopRecord({
         success: (res) => {
           const duration = Math.ceil((Date.now() - this.recordStartTime) / 1000);
@@ -380,23 +503,23 @@ export default {
         }
       });
     },
-    
+
     // 取消录音
     cancelRecord() {
       this.recordTip = '按住说话';
       uni.stopRecord();
     },
-    
+
     // 打开更多面板
     openMore() {
       this.showMorePanel = true;
     },
-    
+
     // 关闭更多面板
     closeMore() {
       this.showMorePanel = false;
     },
-    
+
     // 选择图片
     chooseImage() {
       uni.chooseImage({
@@ -408,7 +531,7 @@ export default {
         }
       });
     },
-    
+
     // 拍摄照片
     takePhoto() {
       uni.chooseImage({
@@ -420,15 +543,15 @@ export default {
         }
       });
     },
-    
+
     // 病情资料
     consultInfo() {
       uni.navigateTo({
-        url: '../medical-record/medical-record?doctorId=' + this.doctorId
+        url: '/packageMedical/pages/medical-record/medical-record?doctorId=' + this.doctorId
       });
       this.closeMore();
     },
-    
+
     // 结束咨询
     endConsultation() {
       uni.showModal({
@@ -436,36 +559,28 @@ export default {
         content: '确定要结束本次咨询吗？',
         success: (res) => {
           if (res.confirm) {
-            uni.request({
-              url: '/api/medical/end-consultation',
-              method: 'POST',
-              data: {
-                doctorId: this.doctorId
-              },
-              success: (res) => {
-                if (res.data.code === 0) {
-                  uni.showToast({
-                    title: '咨询已结束',
-                    icon: 'success'
-                  });
-                  
-                  // 返回上一页
-                  setTimeout(() => {
-                    uni.navigateBack();
-                  }, 1500);
-                }
-              }
-            });
+            // 模拟请求成功
+            setTimeout(() => {
+              uni.showToast({
+                title: '咨询已结束',
+                icon: 'success'
+              });
+
+              // 返回上一页
+              setTimeout(() => {
+                uni.navigateBack();
+              }, 1500);
+            }, 500);
           }
           this.closeMore();
         }
       });
     },
-    
+
     // 发送文本消息
     sendTextMessage() {
       if (!this.messageText.trim()) return;
-      
+
       const messageId = 'temp-' + Date.now();
       const newMessage = {
         id: messageId,
@@ -475,51 +590,27 @@ export default {
         isSelf: true,
         status: 'sending'
       };
-      
+
       this.messageList.push(newMessage);
       this.scrollToBottom();
-      
+
       const text = this.messageText;
       this.messageText = '';
-      
-      // 发送消息
-      uni.request({
-        url: '/api/medical/send-message',
-        method: 'POST',
-        data: {
-          doctorId: this.doctorId,
-          type: 'text',
-          content: text
-        },
-        success: (res) => {
-          if (res.data.code === 0) {
-            // 更新消息状态为已发送
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].id = res.data.data.messageId;
-              this.messageList[index].status = 'sent';
-            }
-            
-            // 模拟医生回复
-            this.simulateDoctorReply();
-          } else {
-            // 更新消息状态为发送失败
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].status = 'failed';
-            }
-          }
-        },
-        fail: () => {
-          // 更新消息状态为发送失败
-          const index = this.messageList.findIndex(item => item.id === messageId);
-          if (index !== -1) {
-            this.messageList[index].status = 'failed';
-          }
+
+      // 模拟发送消息
+      setTimeout(() => {
+        // 更新消息状态为已发送
+        const index = this.messageList.findIndex(item => item.id === messageId);
+        if (index !== -1) {
+          this.messageList[index].id = 'msg-' + Date.now();
+          this.messageList[index].status = 'sent';
         }
-      });
+
+        // 模拟医生回复
+        this.simulateDoctorReply();
+      }, 500);
     },
-    
+
     // 发送图片消息
     sendImageMessage(filePath) {
       const messageId = 'temp-' + Date.now();
@@ -531,49 +622,24 @@ export default {
         isSelf: true,
         status: 'sending'
       };
-      
+
       this.messageList.push(newMessage);
       this.scrollToBottom();
-      
-      // 上传图片
-      uni.uploadFile({
-        url: '/api/medical/upload-image',
-        filePath: filePath,
-        name: 'file',
-        formData: {
-          doctorId: this.doctorId
-        },
-        success: (res) => {
-          const data = JSON.parse(res.data);
-          if (data.code === 0) {
-            // 更新消息状态为已发送
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].id = data.data.messageId;
-              this.messageList[index].content = data.data.imageUrl;
-              this.messageList[index].status = 'sent';
-            }
-            
-            // 模拟医生回复
-            this.simulateDoctorReply();
-          } else {
-            // 更新消息状态为发送失败
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].status = 'failed';
-            }
-          }
-        },
-        fail: () => {
-          // 更新消息状态为发送失败
-          const index = this.messageList.findIndex(item => item.id === messageId);
-          if (index !== -1) {
-            this.messageList[index].status = 'failed';
-          }
+
+      // 模拟上传图片
+      setTimeout(() => {
+        // 更新消息状态为已发送
+        const index = this.messageList.findIndex(item => item.id === messageId);
+        if (index !== -1) {
+          this.messageList[index].id = 'img-' + Date.now();
+          this.messageList[index].status = 'sent';
         }
-      });
+
+        // 模拟医生回复
+        this.simulateDoctorReply();
+      }, 1000);
     },
-    
+
     // 发送语音消息
     sendVoiceMessage(filePath, duration) {
       const messageId = 'temp-' + Date.now();
@@ -586,81 +652,55 @@ export default {
         isSelf: true,
         status: 'sending'
       };
-      
+
       this.messageList.push(newMessage);
       this.scrollToBottom();
-      
-      // 上传语音
-      uni.uploadFile({
-        url: '/api/medical/upload-voice',
-        filePath: filePath,
-        name: 'file',
-        formData: {
-          doctorId: this.doctorId,
-          duration: duration
-        },
-        success: (res) => {
-          const data = JSON.parse(res.data);
-          if (data.code === 0) {
-            // 更新消息状态为已发送
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].id = data.data.messageId;
-              this.messageList[index].content = data.data.voiceUrl;
-              this.messageList[index].status = 'sent';
-            }
-            
-            // 模拟医生回复
-            this.simulateDoctorReply();
-          } else {
-            // 更新消息状态为发送失败
-            const index = this.messageList.findIndex(item => item.id === messageId);
-            if (index !== -1) {
-              this.messageList[index].status = 'failed';
-            }
-          }
-        },
-        fail: () => {
-          // 更新消息状态为发送失败
-          const index = this.messageList.findIndex(item => item.id === messageId);
-          if (index !== -1) {
-            this.messageList[index].status = 'failed';
-          }
+
+      // 模拟上传语音
+      setTimeout(() => {
+        // 更新消息状态为已发送
+        const index = this.messageList.findIndex(item => item.id === messageId);
+        if (index !== -1) {
+          this.messageList[index].id = 'voice-' + Date.now();
+          this.messageList[index].status = 'sent';
         }
-      });
+
+        // 模拟医生回复
+        this.simulateDoctorReply();
+      }, 1000);
     },
-    
+
     // 播放语音消息
     playVoice(message) {
       // 如果正在播放，先停止
       if (this.currentPlayingId) {
         this.audioContext.stop();
-        
+
         // 如果点击的是当前正在播放的消息，则停止播放并返回
         if (this.currentPlayingId === message.id) {
           this.currentPlayingId = '';
           return;
         }
       }
-      
+
       // 播放新的语音
       this.currentPlayingId = message.id;
       this.audioContext.src = message.content;
       this.audioContext.play();
     },
-    
+
     // 预览图片
     previewImage(url) {
       const imageUrls = this.messageList
         .filter(msg => msg.type === 'image')
         .map(msg => msg.content);
-      
+
       uni.previewImage({
         current: url,
         urls: imageUrls
       });
     },
-    
+
     // 滚动到底部
     scrollToBottom() {
       this.$nextTick(() => {
@@ -669,22 +709,24 @@ export default {
         }
       });
     },
-    
+
     // 模拟医生回复
     simulateDoctorReply() {
       // 模拟医生正在输入的状态
       setTimeout(() => {
-        // 模拟医生回复
-        const replies = [
+        // 获取医生的回复库
+        const replies = this.doctorReplies[this.doctorId] || [
           '您好，有什么可以帮助您的吗？',
           '好的，我明白了。请您详细描述一下症状。',
           '根据您的描述，建议您注意休息，多喝水。',
           '这种情况需要进一步检查，建议您到医院进行面诊。',
           '您的情况不是特别严重，请不要太过担心。'
         ];
-        
-        const randomReply = replies[Math.floor(Math.random() * replies.length)];
-        
+
+        // 随机选择一条回复
+        const randomIndex = Math.floor(Math.random() * replies.length);
+        const randomReply = replies[randomIndex];
+
         const doctorMessage = {
           id: 'doc-' + Date.now(),
           type: 'text',
@@ -693,15 +735,342 @@ export default {
           isSelf: false,
           status: 'sent'
         };
-        
+
         this.messageList.push(doctorMessage);
         this.scrollToBottom();
       }, 1500);
     }
   }
 }
+
 </script>
 
-<style>
-@import './consultation-chat.scss';
+<style lang="scss">
+.chat-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f8f8;
+
+  .content-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 20rpx;
+
+    .loading-more {
+      padding: 20rpx 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      text {
+        font-size: 24rpx;
+        color: #999999;
+        margin-left: 10rpx;
+      }
+    }
+
+    .time-divider {
+      display: flex;
+      justify-content: center;
+      margin: 20rpx 0;
+
+      text {
+        font-size: 24rpx;
+        color: #999999;
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 4rpx 16rpx;
+        border-radius: 8rpx;
+      }
+    }
+
+    .message-wrapper {
+      margin-bottom: 20rpx;
+    }
+
+    .message-item {
+      display: flex;
+      align-items: flex-start;
+
+      &.message-self {
+        flex-direction: row-reverse;
+
+        .avatar {
+          margin-left: 20rpx;
+          margin-right: 0;
+        }
+
+        .message-content {
+          .message-text {
+            background-color: #2979ff;
+            color: #ffffff;
+            border-radius: 16rpx 0 16rpx 16rpx;
+          }
+
+          .message-voice {
+            background-color: #2979ff;
+            color: #ffffff;
+            border-radius: 16rpx 0 16rpx 16rpx;
+
+            .wave {
+              background-color: #ffffff;
+            }
+          }
+        }
+
+        .message-status {
+          margin-right: 10rpx;
+        }
+      }
+
+      .avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 12rpx;
+        margin-right: 20rpx;
+      }
+
+      .message-content {
+        max-width: 60%;
+
+        .message-text {
+          background-color: #ffffff;
+          padding: 16rpx 24rpx;
+          border-radius: 0 16rpx 16rpx 16rpx;
+          box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+          word-break: break-all;
+
+          text {
+            font-size: 28rpx;
+            color: #333333;
+            line-height: 1.5;
+          }
+        }
+
+        .message-image {
+          border-radius: 12rpx;
+          overflow: hidden;
+          box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+
+          image {
+            max-width: 400rpx;
+            display: block;
+          }
+        }
+
+        .message-voice {
+          background-color: #ffffff;
+          padding: 16rpx 24rpx;
+          border-radius: 0 16rpx 16rpx 16rpx;
+          box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+          display: flex;
+          align-items: center;
+          min-width: 120rpx;
+
+          text {
+            font-size: 26rpx;
+            color: #333333;
+            margin: 0 16rpx;
+          }
+
+          .voice-waves {
+            display: flex;
+            align-items: center;
+
+            .wave {
+              width: 6rpx;
+              height: 16rpx;
+              background-color: #333333;
+              margin: 0 2rpx;
+              border-radius: 3rpx;
+
+              &:nth-child(1) {
+                height: 20rpx;
+              }
+
+              &:nth-child(2) {
+                height: 24rpx;
+              }
+
+              &:nth-child(3) {
+                height: 16rpx;
+              }
+            }
+          }
+
+          &.playing {
+            .voice-waves {
+              .wave {
+                animation: wave-animation 1s infinite ease-in-out;
+
+                &:nth-child(1) {
+                  animation-delay: 0s;
+                }
+
+                &:nth-child(2) {
+                  animation-delay: 0.2s;
+                }
+
+                &:nth-child(3) {
+                  animation-delay: 0.4s;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .message-status {
+        align-self: flex-end;
+        margin-left: 10rpx;
+      }
+    }
+
+    .bottom-space {
+      height: 20rpx;
+    }
+  }
+
+  .input-area {
+    background-color: #ffffff;
+    border-top: 1px solid #eaeaea;
+    padding: 20rpx;
+    display: flex;
+    align-items: center;
+
+    .input-tools {
+      margin-right: 20rpx;
+
+      .tool-item {
+        padding: 10rpx;
+      }
+    }
+
+    .input-main {
+      flex: 1;
+
+      .text-input {
+        background-color: #f5f5f5;
+        border-radius: 8rpx;
+        padding: 10rpx 20rpx;
+      }
+
+      .voice-record {
+        width: 100%;
+
+        .record-button {
+          background-color: #f5f5f5;
+          border-radius: 8rpx;
+          padding: 20rpx 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          text {
+            font-size: 28rpx;
+            color: #666666;
+          }
+        }
+      }
+    }
+
+    .input-actions {
+      margin-left: 20rpx;
+      display: flex;
+
+      .action-item {
+        padding: 10rpx;
+      }
+    }
+  }
+
+  .more-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    padding: 30rpx 20rpx;
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 10;
+    border-top-left-radius: 24rpx;
+    border-top-right-radius: 24rpx;
+    box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+    animation: slide-up 0.3s ease-out;
+
+    .panel-item {
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20rpx 0;
+
+      .panel-icon {
+        width: 100rpx;
+        height: 100rpx;
+        background-color: #f8f8f8;
+        border-radius: 20rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10rpx;
+      }
+
+      text {
+        font-size: 24rpx;
+        color: #666666;
+      }
+    }
+  }
+
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 9;
+    animation: fade-in 0.3s ease-out;
+  }
+}
+
+@keyframes wave-animation {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
 </style>

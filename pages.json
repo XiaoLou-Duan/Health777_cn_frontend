@@ -247,6 +247,30 @@
           "style": {
             "navigationBarTitleText": "预约系统"
           }
+        },
+        {
+          "path": "pages/doctor-detail/doctor-detail",
+          "style": {
+            "navigationBarTitleText": "医生详情"
+          }
+        },
+        {
+          "path": "pages/chat/consultation-chat",
+          "style": {
+            "navigationBarTitleText": "在线咨询"
+          }
+        },
+        {
+          "path": "pages/doctor-detail/reviews/doctor-reviews",
+          "style": {
+            "navigationBarTitleText": "医生评价"
+          }
+        },
+        {
+          "path": "pages/medical-record/medical-record",
+          "style": {
+            "navigationBarTitleText": "病情资料"
+          }
         }
       ]
     }
