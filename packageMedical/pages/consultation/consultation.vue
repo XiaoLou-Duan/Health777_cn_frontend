@@ -27,7 +27,7 @@
       <!-- 筛选条件 -->
       <view class="filter-options">
         <view class="filter-item" @click="showSortPopup = true">
-          <text>{{ sortOptions[currentSort] ? sortOptions[currentSort].text : '综合排序' }}</text>
+          <text>{{ sortOptions[currentSort] ? sortOptions[currentSort].text : '综合排序' }}</text>xt>
           <u-icon name="arrow-down" size="24" color="#666"></u-icon>
         </view>
         <view class="filter-item" @click="showLevelPopup = true">
@@ -38,7 +38,7 @@
       
       <!-- 医生列表 -->
       <view class="doctor-list">
-        <view class="doctor-item" v-for="(doctor, index) in doctorList" :key="index" @click="viewDoctorDetail(doctor.id)">
+        <view class="doctor-item" v-for="(doctor, index) in filteredDoctorList" :key="index" @click="viewDoctorDetail(doctor.id)">or.id)">
           <view class="doctor-avatar">
             <image :src="doctor.avatar" mode="aspectFill"></image>
             <view class="doctor-online" v-if="doctor.isOnline"></view>
@@ -74,7 +74,7 @@
           </view>
         </view>
         
-        <view class="empty-list" v-if="doctorList.length === 0">
+        <view class="empty-list" v-if="filteredDoctorList.length === 0">
           <u-empty mode="data" text="暂无医生" marginTop="40"></u-empty>
         </view>
       </view>
@@ -161,7 +161,8 @@ export default {
       ],
       showSortPopup: false,
       showLevelPopup: false,
-      doctorList: []
+      doctorList: [],
+      filteredDoctorList: []
     }
   },
   onLoad() {
@@ -187,6 +188,7 @@ export default {
           
           if (res.data.code === 0) {
             this.doctorList = res.data.data;
+            this.filteredDoctorList = this.doctorList;
           }
         },
         fail: () => {

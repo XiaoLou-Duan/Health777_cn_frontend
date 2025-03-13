@@ -24,13 +24,13 @@
 			<view class="function-grid">
 				<view class="function-item" @click="navigateTo('/packageExercise/pages/exercise-guidance/exercise-guidance')">
 					<view class="icon-wrapper">
-						<u-icon name="play-right-fill" size="38" color="#3cc51f"></u-icon>
+						<u-icon name="play-right-fill" size="38" color="#409eff"></u-icon>
 					</view>
 					<text class="function-name">运动检测与指导</text>
 				</view>
 				<view class="function-item" @click="navigateTo('/packageExercise/pages/exercise-stats/exercise-stats')">
 					<view class="icon-wrapper">
-						<u-icon name="list-dot" size="38" color="#3cc51f"></u-icon>
+						<u-icon name="list-dot" size="38" color="#409eff"></u-icon>
 					</view>
 					<text class="function-name">运动成果统计</text>
 				</view>
@@ -354,19 +354,19 @@
 	
 	.chart-bar {
 		width: 100%;
-		background-color: #3cc51f;
+		background-color: #409eff;  // 更改为主题蓝色
 		border-radius: 10rpx;
 	}
 	
 	.chart-label {
 		font-size: 22rpx;
-		color: #666666;
+		color: #606266;  // 调整文字颜色
 		margin-top: 10rpx;
 	}
 	
 	.chart-value {
 		font-size: 24rpx;
-		color: #333333;
+		color: #303133;  // 更深的文字颜色
 		font-weight: bold;
 		margin-top: 10rpx;
 	}
@@ -385,13 +385,13 @@
 	.legend-color {
 		width: 20rpx;
 		height: 20rpx;
-		background-color: #3cc51f;
+		background-color: #409eff;  // 更改为主题蓝色
 		border-radius: 50%;
 		margin-right: 10rpx;
 	}
 	
 	.legend-text {
 		font-size: 24rpx;
-		color: #666666;
+		color: #606266;  // 调整文字颜色
 	}
 </style>

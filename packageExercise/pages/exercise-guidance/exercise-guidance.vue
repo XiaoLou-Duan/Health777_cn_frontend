@@ -100,6 +100,7 @@
 									:disabled="!selectedExercise" 
 									@click="toggleDetection"
 									class="detection-button"
+									color="#409eff" 
 								>
 									{{ cameraActive ? '停止检测' : '开始检测' }}
 								</u-button>
@@ -141,7 +142,7 @@
 						<view class="suggestion-header">实时运动建议</view>
 						<view class="suggestion-content">
 							<view class="suggestion-item" v-for="(suggestion, index) in currentSuggestions" :key="index">
-								<u-icon name="arrow-right" color="#3cc51f" size="24"></u-icon>
+								<u-icon name="arrow-right" color="#409eff" size="24"></u-icon>  <!-- 更改图标颜色为主题蓝色 -->
 								<text class="suggestion-text">{{ suggestion }}</text>
 							</view>
 							<view class="empty-suggestion" v-if="currentSuggestions.length === 0">

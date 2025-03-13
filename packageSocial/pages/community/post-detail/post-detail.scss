@@ -1,6 +1,6 @@
 .post-detail-container {
   min-height: 100vh;
-  background-color: #f8f8f8;
+  background-color: #f5f7fa; // 更改为与运动模块一致的背景色
   display: flex;
   flex-direction: column;
   
@@ -11,10 +11,10 @@
   
   .post-section {
     background-color: #ffffff;
-    border-radius: 12rpx;
+    border-radius: 16rpx; // 增大圆角
     margin: 20rpx;
     padding: 30rpx;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
     
     .post-header {
       display: flex;
@@ -40,23 +40,23 @@
           .user-name {
             font-size: 30rpx;
             font-weight: bold;
-            color: #333;
+            color: #303133; // 更深的文字颜色
             margin-bottom: 6rpx;
           }
           
           .post-time {
             font-size: 24rpx;
-            color: #999;
+            color: #909399; // 调整次要文字颜色
           }
         }
       }
       
       .post-category {
         font-size: 24rpx;
-        color: #666;
-        background-color: #f0f0f0;
-        padding: 6rpx 16rpx;
-        border-radius: 20rpx;
+        color: #606266; // 调整文字颜色
+          background-color: #f0f6ff; // 更改背景色为淡蓝色
+          padding: 8rpx 20rpx; // 增大内边距
+          border-radius: 30rpx; // 更圆润的边角
       }
     }
     
@@ -66,15 +66,31 @@
       .post-title {
         font-size: 36rpx;
         font-weight: bold;
-        color: #333;
+        color: #303133; // 更深的文字颜色
         margin-bottom: 20rpx;
         display: block;
       }
       
       .post-text {
         font-size: 30rpx;
-        color: #333;
+        color: #303133; // 更深的文字颜色
         line-height: 1.8;
+      }
+    }
+    
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20rpx;
+      
+      .tag-item {
+        font-size: 24rpx;
+        color: #409eff;
+        background-color: rgba(64, 158, 255, 0.1);
+        padding: 6rpx 16rpx;
+        border-radius: 20rpx;
+        margin-right: 16rpx;
+        margin-bottom: 12rpx;
       }
     }
     
@@ -83,7 +99,7 @@
       
       .post-image {
         width: 100%;
-        border-radius: 8rpx;
+        border-radius: 12rpx; // 增大圆角
         margin-bottom: 20rpx;
       }
     }
@@ -93,7 +109,7 @@
       justify-content: space-around;
       align-items: center;
       padding-top: 20rpx;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid #EBEEF5; // 更改分隔线颜色
       
       .action-item {
         display: flex;
@@ -102,11 +118,11 @@
         
         .action-count {
           font-size: 24rpx;
-          color: #999;
+          color: #909399; // 调整次要文字颜色
           margin-top: 8rpx;
           
           &.active {
-            color: #FF6B6B;
+            color: #409eff; // 调整激活颜色为主题蓝色
           }
         }
       }
@@ -115,15 +131,15 @@
   
   .related-section {
     background-color: #ffffff;
-    border-radius: 12rpx;
+    border-radius: 16rpx; // 增大圆角
     margin: 20rpx;
     padding: 30rpx;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
     
     .section-title {
       font-size: 32rpx;
       font-weight: bold;
-      color: #333;
+      color: #303133; // 更深的文字颜色
       margin-bottom: 20rpx;
       position: relative;
       padding-left: 20rpx;
@@ -135,7 +151,7 @@
         top: 10rpx;
         width: 6rpx;
         height: 30rpx;
-        background-color: #5FB878;
+        background-color: #409eff; // 更改为主题蓝色
         border-radius: 3rpx;
       }
     }
@@ -146,7 +162,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 20rpx 0;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #EBEEF5; // 更改分隔线颜色
         
         &:last-child {
           border-bottom: none;
@@ -155,7 +171,7 @@
         .related-title {
           flex: 1;
           font-size: 28rpx;
-          color: #333;
+          color: #303133; // 更深的文字颜色
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -163,7 +179,7 @@
         
         .related-views {
           font-size: 24rpx;
-          color: #999;
+          color: #909399; // 调整次要文字颜色
           margin-left: 20rpx;
         }
       }
@@ -172,15 +188,15 @@
   
   .comment-section {
     background-color: #ffffff;
-    border-radius: 12rpx;
+    border-radius: 16rpx; // 增大圆角
     margin: 20rpx;
     padding: 30rpx;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
     
     .section-title {
       font-size: 32rpx;
       font-weight: bold;
-      color: #333;
+      color: #303133; // 更深的文字颜色
       margin-bottom: 20rpx;
       position: relative;
       padding-left: 20rpx;
@@ -192,7 +208,7 @@
         top: 10rpx;
         width: 6rpx;
         height: 30rpx;
-        background-color: #5FB878;
+        background-color: #409eff; // 更改为主题蓝色
         border-radius: 3rpx;
       }
     }
@@ -200,7 +216,7 @@
     .comment-list {
       .comment-item {
         padding: 20rpx 0;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #EBEEF5; // 更改分隔线颜色
         
         &:last-child {
           border-bottom: none;
@@ -225,20 +241,20 @@
             .user-name {
               font-size: 28rpx;
               font-weight: bold;
-              color: #333;
+              color: #303133; // 更深的文字颜色
               margin-bottom: 4rpx;
             }
             
             .comment-time {
               font-size: 22rpx;
-              color: #999;
+              color: #909399; // 调整次要文字颜色
             }
           }
         }
         
         .comment-content {
           font-size: 28rpx;
-          color: #333;
+          color: #303133; // 更深的文字颜色
           line-height: 1.6;
           margin-bottom: 16rpx;
           padding-left: 76rpx;
@@ -256,19 +272,19 @@
             
             text {
               font-size: 24rpx;
-              color: #999;
+              color: #909399; // 调整次要文字颜色
               margin-left: 6rpx;
               
               &.active {
-                color: #FF6B6B;
+                color: #409eff; // 调整激活颜色为主题蓝色
               }
             }
           }
         }
         
         .reply-list {
-          background-color: #f8f8f8;
-          border-radius: 8rpx;
+          background-color: #f5f7fa; // 使用与整体背景一致的颜色
+            border-radius: 12rpx; // 增大圆角
           margin-top: 16rpx;
           padding: 20rpx;
           margin-left: 76rpx;
@@ -286,23 +302,23 @@
               .user-name {
                 font-size: 26rpx;
                 font-weight: bold;
-                color: #4a90e2;
+                color: #409eff; // 更改为主题蓝色
               }
               
               text {
                 font-size: 26rpx;
-                color: #666;
+                color: #606266; // 调整文字颜色
               }
               
               .reply-to {
                 font-size: 26rpx;
-                color: #4a90e2;
+                color: #409eff; // 更改为主题蓝色
               }
             }
             
             .reply-content {
               font-size: 26rpx;
-              color: #333;
+              color: #303133; // 更深的文字颜色
               line-height: 1.6;
             }
           }
@@ -315,7 +331,7 @@
             
             text {
               font-size: 26rpx;
-              color: #4a90e2;
+              color: #409eff; // 更改为主题蓝色
             }
           }
         }
@@ -328,7 +344,7 @@
       
       text {
         font-size: 28rpx;
-        color: #4a90e2;
+        color: #409eff; // 更改为主题蓝色
       }
     }
     
@@ -344,7 +360,7 @@
     bottom: 0;
     background-color: #ffffff;
     padding: 20rpx;
-    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
     z-index: 10;
     
     .comment-input {
@@ -354,7 +370,7 @@
       input {
         flex: 1;
         height: 70rpx;
-        background-color: #f0f0f0;
+        background-color: #f5f7fa; // 使用与整体背景一致的颜色
         border-radius: 35rpx;
         padding: 0 30rpx;
         font-size: 28rpx;
@@ -363,7 +379,7 @@
       .send-btn {
         width: 120rpx;
         height: 70rpx;
-        background-color: #5FB878;
+        background-color: #409eff; // 更改为主题蓝色
         color: #ffffff;
         font-size: 28rpx;
         border-radius: 35rpx;
@@ -373,7 +389,7 @@
         justify-content: center;
         
         &:disabled {
-          background-color: #cccccc;
+          background-color: #c0c4cc; // 调整禁用颜色
         }
       }
     }

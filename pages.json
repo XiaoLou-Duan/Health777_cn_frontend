@@ -231,6 +231,12 @@
       "root": "packageMedical",
       "pages": [
         {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "医疗健康"
+          }
+        },
+        {
           "path": "pages/consultation/consultation",
           "style": {
             "navigationBarTitleText": "医生咨询"
@@ -276,7 +282,7 @@
         "text": "运动"
       },
       {
-        "pagePath": "packageMedical/pages/consultation/consultation",
+        "pagePath": "packageMedical/pages/index/index",
         "iconPath": "static/icons/medical.svg",
         "selectedIconPath": "static/icons/medical-active.svg",
         "text": "医疗"
