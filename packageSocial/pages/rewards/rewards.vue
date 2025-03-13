@@ -129,7 +129,7 @@
 export default {
   data() {
     return {
-      userPoints: 0,
+      userPoints: 2450,
       currentCategory: 'all',
       categories: [
         { name: '全部', value: 'all' },
@@ -138,7 +138,80 @@ export default {
         { name: '优惠券', value: 'coupon' },
         { name: '会员特权', value: 'vip' }
       ],
-      rewards: [],
+      rewards: [
+        {
+          id: 1001,
+          name: '健身达人称号',
+          description: '在社区展示独特称号，彰显您的健身成就',
+          points: 1000,
+          category: 'virtual',
+          tag: '热门',
+          image: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5'
+        },
+        {
+          id: 1002,
+          name: '瑜伽大师勋章',
+          description: '特殊徽章，展示您在瑜伽领域的专业水平',
+          points: 1500,
+          category: 'virtual',
+          tag: '新品',
+          image: 'https://images.unsplash.com/photo-1545389336-cf090694435e'
+        },
+        {
+          id: 1003,
+          name: '健康食谱电子书',
+          description: '包含100+专业营养配餐方案的电子书',
+          points: 800,
+          category: 'virtual',
+          tag: null,
+          image: 'https://images.unsplash.com/photo-1467453678174-768ec283a940'
+        },
+        {
+          id: 1004,
+          name: '运动水壶',
+          description: '800ml大容量，保温防漏，健身必备',
+          points: 2000,
+          category: 'physical',
+          tag: '限量',
+          image: 'https://images.unsplash.com/photo-1575373469568-3fc001fa8683'
+        },
+        {
+          id: 1005,
+          name: '瑜伽垫',
+          description: '加厚防滑，环保材质，舒适健康',
+          points: 3500,
+          category: 'physical',
+          tag: null,
+          image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f'
+        },
+        {
+          id: 1006,
+          name: '蛋白粉优惠券',
+          description: '任意蛋白粉产品8折优惠',
+          points: 500,
+          category: 'coupon',
+          tag: '超值',
+          image: 'https://images.unsplash.com/photo-1579722821273-0f6c1ddde163'
+        },
+        {
+          id: 1007,
+          name: '健身房月卡',
+          description: '合作健身房通用月卡一张',
+          points: 5000,
+          category: 'coupon',
+          tag: '抢手',
+          image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48'
+        },
+        {
+          id: 1008,
+          name: '会员升级券',
+          description: '升级为平台高级会员，享受更多特权',
+          points: 8000,
+          category: 'vip',
+          tag: '尊享',
+          image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187'
+        }
+      ],
       currentReward: {},
       showExchangePopup: false,
       showAddressPopup: false,
@@ -159,8 +232,9 @@ export default {
     }
   },
   onLoad() {
-    this.loadUserPoints();
-    this.loadRewards();
+    // 使用本地示例数据，不再调用API加载
+    // this.loadUserPoints();
+    // this.loadRewards();
   },
   methods: {
     loadUserPoints() {
@@ -439,7 +513,10 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          
+          .u-button {
+            width: 5rem;
+            margin:0;
+          }
           .reward-points {
             display: flex;
             align-items: baseline;

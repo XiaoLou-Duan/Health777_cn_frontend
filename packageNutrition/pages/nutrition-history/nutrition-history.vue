@@ -120,7 +120,111 @@ export default {
       
       // 食物记录
       foodRecords: [],
-      groupedRecords: []
+      groupedRecords: [],
+      
+      // 示例数据
+      demoFoodRecords: [
+        {
+          id: '001',
+          name: '煎鸡胸肉',
+          amount: 150,
+          calories: 240,
+          protein: 45,
+          fat: 6,
+          carbs: 0,
+          image: '/static/img/demo/chicken-breast.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 5, // 5小时前
+          mealType: 'lunch'
+        },
+        {
+          id: '002',
+          name: '燕麦片',
+          amount: 100,
+          calories: 389,
+          protein: 13,
+          fat: 7,
+          carbs: 66,
+          image: '/static/img/demo/oatmeal.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 10, // 10小时前
+          mealType: 'breakfast'
+        },
+        {
+          id: '003',
+          name: '蔬菜沙拉',
+          amount: 200,
+          calories: 120,
+          protein: 4,
+          fat: 5,
+          carbs: 15,
+          image: '/static/img/demo/salad.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 4, // 4小时前
+          mealType: 'lunch'
+        },
+        {
+          id: '004',
+          name: '香蕉',
+          amount: 120,
+          calories: 105,
+          protein: 1.3,
+          fat: 0.4,
+          carbs: 27,
+          image: '/static/img/demo/banana.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 8, // 8小时前
+          mealType: 'breakfast'
+        },
+        {
+          id: '005',
+          name: '牛肉炒饭',
+          amount: 300,
+          calories: 450,
+          protein: 25,
+          fat: 15,
+          carbs: 55,
+          image: '/static/img/demo/beef-rice.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 1, // 1小时前
+          mealType: 'dinner'
+        },
+        {
+          id: '006',
+          name: '酸奶',
+          amount: 200,
+          calories: 150,
+          protein: 8,
+          fat: 3.5,
+          carbs: 12,
+          image: '/static/img/demo/yogurt.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 3, // 3小时前
+          mealType: 'snack'
+        },
+        // 昨天的食物
+        {
+          id: '007',
+          name: '全麦面包',
+          amount: 80,
+          calories: 216,
+          protein: 8,
+          fat: 3,
+          carbs: 41,
+          image: '/static/img/demo/bread.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 24 - 1000 * 60 * 60 * 10, // 昨天早上
+          mealType: 'breakfast'
+        },
+        {
+          id: '008',
+          name: '鲑鱼',
+          amount: 180,
+          calories: 367,
+          protein: 39,
+          fat: 22,
+          carbs: 0,
+          image: '/static/img/demo/salmon.jpg',
+          timestamp: Date.now() - 1000 * 60 * 60 * 24 - 1000 * 60 * 60 * 5, // 昨天午餐
+          mealType: 'lunch'
+        }
+      ],
+      
+      // 是否使用示例数据(测试环境使用)
+      useDemo: true
     }
   },
   onLoad() {
@@ -205,6 +309,19 @@ export default {
     
     // 加载食物记录
     loadFoodRecords() {
+      // 使用示例数据(测试时或开发时)
+      if(this.useDemo) {
+        // 过滤示例数据，只保留选定日期范围内的记录
+        this.foodRecords = this.demoFoodRecords.filter(record => {
+          const recordDate = new Date(record.timestamp);
+          return recordDate >= this.startDate && recordDate <= new Date(this.endDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+        });
+        this.processRecords();
+        this.calculateSummary();
+        return;
+      }
+      
+      // 正式环境获取API数据
       // 获取认证信息
       const token = uni.getStorageSync('token') || '';
       const header = {
@@ -237,8 +354,16 @@ export default {
           }
         },
         fail: () => {
+          // API请求失败时，使用示例数据
+          this.foodRecords = this.demoFoodRecords.filter(record => {
+            const recordDate = new Date(record.timestamp);
+            return recordDate >= this.startDate && recordDate <= new Date(this.endDate.getTime() + 24 * 60 * 60 * 1000 - 1);
+          });
+          this.processRecords();
+          this.calculateSummary();
+          
           uni.showToast({
-            title: '网络请求失败',
+            title: '使用示例数据',
             icon: 'none'
           });
         },
@@ -334,227 +459,5 @@ export default {
 </script>
 
 <style lang="scss">
-.nutrition-history-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f7fa;
-}
-
-.content-wrapper {
-  flex: 1;
-  padding: 20rpx;
-}
-
-/* 日期选择区域样式 */
-.date-picker-section {
-  margin-bottom: 30rpx;
-}
-
-.date-tabs {
-  display: flex;
-  justify-content: space-between;
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  padding: 12rpx;
-  margin-bottom: 16rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.date-tab {
-  flex: 1;
-  padding: 16rpx 0;
-  text-align: center;
-  font-size: 28rpx;
-  color: #666666;
-  border-radius: 8rpx;
-}
-
-.date-tab.active {
-  background-color: #2979ff;
-  color: #ffffff;
-}
-
-.custom-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.selected-date-range {
-  text-align: center;
-  padding: 16rpx;
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  font-size: 26rpx;
-  color: #333333;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-/* 营养摄入统计样式 */
-.nutrition-summary {
-  margin-bottom: 30rpx;
-}
-
-.summary-card {
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.card-header {
-  padding-bottom: 16rpx;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 16rpx;
-}
-
-.card-title {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333333;
-}
-
-.summary-grid {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.summary-item {
-  width: 50%;
-  padding: 16rpx 0;
-}
-
-.summary-label {
-  font-size: 26rpx;
-  color: #666666;
-  margin-bottom: 8rpx;
-  display: block;
-}
-
-.summary-value {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #2979ff;
-}
-
-/* 食物记录样式 */
-.food-records {
-  margin-bottom: 40rpx;
-}
-
-.date-group {
-  margin-bottom: 30rpx;
-}
-
-.date-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16rpx 20rpx;
-  background-color: #f8f9fc;
-  border-radius: 12rpx;
-  margin-bottom: 16rpx;
-}
-
-.date-text {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #333333;
-}
-
-.total-calories {
-  font-size: 26rpx;
-  color: #666666;
-}
-
-.meal-group {
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  margin-bottom: 20rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.meal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16rpx 20rpx;
-  background-color: #f0f4ff;
-}
-
-.meal-title {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #2979ff;
-}
-
-.meal-calories {
-  font-size: 26rpx;
-  color: #666666;
-}
-
-.food-item {
-  display: flex;
-  padding: 20rpx;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.food-item:last-child {
-  border-bottom: none;
-}
-
-.food-image {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 8rpx;
-  margin-right: 20rpx;
-}
-
-.food-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.food-name {
-  font-size: 28rpx;
-  color: #333333;
-  margin-bottom: 8rpx;
-}
-
-.food-amount {
-  font-size: 24rpx;
-  color: #999999;
-}
-
-.food-nutrition {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.nutrition-text {
-  font-size: 24rpx;
-  color: #666666;
-  margin-bottom: 4rpx;
-}
-
-/* 空状态样式 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60rpx 0;
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #999999;
-  margin: 20rpx 0 40rpx;
-}
+  @import "./nutrition-history.scss";
 </style>

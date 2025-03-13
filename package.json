@@ -10,8 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@dcloudio/uni-ui": "^1.4.8",
     "hearthgood": "file:",
-    "uview-ui": "^2.0.38",
-    "@dcloudio/uni-ui": "^1.4.8"
+    "uview-ui": "^2.0.38"
   }
 }

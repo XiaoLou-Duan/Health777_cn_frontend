@@ -216,6 +216,103 @@ const getTopics = mockRequest(() => {
   return successResponse(sortedTopics);
 });
 
+// 获取热门话题列表
+const getHotTopics = mockRequest(() => {
+  // 获取话题并添加帖子数量
+  const topicsWithCount = socialData.posts.topics.map(topic => {
+    const postCount = socialData.posts.posts.filter(post => post.topicId === topic.id).length;
+    return {
+      ...topic,
+      postCount
+    };
+  });
+  
+  // 按帖子数量排序
+  const sortedTopics = [...topicsWithCount].sort((a, b) => b.postCount - a.postCount);
+  
+  // 返回前5个热门话题
+  return successResponse(sortedTopics.slice(0, 5));
+});
+
+// 获取社交用户信息
+const getSocialUserInfo = mockRequest((params) => {
+  const token = params.header?.Authorization;
+  if (!checkTokenValid(token)) {
+    return errorResponse(401, '用户未登录或登录已过期');
+  }
+  
+  const userId = '1001'; // 从token中获取用户ID
+  
+  // 获取用户积分统计
+  const pointsStats = socialData.points.pointsStatistics.find(stat => stat.userId === userId);
+  
+  // 获取用户徽章数量
+  const badgeCount = socialData.badges.userBadges.filter(badge => badge.userId === userId).length;
+  
+  // 获取用户当前称号
+  const activeTitle = socialData.badges.userTitles.find(title => title.userId === userId && title.isActive);
+  let activeTitleInfo = null;
+  
+  if (activeTitle) {
+    const titleDetail = socialData.badges.titles.find(title => title.id === activeTitle.titleId);
+    if (titleDetail) {
+      activeTitleInfo = {
+        id: titleDetail.id,
+        name: titleDetail.name,
+        icon: titleDetail.icon
+      };
+    }
+  }
+  
+  // 构建用户信息
+  const userInfo = {
+    userId,
+    nickname: '健康达人',
+    avatar: '/static/images/avatar/default.jpg',
+    points: pointsStats ? pointsStats.totalPoints : 0,
+    level: pointsStats ? Math.floor(pointsStats.totalPoints / 100) + 1 : 1,
+    badgeCount,
+    activeTitle: activeTitleInfo
+  };
+  
+  return successResponse(userInfo);
+});
+
+// 获取推荐帖子
+const getRecommendPosts = mockRequest((params) => {
+  const token = params.header?.Authorization;
+  if (!checkTokenValid(token)) {
+    return errorResponse(401, '用户未登录或登录已过期');
+  }
+  
+  // 获取推荐帖子
+  const recommendPosts = socialData.posts.posts.filter(post => post.isRecommend);
+  
+  // 按时间倒序排序
+  recommendPosts.sort((a, b) => new Date(b.createTime) - new Date(a.createTime));
+  
+  // 获取话题信息和作者信息
+  const postsWithDetails = recommendPosts.map(post => {
+    const topic = socialData.posts.topics.find(topic => topic.id === post.topicId);
+    
+    // 简化内容作为摘要
+    const summary = post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content;
+    
+    return {
+      ...post,
+      topicName: topic ? topic.name : '',
+      topicColor: topic ? topic.color : '#999999',
+      summary,
+      author: {
+        nickname: '健康达人',
+        avatar: '/static/images/avatar/default.jpg'
+      }
+    };
+  });
+  
+  return successResponse(postsWithDetails.slice(0, 3));
+});
+
 // 获取帖子列表
 const getPosts = mockRequest((params) => {
   const token = params.header?.Authorization;
@@ -542,6 +639,9 @@ export default {
   getUserTitles,
   setActiveTitle,
   getTopics,
+  getHotTopics,
+  getSocialUserInfo,
+  getRecommendPosts,
   getPosts,
   getPostDetail,
   createPost,

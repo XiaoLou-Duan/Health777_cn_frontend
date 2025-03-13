@@ -11,6 +11,7 @@ import exerciseApi from './exercise';
 import socialApi from './social';
 import medicalApi from './medical';
 import reminderApi from './reminder';
+import apiRoutes from './api';
 
 // 合并所有API
 const allApis = {
@@ -25,8 +26,8 @@ const allApis = {
 // 启动Mock服务
 export function startMockService() {
   console.log('Starting mock service...');
-  // 使用setupMock方法替代setupMockAPI
-  setupMock(allApis);
+  // 使用API路由映射
+  setupMock(apiRoutes);
   console.log('Mock service started successfully');
 }
 

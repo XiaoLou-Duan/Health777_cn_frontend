@@ -190,6 +190,12 @@
       "root": "packageSocial",
       "pages": [
         {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "社交健康"
+          }
+        },
+        {
           "path": "pages/points/points",
           "style": {
             "navigationBarTitleText": "积分系统"
@@ -276,7 +282,7 @@
         "text": "医疗"
       },
       {
-        "pagePath": "packageSocial/pages/community/community",
+        "pagePath": "packageSocial/pages/index/index",
         "iconPath": "static/icons/community.svg",
         "selectedIconPath": "static/icons/community-active.svg",
         "text": "社区"

@@ -90,14 +90,81 @@ export default {
   data() {
     return {
       userPoints: {
-        current: 0,
-        total: 0,
-        levelName: '',
-        nextLevelName: '',
-        nextLevelPoints: 0
+        current: 2450,
+        total: 5680,
+        levelName: '健康达人Lv.15',
+        nextLevelName: '健康达人Lv.16',
+        nextLevelPoints: 3000
       },
-      dailyTasks: [],
-      pointsHistory: []
+      dailyTasks: [
+        {
+          id: 1,
+          name: '每日签到',
+          description: '连续签到可获得额外奖励',
+          points: 10,
+          completed: true
+        },
+        {
+          id: 2,
+          name: '浏览健康文章',
+          description: '阅读至少3篇健康相关文章',
+          points: 15,
+          completed: true
+        },
+        {
+          id: 3,
+          name: '记录今日饮食',
+          description: '使用营养模块记录一天的饮食',
+          points: 20,
+          completed: false
+        },
+        {
+          id: 4,
+          name: '分享健康心得',
+          description: '在社区发表一篇健康相关帖子',
+          points: 30,
+          completed: false
+        },
+        {
+          id: 5,
+          name: '运动打卡',
+          description: '记录今日的运动数据',
+          points: 25,
+          completed: true
+        }
+      ],
+      pointsHistory: [
+        {
+          id: 101,
+          description: '完成每日签到任务',
+          points: 10,
+          time: new Date(Date.now() - 2 * 3600000).getTime() // 2小时前
+        },
+        {
+          id: 102,
+          description: '完成运动打卡任务',
+          points: 25,
+          time: new Date(Date.now() - 5 * 3600000).getTime() // 5小时前
+        },
+        {
+          id: 103,
+          description: '阅读健康文章',
+          points: 15,
+          time: new Date(Date.now() - 6 * 3600000).getTime() // 6小时前
+        },
+        {
+          id: 104,
+          description: '兑换健身达人称号',
+          points: -1000,
+          time: new Date(Date.now() - 2 * 24 * 3600000).getTime() // 2天前
+        },
+        {
+          id: 105,
+          description: '发布原创健康经验贴',
+          points: 50,
+          time: new Date(Date.now() - 3 * 24 * 3600000).getTime() // 3天前
+        }
+      ]
     }
   },
   computed: {
@@ -106,7 +173,8 @@ export default {
     }
   },
   onLoad() {
-    this.loadPointsData();
+    // 使用本地示例数据，不再调用API加载
+    // this.loadPointsData();
   },
   methods: {
     loadPointsData() {
