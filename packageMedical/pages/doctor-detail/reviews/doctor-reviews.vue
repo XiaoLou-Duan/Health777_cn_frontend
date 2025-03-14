@@ -123,21 +123,21 @@ export default {
                 '1001': {
                     id: '1001',
                     name: '张医生',
-                    avatar: '/static/images/doctor1.jpg',
+                    avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
                     rating: 4.9,
                     ratingCount: 524,
                     reviews: [
                         {
-                            avatar: '/static/images/avatar1.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/22.jpg',
                             name: '患者1',
                             rating: 5,
                             content: '张医生医术精湛，态度和蔼，给了我很多专业的建议，手术非常成功，恢复得很好！',
                             time: '2023-12-15',
-                            images: ['/static/images/review1.jpg', '/static/images/review2.jpg'],
+                            images: ['https://picsum.photos/id/237/200/300', 'https://picsum.photos/id/238/200/300'],
                             reply: '谢谢您的信任，祝您健康！'
                         },
                         {
-                            avatar: '/static/images/avatar2.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/23.jpg',
                             name: '患者2',
                             rating: 5,
                             content: '张医生很耐心，详细解答了我所有的问题，治疗方案很有效，现在已经痊愈了。',
@@ -146,7 +146,7 @@ export default {
                             reply: null
                         },
                         {
-                            avatar: '/static/images/avatar3.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/24.jpg',
                             name: '患者3',
                             rating: 4,
                             content: '专业水平很高，诊断准确，治疗得当。就是预约有点难。',
@@ -155,16 +155,16 @@ export default {
                             reply: '感谢您的评价，我们会继续改进预约系统，提供更便捷的服务。'
                         },
                         {
-                            avatar: '/static/images/avatar4.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/25.jpg',
                             name: '患者4',
                             rating: 5,
                             content: '医生非常专业，诊断精准，给出的治疗方案非常适合我的情况，效果明显。',
                             time: '2023-09-22',
-                            images: ['/static/images/review3.jpg'],
+                            images: ['https://picsum.photos/id/239/200/300'],
                             reply: null
                         },
                         {
-                            avatar: '/static/images/avatar5.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/26.jpg',
                             name: '患者5',
                             rating: 3,
                             content: '医生诊疗能力还不错，但是总感觉有点急急忙忙的，可能是病人太多了吧。',
@@ -173,7 +173,7 @@ export default {
                             reply: '非常抱歉给您带来不好的体验，我们会安排更合理的就诊时间，确保每位患者都能得到充分的诊疗。'
                         },
                         {
-                            avatar: '/static/images/avatar6.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/27.jpg',
                             name: '患者6',
                             rating: 5,
                             content: '张医生不仅专业知识丰富，而且非常有耐心，会详细地解释病情和治疗方案，让人非常安心。',
@@ -182,7 +182,7 @@ export default {
                             reply: '谢谢您的肯定，我会继续努力提供优质的医疗服务。'
                         },
                         {
-                            avatar: '/static/images/avatar7.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
                             name: '患者7',
                             rating: 2,
                             content: '等待时间太长，预约了但还是要等很久，感觉医院管理有问题。',
@@ -191,16 +191,16 @@ export default {
                             reply: '非常抱歉，我们正在改进排班和预约系统，争取减少等待时间。感谢您的反馈。'
                         },
                         {
-                            avatar: '/static/images/avatar8.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/29.jpg',
                             name: '患者8',
                             rating: 5,
                             content: '手术效果非常好，术后恢复也很快，张医生术前术后都给了很多专业的建议，非常感谢！',
                             time: '2023-07-28',
-                            images: ['/static/images/review4.jpg', '/static/images/review5.jpg'],
+                            images: ['https://picsum.photos/id/240/200/300', 'https://picsum.photos/id/241/200/300'],
                             reply: '祝您健康！有任何问题随时咨询。'
                         },
                         {
-                            avatar: '/static/images/avatar9.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/30.jpg',
                             name: '患者9',
                             rating: 4,
                             content: '治疗效果很好，但是门诊环境有点嘈杂，影响沟通。',
@@ -209,7 +209,7 @@ export default {
                             reply: null
                         },
                         {
-                            avatar: '/static/images/avatar10.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/31.jpg',
                             name: '患者10',
                             rating: 5,
                             content: '张医生给我制定的康复计划非常适合我，恢复得比预期要快，特别感谢！',
@@ -222,22 +222,22 @@ export default {
                 '1002': {
                     id: '1002',
                     name: '李医生',
-                    avatar: '/static/images/doctor2.jpg',
+                    avatar: 'https://randomuser.me/api/portraits/women/43.jpg',
                     rating: 4.7,
                     ratingCount: 352,
                     reviews: [
                         // 李医生的评价数据...
                         {
-                            avatar: '/static/images/avatar11.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
                             name: '患者11',
                             rating: 5,
                             content: '李医生的康复治疗方案非常专业，我的恢复速度超出预期！',
                             time: '2023-12-10',
-                            images: ['/static/images/review6.jpg'],
+                            images: ['https://picsum.photos/id/242/200/300'],
                             reply: '很高兴看到您恢复顺利，继续保持！'
                         },
                         {
-                            avatar: '/static/images/avatar12.jpg',
+                            avatar: 'https://randomuser.me/api/portraits/women/33.jpg',
                             name: '患者12',
                             rating: 4,
                             content: '李医生很专业，康复指导很详细，但诊所设施可以再改善一下。',
@@ -247,7 +247,7 @@ export default {
                         }
                     ]
                 },
-                // 其他医生的数据...可根据需要添加
+                // 其他医生的数据...
             }
         }
     },

@@ -107,60 +107,160 @@ export default {
       }
     }
   },
+  // 添加页面加载时的钩子
+  onLoad() {
+    console.log('个人资料页面加载');
+    this.getUserInfo();
+  },
   onShow() {
     // 每次页面显示时刷新数据
+    console.log('个人资料页面显示');
     this.getUserInfo();
   },
   methods: {
     // 获取用户信息
     getUserInfo() {
+      console.log('开始获取用户信息');
       uni.showLoading({
         title: '加载中'
       });
       
-      // 从缓存中获取用户信息
-      const userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) {
-        this.userInfo = JSON.parse(userInfo);
+      // 直接使用测试数据 (临时解决方案)
+      setTimeout(() => {
+        this.loadTestData();
         uni.hideLoading();
-      } else {
-        // 如果缓存中没有，则请求API获取
-        uni.request({
-          url: '/api/user/info',
-          method: 'GET',
-          success: (res) => {
-            uni.hideLoading();
-            
-            if (res.data.code === 0 && res.data.data) {
-              this.userInfo = res.data.data;
-              
-              // 存储到缓存中
-              uni.setStorageSync('userInfo', JSON.stringify(this.userInfo));
-            }
-          },
-          fail: () => {
-            uni.hideLoading();
-            
-            // 使用模拟数据
-            this.userInfo = {
-              userId: '1001',
-              nickname: '张三',
-              avatar: '/static/images/avatar/user1.jpg',
-              gender: '男',
-              age: 65,
-              height: 172,
-              weight: 68,
-              phone: '13812341234',
-              email: 'zhangsan@example.com',
-              sarcopeniaStatus: 'mild',
-              chronicDiseases: '高血压，糖尿病',
-              allergies: '无'
-            };
-            
+        return;
+      }, 500);
+
+      // 以下代码保留但暂时不执行
+      /*
+      // 从缓存中获取用户信息
+      try {
+        const userInfoStr = uni.getStorageSync('userInfo');
+        if (userInfoStr) {
+          this.userInfo = JSON.parse(userInfoStr);
+          console.log('从缓存获取的用户数据:', this.userInfo);
+          uni.hideLoading();
+          return;
+        } else {
+          console.log('缓存中无用户数据');
+        }
+      } catch (e) {
+        console.error('读取缓存失败:', e);
+      }
+
+      // 如果缓存中没有，则请求API获取
+      uni.request({
+        url: '/api/user/info',
+        method: 'GET',
+        timeout: 5000,
+        success: (res) => {
+          console.log('API响应:', res);
+          uni.hideLoading();
+
+          if (res.data && res.data.code === 0 && res.data.data) {
+            this.userInfo = res.data.data;
+            console.log('从API获取的用户数据:', this.userInfo);
+
             // 存储到缓存中
-            uni.setStorageSync('userInfo', JSON.stringify(this.userInfo));
+            try {
+              uni.setStorageSync('userInfo', JSON.stringify(this.userInfo));
+            } catch (e) {
+              console.error('保存缓存失败:', e);
+            }
+          } else {
+            console.error('API返回数据异常:', res.data);
+            this.loadTestData();
           }
-        });
+        },
+        fail: (err) => {
+          console.error('请求失败:', err);
+          uni.hideLoading();
+          this.loadTestData();
+        }
+      });
+      */
+    },
+
+    // 加载测试数据
+    loadTestData() {
+      console.log('加载测试数据');
+      const gender = Math.random() > 0.5 ? 'men' : 'women';
+      const randomId = Math.floor(Math.random() * 99) + 1;
+
+      // 测试数据
+      const testProfiles = [
+        {
+          userId: '1001',
+          nickname: '张三',
+          gender: '男',
+          age: 65,
+          height: 172,
+          weight: 68,
+          phone: '13812341234',
+          email: 'zhangsan@example.com',
+          sarcopeniaStatus: 'mild',
+          chronicDiseases: '高血压，糖尿病，骨质疏松',
+          allergies: '青霉素'
+        },
+        {
+          userId: '1002',
+          nickname: '李四',
+          gender: '男',
+          age: 70,
+          height: 168,
+          weight: 62,
+          phone: '13987654321',
+          email: 'lisi@example.com',
+          sarcopeniaStatus: 'moderate',
+          chronicDiseases: '冠心病，高脂血症',
+          allergies: '无'
+        },
+        {
+          userId: '1003',
+          nickname: '王五',
+          gender: '女',
+          age: 68,
+          height: 160,
+          weight: 55,
+          phone: '13756781234',
+          email: 'wangwu@example.com',
+          sarcopeniaStatus: 'none',
+          chronicDiseases: '关节炎',
+          allergies: '磺胺类药物'
+        },
+        {
+          userId: '1004',
+          nickname: '赵六',
+          gender: '男',
+          age: 72,
+          height: 175,
+          weight: 70,
+          phone: '13612345678',
+          email: 'zhaoliu@example.com',
+          sarcopeniaStatus: 'severe',
+          chronicDiseases: '高血压，慢性肾病，痛风',
+          allergies: '碘造影剂'
+        }
+      ];
+
+      // 随机选择一个档案
+      const randomProfile = testProfiles[Math.floor(Math.random() * testProfiles.length)];
+
+      // 为选中的档案添加随机头像
+      randomProfile.avatar = `https://randomuser.me/api/portraits/${randomProfile.gender === '男' ? 'men' : 'women'}/${randomId}.jpg`;
+
+      // 直接设置数据，确保视图更新
+      this.$set(this, 'userInfo', randomProfile);
+
+      // 打印检查是否正确设置了数据
+      console.log('设置后的用户数据:', this.userInfo);
+
+      // 存储到缓存中
+      try {
+        uni.setStorageSync('userInfo', JSON.stringify(this.userInfo));
+      } catch (e) {
+        console.error('保存缓存失败:', e);
       }
     },
     

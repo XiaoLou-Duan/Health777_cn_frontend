@@ -4,62 +4,40 @@
     <view class="content-wrapper">
       <!-- 过滤选项 -->
       <view class="filter-bar">
-        <view 
-          class="filter-item" 
-          :class="{ active: activeFilter === 'all' }" 
-          @click="changeFilter('all')"
-        >
+        <view class="filter-item" :class="{ active: activeFilter === 'all' }" @click="changeFilter('all')">
           全部病历
         </view>
-        <view 
-          class="filter-item" 
-          :class="{ active: activeFilter === 'online' }" 
-          @click="changeFilter('online')"
-        >
+        <view class="filter-item" :class="{ active: activeFilter === 'online' }" @click="changeFilter('online')">
           线上问诊
         </view>
-        <view 
-          class="filter-item" 
-          :class="{ active: activeFilter === 'offline' }" 
-          @click="changeFilter('offline')"
-        >
+        <view class="filter-item" :class="{ active: activeFilter === 'offline' }" @click="changeFilter('offline')">
           门诊记录
         </view>
       </view>
-      
+
       <!-- 病历列表 -->
-      <scroll-view 
-        scroll-y 
-        class="record-list"
-        @scrolltolower="loadMore"
-        :refresher-enabled="true"
-        :refresher-triggered="isRefreshing"
-        @refresherrefresh="onRefresh"
-      >
+      <scroll-view scroll-y class="record-list" @scrolltolower="loadMore" :refresher-enabled="true"
+        :refresher-triggered="isRefreshing" @refresherrefresh="onRefresh">
         <block v-if="recordList.length > 0">
-          <view 
-            class="record-item" 
-            v-for="(record, index) in recordList" 
-            :key="index"
-            @click="viewRecordDetail(record)"
-          >
+          <view class="record-item" v-for="(record, index) in recordList" :key="index"
+            @click="viewRecordDetail(record)">
             <view class="record-header">
               <view class="hospital-name">{{ record.hospitalName }}</view>
               <view class="record-tag" :class="record.type">{{ getTypeText(record.type) }}</view>
             </view>
-            
+
             <view class="record-main">
               <view class="doctor-info">
                 <view class="doctor-name">{{ record.doctorName }}</view>
                 <view class="department">{{ record.department }}</view>
               </view>
-              
+
               <view class="diagnosis-info">
                 <view class="diagnosis-label">诊断结果：</view>
                 <view class="diagnosis-content">{{ record.diagnosis }}</view>
               </view>
             </view>
-            
+
             <view class="record-footer">
               <view class="record-time">就诊时间：{{ formatDate(record.visitTime) }}</view>
               <view class="record-actions">
@@ -75,24 +53,30 @@
             </view>
           </view>
         </block>
-        
+
         <!-- 空状态 -->
         <view class="empty-state" v-if="recordList.length === 0 && !isLoading">
           <image src="/static/images/empty-record.png" mode="aspectFit"></image>
           <text>暂无病历记录</text>
         </view>
-        
+
         <!-- 加载更多 -->
         <view class="loading-more" v-if="isLoading">
           <u-loading mode="circle" size="24"></u-loading>
           <text>加载中...</text>
         </view>
-        
+
         <!-- 到底提示 -->
         <view class="list-end" v-if="recordList.length > 0 && !hasMore && !isLoading">
           <text>-- 已经到底了 --</text>
         </view>
       </scroll-view>
+
+      <!-- 将 u-loading 替换为 u-loading-icon -->
+      <view class="loading-overlay" v-if="isLoading">
+        <u-loading-icon mode="circle" size="36" color="#5FB878"></u-loading-icon>
+        <text class="loading-text">正在加载数据...</text>
+      </view>
     </view>
   </view>
 </template>
@@ -112,6 +96,10 @@ export default {
   },
   onLoad() {
     this.loadRecords();
+  },
+  components: {
+    // 确保引入了 u-loading-icon 组件
+    'u-loading-icon': () => import('uview-ui/components/u-loading-icon/u-loading-icon.vue')
   },
   methods: {
     // 切换过滤条件

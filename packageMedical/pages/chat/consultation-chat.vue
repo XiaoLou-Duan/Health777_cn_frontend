@@ -166,7 +166,7 @@ export default {
     return {
       doctorId: '',
       doctorInfo: {},
-      userAvatar: '/static/images/default-avatar.png',
+      userAvatar: 'https://randomuser.me/api/portraits/men/85.jpg',
       messageList: [],
       scrollIntoView: '',
       isLoadingMore: false,
@@ -194,7 +194,7 @@ export default {
           title: '主任医师',
           hospital: '北京协和医院',
           department: '骨科',
-          avatar: '/static/images/doctor1.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
           isOnline: true
         },
         '1002': {
@@ -203,7 +203,7 @@ export default {
           title: '副主任医师',
           hospital: '上海市第一人民医院',
           department: '康复科',
-          avatar: '/static/images/doctor2.jpg',
+          avatar: 'https://randomuser.me/api/portraits/women/43.jpg',
           isOnline: false
         },
         '1003': {
@@ -212,7 +212,7 @@ export default {
           title: '主治医师',
           hospital: '广州市第一人民医院',
           department: '营养科',
-          avatar: '/static/images/doctor3.jpg',
+          avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
           isOnline: true
         },
         '1004': {
@@ -221,7 +221,7 @@ export default {
           title: '主任医师',
           hospital: '四川大学华西医院',
           department: '内科',
-          avatar: '/static/images/doctor4.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
           isOnline: false
         },
         '1005': {
@@ -230,7 +230,7 @@ export default {
           title: '副主任医师',
           hospital: '浙江大学医学院附属第一医院',
           department: '运动医学科',
-          avatar: '/static/images/doctor5.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
           isOnline: true
         }
       },
@@ -419,7 +419,7 @@ export default {
       const prevMsg = this.messageList[index - 1];
 
       // 如果两条消息相隔5分钟以上，显示时间分割线
-      return currentMsg.time - prevMsg.time > 5 * 60 * 1000;
+      return currentMsg.time - prevMsg.time > 5 * 60 * 0;
     },
 
     // 格式化聊天时间

@@ -1,32 +1,33 @@
 <template>
   <view class="nutrition-container">
     <u-navbar title="营养健康" :border="false" back-icon-color="#333333"></u-navbar>
-    
+
     <view class="content-wrapper">
       <!-- 用户营养状态概览 -->
       <view class="section user-nutrition-status">
         <view class="section-header">
           <text class="section-title">营养摄入概览</text>
-          <text class="today-date">{{todayFormatted}}</text>
+          <text class="today-date">{{ todayFormatted }}</text>
         </view>
         <view class="nutrition-grid">
           <view class="nutrition-card" v-for="(item, index) in nutritionMetrics" :key="index">
             <view class="card-header">
-              <text class="card-title">{{item.name}}</text>
+              <text class="card-title">{{ item.name }}</text>
               <u-icon :name="item.icon" size="24" color="#2979ff"></u-icon>
             </view>
             <view class="card-content">
-              <text class="value" :class="getNutritionStatusClass(item.percentage)">{{item.value}}</text>
-              <text class="unit">{{item.unit}}</text>
+              <text class="value" :class="getNutritionStatusClass(item.percentage)">{{ item.value }}</text>
+              <text class="unit">{{ item.unit }}</text>
             </view>
             <view class="card-progress">
-              <u-line-progress :percentage="item.percentage" :striped="true" :stripedActive="true" height="14" :activeColor="getNutritionStatusColor(item.percentage)"></u-line-progress>
-              <text class="target-text">目标: {{item.target}}{{item.unit}}</text>
+              <u-line-progress :percentage="item.percentage" :striped="true" :stripedActive="true" height="14"
+                :activeColor="getNutritionStatusColor(item.percentage)"></u-line-progress>
+              <text class="target-text">目标: {{ item.target }}{{ item.unit }}</text>
             </view>
           </view>
         </view>
       </view>
-      
+
       <!-- 蛋白质摄入情况 -->
       <view class="section protein-section">
         <view class="section-header">
@@ -36,11 +37,18 @@
         <view class="protein-chart-container">
           <!-- 临时替换图表组件，使用uView的统计卡片替代 -->
           <view class="protein-chart-alternative">
+            <view class="reference-line"></view>
+            <text class="reference-label">标准线(70g)</text>
             <view class="chart-bars">
               <view class="chart-bar-item" v-for="(item, idx) in weeklyProteinData.series[0].data" :key="idx">
-                <view class="chart-bar" :style="{height: (item / Math.max(...weeklyProteinData.series[0].data) * 150) + 'rpx'}"></view>
-                <text class="chart-label">{{weeklyProteinData.categories[idx]}}</text>
-                <text class="chart-value">{{item}}g</text>
+                <text class="chart-value">{{ item }}g</text>
+                <view class="chart-bar-wrapper">
+                  <view class="chart-bar" :style="{
+                    height: (item / 100 * 100) + 'px',
+                    backgroundColor: item < weeklyProteinData.series[1].data[0] ? '#2979ff' : '#ff4d4f'
+                  }"></view>
+                </view>
+                <text class="chart-label">{{ weeklyProteinData.categories[idx] }}</text>
               </view>
             </view>
             <view class="chart-legend">
@@ -54,19 +62,19 @@
         <view class="protein-summary">
           <view class="summary-item">
             <text class="label">今日摄入</text>
-            <text class="value">{{proteinSummary.today}}g</text>
+            <text class="value">{{ proteinSummary.today }}g</text>
           </view>
           <view class="summary-item">
             <text class="label">周平均</text>
-            <text class="value">{{proteinSummary.weekAverage}}g</text>
+            <text class="value">{{ proteinSummary.weekAverage }}g</text>
           </view>
           <view class="summary-item">
             <text class="label">目标达成</text>
-            <text class="value">{{proteinSummary.completion}}%</text>
+            <text class="value">{{ proteinSummary.completion }}%</text>
           </view>
         </view>
       </view>
-      
+
       <!-- 营养计划完成情况 -->
       <view class="section diet-plan-section">
         <view class="section-header">
@@ -76,15 +84,16 @@
         <view class="diet-plan-progress">
           <view class="plan-item" v-for="(item, index) in dietPlan" :key="index">
             <view class="plan-item-header">
-              <text class="plan-item-title">{{item.title}}</text>
-              <u-tag :text="item.completed ? '已完成' : '待完成'" :type="item.completed ? 'success' : 'warning'" size="mini"></u-tag>
+              <text class="plan-item-title">{{ item.title }}</text>
+              <u-tag :text="item.completed ? '已完成' : '待完成'" :type="item.completed ? 'success' : 'warning'"
+                size="mini"></u-tag>
             </view>
-            <text class="plan-item-description">{{item.description}}</text>
+            <text class="plan-item-description">{{ item.description }}</text>
             <u-line-progress :percentage="item.progress" :striped="true" height="10"></u-line-progress>
           </view>
         </view>
       </view>
-      
+
       <!-- 快捷功能区 -->
       <view class="section quick-actions">
         <view class="section-header">
@@ -109,7 +118,7 @@
           </view>
         </view>
       </view>
-      
+
       <!-- 推荐食物 -->
       <view class="section recommended-foods">
         <view class="section-header">
@@ -118,18 +127,18 @@
         <scroll-view scroll-x class="food-scroll">
           <view class="food-item" v-for="(item, index) in recommendedFoods" :key="index">
             <image class="food-image" :src="item.image" mode="aspectFill"></image>
-            <text class="food-name">{{item.name}}</text>
-            <text class="food-protein">蛋白质: {{item.protein}}g/100g</text>
+            <text class="food-name">{{ item.name }}</text>
+            <text class="food-protein">蛋白质: {{ item.protein }}g/100g</text>
           </view>
         </scroll-view>
       </view>
     </view>
-    
+
     <!-- 悬浮按钮 - 添加食物记录 -->
     <view class="floating-button">
       <u-button type="primary" shape="circle" icon="plus" @click="navToFoodRecognition"></u-button>
     </view>
-    
+
     <!-- 手动记录食物弹窗 -->
     <u-popup v-model="showManualRecord" mode="bottom" border-radius="16">
       <view class="add-food-popup">
@@ -218,21 +227,14 @@ export default {
           percentage: 150
         }
       ],
-      
-      // 蛋白质摄入摘要
-      proteinSummary: {
-        today: 0,
-        weekAverage: 0,
-        completion: 0
-      },
-      
+
       // 蛋白质周数据图表
       weeklyProteinData: {
         categories: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
         series: [
           {
             name: '蛋白质摄入',
-            data: [0, 0, 0, 0, 0, 0, 0]
+            data: [65, 72, 58, 63, 70, 55, 68]
           },
           {
             name: '目标摄入',
@@ -240,7 +242,14 @@ export default {
           }
         ]
       },
-      
+
+      // 蛋白质摄入摘要
+      proteinSummary: {
+        today: 68,
+        weekAverage: 64.4,
+        completion: 92
+      },
+
       // 营养计划
       dietPlan: [
         {

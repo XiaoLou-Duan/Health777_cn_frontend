@@ -7,13 +7,14 @@
         <view class="avatar-section">
           <view class="section-title">头像</view>
           <view class="avatar-wrapper" @click="chooseAvatar">
-            <image class="user-avatar" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill"></image>
+            <image class="user-avatar" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill">
+            </image>
             <view class="edit-badge">
               <u-icon name="camera" size="20" color="#ffffff"></u-icon>
             </view>
           </view>
         </view>
-        
+
         <!-- 个人信息表单 -->
         <view class="info-section">
           <view class="section-title">基本信息</view>
@@ -21,33 +22,33 @@
             <u-form-item label="昵称" prop="nickname">
               <u-input v-model="userInfo.nickname" placeholder="请输入昵称" />
             </u-form-item>
-            
+
             <u-form-item label="性别" prop="gender">
               <u-radio-group v-model="userInfo.gender">
                 <u-radio label="男" name="男"></u-radio>
                 <u-radio label="女" name="女" style="margin-left: 30rpx;"></u-radio>
               </u-radio-group>
             </u-form-item>
-            
+
             <u-form-item label="年龄" prop="age">
               <u-number-box v-model="userInfo.age" :min="1" :max="120"></u-number-box>
             </u-form-item>
-            
-            <u-form-item label="身高(cm)" prop="height">
+
+            <u-form-item :labelWidth="'auto'" label="身高(cm)" prop="height">
               <u-input v-model="userInfo.height" type="number" placeholder="请输入身高" />
             </u-form-item>
-            
-            <u-form-item label="体重(kg)" prop="weight">
+
+            <u-form-item :labelWidth="'auto'" label="体重(kg)" prop="weight">
               <u-input v-model="userInfo.weight" type="number" placeholder="请输入体重" />
             </u-form-item>
           </u-form>
         </view>
-        
+
         <!-- 健康信息表单 -->
         <view class="health-section">
           <view class="section-title">健康信息</view>
           <u-form :model="userInfo" ref="healthForm">
-            <u-form-item label="肌少症状态" prop="sarcopeniaStatus">
+            <u-form-item :labelWidth="'auto'" label="肌少症状态" prop="sarcopeniaStatus">
               <u-radio-group v-model="userInfo.sarcopeniaStatus">
                 <u-radio label="无" name="none"></u-radio>
                 <u-radio label="轻度" name="mild" style="margin-left: 20rpx;"></u-radio>
@@ -55,21 +56,25 @@
                 <u-radio label="重度" name="severe" style="margin-left: 20rpx;"></u-radio>
               </u-radio-group>
             </u-form-item>
-            
-            <u-form-item label="慢性病史" prop="chronicDiseases">
-              <u-input v-model="userInfo.chronicDiseases" placeholder="请输入慢性病史，多个请用逗号分隔" />
-            </u-form-item>
-            
-            <u-form-item label="药物过敏史" prop="allergies">
-              <u-input v-model="userInfo.allergies" placeholder="请输入药物过敏史，无则填无" />
-            </u-form-item>
+
+            <view class="vertical-form-item">
+              <text class="form-label">慢性病史</text>
+              <u-input v-model="userInfo.chronicDiseases" type="textarea" height="120" placeholder="请输入慢性病史，多个请用逗号分隔"
+                border="surround" />
+            </view>
+
+            <view class="vertical-form-item">
+              <text class="form-label">药物过敏史</text>
+              <u-input v-model="userInfo.allergies" type="textarea" height="120" placeholder="请输入药物过敏史，无则填无"
+                border="surround" />
+            </view>
           </u-form>
         </view>
       </view>
-      
+
       <view class="submit-btn" @click="saveUserInfo">保存修改</view>
     </view>
-    
+
     <!-- 上传头像操作菜单 -->
     <u-action-sheet :list="avatarActions" v-model="showAvatarActions" @click="handleAvatarAction"></u-action-sheet>
   </view>
@@ -101,6 +106,10 @@ export default {
         {
           text: '从相册选择',
           color: '#333333'
+        },
+        {
+          text: '使用随机头像',
+          color: '#333333'
         }
       ]
     }
@@ -114,19 +123,19 @@ export default {
       uni.showLoading({
         title: '加载中'
       });
-      
+
       // 从缓存中获取用户信息
       const userInfo = uni.getStorageSync('userInfo');
       if (userInfo) {
         const userObj = JSON.parse(userInfo);
-        
+
         // 合并数据
         Object.keys(this.userInfo).forEach(key => {
           if (userObj[key] !== undefined) {
             this.userInfo[key] = userObj[key];
           }
         });
-        
+
         uni.hideLoading();
       } else {
         // 如果缓存中没有，则请求API获取
@@ -135,10 +144,10 @@ export default {
           method: 'GET',
           success: (res) => {
             uni.hideLoading();
-            
+
             if (res.data.code === 0 && res.data.data) {
               const userObj = res.data.data;
-              
+
               // 合并数据
               Object.keys(this.userInfo).forEach(key => {
                 if (userObj[key] !== undefined) {
@@ -149,7 +158,7 @@ export default {
           },
           fail: () => {
             uni.hideLoading();
-            
+
             // 使用模拟数据
             const mockUser = {
               userId: '1001',
@@ -164,7 +173,7 @@ export default {
               chronicDiseases: '高血压',
               allergies: '无'
             };
-            
+
             // 合并数据
             Object.keys(this.userInfo).forEach(key => {
               if (mockUser[key] !== undefined) {
@@ -175,12 +184,12 @@ export default {
         });
       }
     },
-    
+
     // 选择头像
     chooseAvatar() {
       this.showAvatarActions = true;
     },
-    
+
     // 处理头像选择操作
     handleAvatarAction(index) {
       if (index === 0) {
@@ -189,9 +198,12 @@ export default {
       } else if (index === 1) {
         // 从相册选择
         this.chooseFromAlbum();
+      } else if (index === 2) {
+        // 使用随机头像
+        this.useRandomAvatar();
       }
     },
-    
+
     // 拍照
     takePhoto() {
       uni.chooseImage({
@@ -202,7 +214,7 @@ export default {
         }
       });
     },
-    
+
     // 从相册选择
     chooseFromAlbum() {
       uni.chooseImage({
@@ -213,38 +225,64 @@ export default {
         }
       });
     },
-    
+
     // 上传头像
     uploadAvatar(filePath) {
       uni.showLoading({
         title: '上传中...'
       });
-      
+
       // 模拟上传过程
       setTimeout(() => {
         // 更新头像
         this.userInfo.avatar = filePath;
-        
+
         uni.hideLoading();
-        
+
         uni.showToast({
           title: '头像上传成功',
           icon: 'success'
         });
       }, 1000);
     },
-    
+
+    // 使用随机头像
+    useRandomAvatar() {
+      uni.showLoading({
+        title: '加载中...'
+      });
+
+      // 生成随机性别和ID
+      const gender = Math.random() > 0.5 ? 'men' : 'women';
+      const randomId = Math.floor(Math.random() * 99) + 1;
+
+      // 构建randomuser头像URL
+      const avatarUrl = `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+
+      // 设置头像
+      setTimeout(() => {
+        this.userInfo.avatar = avatarUrl;
+
+        uni.hideLoading();
+
+        uni.showToast({
+          title: '头像设置成功',
+          icon: 'success'
+        });
+      }, 500);
+    },
+
     // 保存用户信息
     saveUserInfo() {
       // 验证表单
       if (!this.validateForm()) {
         return;
       }
-      
+
       uni.showLoading({
         title: '保存中...'
       });
-      
+
       // 调用保存API
       uni.request({
         url: '/api/user/update',
@@ -252,7 +290,7 @@ export default {
         data: this.userInfo,
         success: (res) => {
           uni.hideLoading();
-          
+
           if (res.data.code === 0) {
             this.updateLocalUserInfo();
             this.showSuccessAndGoBack();
@@ -265,7 +303,7 @@ export default {
         },
         fail: () => {
           uni.hideLoading();
-          
+
           // 模拟成功
           setTimeout(() => {
             this.updateLocalUserInfo();
@@ -274,7 +312,7 @@ export default {
         }
       });
     },
-    
+
     // 验证表单
     validateForm() {
       // 昵称不能为空
@@ -285,7 +323,7 @@ export default {
         });
         return false;
       }
-      
+
       // 身高、体重需要是数字且在合理范围内
       if (this.userInfo.height) {
         const height = parseFloat(this.userInfo.height);
@@ -297,7 +335,7 @@ export default {
           return false;
         }
       }
-      
+
       if (this.userInfo.weight) {
         const weight = parseFloat(this.userInfo.weight);
         if (isNaN(weight) || weight < 20 || weight > 200) {
@@ -308,24 +346,24 @@ export default {
           return false;
         }
       }
-      
+
       return true;
     },
-    
+
     // 更新本地存储的用户信息
     updateLocalUserInfo() {
       // 从缓存中获取完整的用户信息
       const userInfoStr = uni.getStorageSync('userInfo');
       if (userInfoStr) {
         const userObj = JSON.parse(userInfoStr);
-        
+
         // 更新修改的字段
         Object.keys(this.userInfo).forEach(key => {
           if (this.userInfo[key] !== undefined) {
             userObj[key] = this.userInfo[key];
           }
         });
-        
+
         // 更新缓存
         uni.setStorageSync('userInfo', JSON.stringify(userObj));
       } else {
@@ -333,14 +371,14 @@ export default {
         uni.setStorageSync('userInfo', JSON.stringify(this.userInfo));
       }
     },
-    
+
     // 显示成功提示并返回
     showSuccessAndGoBack() {
       uni.showToast({
         title: '保存成功',
         icon: 'success'
       });
-      
+
       // 延迟返回
       setTimeout(() => {
         uni.navigateBack();
@@ -420,7 +458,8 @@ export default {
   justify-content: center;
 }
 
-.info-section, .health-section {
+.info-section,
+.health-section {
   background-color: #ffffff;
   border-radius: 12rpx;
   padding: 30rpx;
@@ -435,7 +474,35 @@ export default {
   border-radius: 45rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 60rpx;
+    justify-content: center;
+    margin-top: 60rpx;
+  }.vertical-form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+/* 确保多行文本输入框有足够的内边距 */
+.u-textarea-wrapper {
+  padding: 10rpx;
+}
+
+/* 确保文本区域的高度正确显示 */
+.u-textarea {
+  min-height: 120rpx;
+  width: 100%;
+  padding: 10rpx;
+  box-sizing: border-box;
+}
+
+/* 确保边框样式正确 */
+.u-border-surround {
+  border-radius: 8rpx;
+  border: 1px solid #e4e7ed;
 }
 </style>

@@ -85,14 +85,14 @@
             <view class="schedule-item" v-for="(schedule, index) in doctorInfo.schedule" :key="index">
               <text class="day">{{ schedule.day }}</text>
               <text class="time">{{ schedule.time }}</text>
-              <text class="status" :class="{ 'available': schedule.available }">{{ schedule.available ? '可预约' : '约满'
-              }}</text>
+              <text class="status" :class="{ 'available': schedule.available }">
+                {{ schedule.available ? '可预约' : '约满' }}
+              </text>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 患者评价 -->
       <view class="info-card">
         <view class="card-title">
           <text>患者评价</text>
@@ -183,7 +183,7 @@ export default {
           title: '主任医师',
           hospital: '北京协和医院',
           department: '骨科',
-          avatar: '/static/images/doctor1.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
           isOnline: true,
           specialties: ['骨科', '运动损伤'],
           rating: 4.9,
@@ -202,21 +202,21 @@ export default {
           ],
           reviews: [
             {
-              avatar: '/static/images/avatar1.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/22.jpg',
               name: '患者1',
               rating: 5,
               content: '张医生医术精湛，态度和蔼，给了我很多专业的建议，手术非常成功，恢复得很好！',
               time: '2023-12-15'
             },
             {
-              avatar: '/static/images/avatar2.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/23.jpg',
               name: '患者2',
               rating: 5,
               content: '张医生很耐心，详细解答了我所有的问题，治疗方案很有效，现在已经痊愈了。',
               time: '2023-11-20'
             },
             {
-              avatar: '/static/images/avatar3.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/24.jpg',
               name: '患者3',
               rating: 4,
               content: '专业水平很高，诊断准确，治疗得当。就是预约有点难。',
@@ -230,7 +230,7 @@ export default {
           title: '副主任医师',
           hospital: '上海市第一人民医院',
           department: '康复科',
-          avatar: '/static/images/doctor2.jpg',
+          avatar: 'https://randomuser.me/api/portraits/women/43.jpg',
           isOnline: false,
           specialties: ['康复医学', '理疗'],
           rating: 4.7,
@@ -248,21 +248,21 @@ export default {
           ],
           reviews: [
             {
-              avatar: '/static/images/avatar4.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/25.jpg',
               name: '患者4',
               rating: 5,
               content: '李医生的康复治疗方案非常有效，我的肩周炎恢复得很好，感谢李医生细心的治疗和指导！',
               time: '2023-12-20'
             },
             {
-              avatar: '/static/images/avatar5.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/26.jpg',
               name: '患者5',
               rating: 4,
               content: '理疗很专业，每次治疗都有明显的效果，医生也很耐心解答问题。',
               time: '2023-11-15'
             },
             {
-              avatar: '/static/images/avatar6.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/27.jpg',
               name: '患者6',
               rating: 5,
               content: '我父亲中风后的康复就是在李医生的指导下进行的，恢复效果超出预期，非常感谢！',
@@ -276,7 +276,7 @@ export default {
           title: '主治医师',
           hospital: '广州市第一人民医院',
           department: '营养科',
-          avatar: '/static/images/doctor3.jpg',
+          avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
           isOnline: true,
           specialties: ['临床营养', '运动营养'],
           rating: 4.8,
@@ -295,21 +295,21 @@ export default {
           ],
           reviews: [
             {
-              avatar: '/static/images/avatar7.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
               name: '患者7',
               rating: 5,
               content: '王医生的营养方案非常科学，按照她的建议饮食和运动，3个月减了15斤，而且各项指标都恢复正常了！',
               time: '2023-12-10'
             },
             {
-              avatar: '/static/images/avatar8.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/29.jpg',
               name: '患者8',
               rating: 5,
               content: '王医生很专业，为我的糖尿病制定了详细的饮食计划，血糖控制得很好，不需要增加药物剂量。',
               time: '2023-11-28'
             },
             {
-              avatar: '/static/images/avatar9.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/30.jpg',
               name: '患者9',
               rating: 4,
               content: '作为一名马拉松爱好者，王医生给我的运动营养建议非常实用，比赛成绩有了明显提升。',
@@ -323,7 +323,7 @@ export default {
           title: '主任医师',
           hospital: '四川大学华西医院',
           department: '内科',
-          avatar: '/static/images/doctor4.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
           isOnline: false,
           specialties: ['内分泌科', '代谢病'],
           rating: 4.9,
@@ -341,21 +341,21 @@ export default {
           ],
           reviews: [
             {
-              avatar: '/static/images/avatar10.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/31.jpg',
               name: '患者10',
               rating: 5,
               content: '刘医生是我见过最负责任的医生，我的糖尿病在他的治疗下得到了很好的控制，并且没有任何并发症。',
               time: '2023-12-22'
             },
             {
-              avatar: '/static/images/avatar11.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/32.jpg',
               name: '患者11',
               rating: 5,
               content: '我的甲状腺结节在刘医生这里治疗，效果很好，医生很专业，解释得很详细。',
               time: '2023-11-18'
             },
             {
-              avatar: '/static/images/avatar12.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/33.jpg',
               name: '患者12',
               rating: 4,
               content: '刘医生的医术很好，态度也非常和蔼，就是挂号太难了，每次都要提前很久预约。',
@@ -369,7 +369,7 @@ export default {
           title: '副主任医师',
           hospital: '浙江大学医学院附属第一医院',
           department: '运动医学科',
-          avatar: '/static/images/doctor5.jpg',
+          avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
           isOnline: true,
           specialties: ['运动医学', '关节损伤'],
           rating: 4.6,
@@ -388,21 +388,21 @@ export default {
           ],
           reviews: [
             {
-              avatar: '/static/images/avatar13.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/34.jpg',
               name: '患者13',
               rating: 5,
               content: '陈医生对我的膝盖损伤诊断非常准确，手术和术后康复都很成功，现在已经可以恢复训练了。',
               time: '2023-12-05'
             },
             {
-              avatar: '/static/images/avatar14.jpg',
+              avatar: 'https://randomuser.me/api/portraits/men/35.jpg',
               name: '患者14',
               rating: 4,
               content: '医生的专业素养很高，对运动损伤有独到见解，给出的康复建议非常有针对性。',
               time: '2023-11-12'
             },
             {
-              avatar: '/static/images/avatar15.jpg',
+              avatar: 'https://randomuser.me/api/portraits/women/36.jpg',
               name: '患者15',
               rating: 5,
               content: '作为一名业余马拉松跑者，陈医生不仅治好了我的跑步膝，还给了我很多科学训练的建议，非常感谢！',
@@ -543,6 +543,9 @@ export default {
     padding-bottom: 120rpx;
   }
 
+        .review-rating {
+          display: flex;
+        }
   .doctor-card {
     background-color: #ffffff;
     border-radius: 12rpx;

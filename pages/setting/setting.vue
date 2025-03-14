@@ -1,116 +1,68 @@
 <template>
   <view class="setting-container">
-    <u-navbar title="设置" :border="false" back-icon-color="#333333"></u-navbar>
+    <u-navbar title="设置" :border="false" back-icon-color="#5FB878" background-color="#f6f9fc"></u-navbar>
     <view class="content-wrapper">
       <!-- 用户信息区 -->
       <view class="user-section">
         <view class="user-info" @click="goToUserProfile">
-          <image class="user-avatar" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill"></image>
+          <image class="user-avatar" :src="userInfo.avatar || 'https://randomuser.me/api/portraits/men/85.jpg'"
+            mode="aspectFill"></image>
           <view class="user-meta">
             <text class="user-name">{{ userInfo.nickname || '未登录' }}</text>
-            <text class="user-id">{{ userInfo.userId ? 'ID: ' + userInfo.userId : '点击登录' }}</text>
+            <text class="user-id">{{ userInfo.userId ? 'ID: ' + userInfo.userId : '点击登录账户' }}</text>
           </view>
-          <u-icon name="arrow-right" color="#c0c4cc" size="28"></u-icon>
+          <u-icon name="arrow-right" color="#a8b2c1" size="28"></u-icon>
         </view>
       </view>
-      
+
       <!-- 账户设置区 -->
       <view class="section-title">账户设置</view>
       <view class="settings-group">
         <u-cell-group>
-          <u-cell 
-            title="个人信息编辑" 
-            icon="account" 
-            icon-size="22" 
-            is-link 
-            @click="goToUserEdit"
-          ></u-cell>
-          <u-cell 
-            title="修改密码" 
-            icon="lock" 
-            icon-size="22" 
-            is-link 
-            @click="goToPasswordChange"
-          ></u-cell>
-          <u-cell 
-            title="修改手机号" 
-            icon="phone" 
-            icon-size="22" 
-            is-link 
-            @click="goToPhoneChange"
-          ></u-cell>
+          <u-cell title="个人信息编辑" icon="account" icon-size="24" is-link @click="goToUserEdit"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="修改密码" icon="lock" icon-size="24" is-link @click="goToPasswordChange"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="修改手机号" icon="phone" icon-size="24" is-link @click="goToPhoneChange"
+            icon-style="color: #5FB878"></u-cell>
         </u-cell-group>
       </view>
-      
+
       <!-- 应用设置区 -->
-      <view class="section-title">应用设置</view>
+      <view class="section-title">健康设置</view>
       <view class="settings-group">
         <u-cell-group>
-          <u-cell 
-            title="提醒设置" 
-            icon="bell" 
-            icon-size="22" 
-            is-link 
-            @click="goToReminderSettings"
-          ></u-cell>
-          <u-cell 
-            title="消息通知" 
-            icon="notification" 
-            icon-size="22" 
-            is-link 
-            @click="goToNotificationSettings"
-          ></u-cell>
-          <u-cell 
-            title="隐私设置" 
-            icon="shield" 
-            icon-size="22" 
-            is-link 
-            @click="goToPrivacySettings"
-          ></u-cell>
+          <u-cell title="健康提醒" icon="bell" icon-size="24" is-link @click="goToReminderSettings"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="消息通知" icon="notification" icon-size="24" is-link @click="goToNotificationSettings"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="健康数据隐私" icon="shield" icon-size="24" is-link @click="goToPrivacySettings"
+            icon-style="color: #5FB878"></u-cell>
         </u-cell-group>
       </view>
-      
+
       <!-- 其他设置区 -->
-      <view class="section-title">其他</view>
+      <view class="section-title">关于</view>
       <view class="settings-group">
         <u-cell-group>
-          <u-cell 
-            title="关于我们" 
-            icon="info-circle" 
-            icon-size="22" 
-            is-link 
-            @click="goToAboutUs"
-          ></u-cell>
-          <u-cell 
-            title="意见反馈" 
-            icon="file-text" 
-            icon-size="22" 
-            is-link 
-            @click="goToFeedback"
-          ></u-cell>
-          <u-cell 
-            title="检查更新" 
-            icon="reload" 
-            icon-size="22" 
-            is-link 
-            @click="checkUpdate"
-          ></u-cell>
+          <u-cell title="关于我们" icon="info-circle" icon-size="24" is-link @click="goToAboutUs"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="意见反馈" icon="file-text" icon-size="24" is-link @click="goToFeedback"
+            icon-style="color: #5FB878"></u-cell>
+          <u-cell title="检查更新" icon="reload" icon-size="24" is-link @click="checkUpdate"
+            icon-style="color: #5FB878"></u-cell>
         </u-cell-group>
       </view>
-      
+
       <!-- 退出登录按钮 -->
       <view class="logout-btn" v-if="userInfo.userId" @click="showLogoutConfirm">
         退出登录
       </view>
     </view>
-    
+
     <!-- 退出确认弹窗 -->
-    <u-modal
-      v-model="showLogout"
-      :show-cancel-button="true"
-      content="确定要退出登录吗？"
-      @confirm="logout"
-    ></u-modal>
+    <u-modal v-model="showLogout" :show-cancel-button="true" content="确定要退出登录吗？" confirm-color="#5FB878"
+      @confirm="logout"></u-modal>
   </view>
 </template>
 
