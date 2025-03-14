@@ -191,7 +191,7 @@ export default {
     return {
       // 今日日期
       todayFormatted: '',
-      
+
       // 营养指标
       nutritionMetrics: [
         {
@@ -271,13 +271,13 @@ export default {
           completed: false
         }
       ],
-      
+
       // 推荐食物
       recommendedFoods: [],
-      
+
       // 控制弹窗
       showAddFood: false,
-      
+
       // 手动记录食物
       showManualRecord: false,
       manualFoodData: {
@@ -307,7 +307,7 @@ export default {
       const day = now.getDate();
       this.todayFormatted = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     },
-    
+
     // 加载营养数据
     loadNutritionData() {
       // 获取认证信息
@@ -315,7 +315,7 @@ export default {
       const header = {
         'Authorization': 'Bearer ' + token
       };
-      
+
       uni.request({
         url: '/api/nutrition/today-summary',
         method: 'GET',
@@ -323,7 +323,7 @@ export default {
         success: (res) => {
           if (res.data.code === 0) {
             const data = res.data.data;
-            
+
             // 更新营养指标数据
             this.nutritionMetrics.forEach(metric => {
               if (data[metric.name.toLowerCase()]) {
@@ -335,7 +335,7 @@ export default {
         }
       });
     },
-    
+
     // 加载蛋白质数据
     loadProteinData() {
       // 获取认证信息
@@ -343,7 +343,7 @@ export default {
       const header = {
         'Authorization': 'Bearer ' + token
       };
-      
+
       // 获取蛋白质摄入汇总数据
       uni.request({
         url: '/api/nutrition/protein-stats/summary',
@@ -355,7 +355,7 @@ export default {
           }
         }
       });
-      
+
       // 获取周蛋白质摄入数据
       uni.request({
         url: '/api/nutrition/protein-stats/weekly',
@@ -364,7 +364,7 @@ export default {
         success: (res) => {
           if (res.data.code === 0) {
             const data = res.data.data;
-            
+
             // 更新图表数据
             if (data.dates && data.values) {
               this.weeklyProteinData.categories = data.dates.map(date => {
@@ -373,9 +373,9 @@ export default {
                 const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
                 return weekDays[d.getDay()];
               });
-              
+
               this.weeklyProteinData.series[0].data = data.values;
-              
+
               // 更新图表目标线
               if (data.target) {
                 const targetArray = new Array(7).fill(data.target);
@@ -386,7 +386,7 @@ export default {
         }
       });
     },
-    
+
     // 加载营养计划
     loadDietPlan() {
       // 获取认证信息
@@ -394,7 +394,7 @@ export default {
       const header = {
         'Authorization': 'Bearer ' + token
       };
-      
+
       uni.request({
         url: '/api/nutrition/diet-plan',
         method: 'GET',
@@ -406,7 +406,7 @@ export default {
         }
       });
     },
-    
+
     // 加载推荐食物
     loadRecommendedFoods() {
       // 获取认证信息
@@ -414,7 +414,7 @@ export default {
       const header = {
         'Authorization': 'Bearer ' + token
       };
-      
+
       uni.request({
         url: '/api/nutrition/recommended-foods',
         method: 'GET',
@@ -426,17 +426,17 @@ export default {
         }
       });
     },
-    
+
     // 显示添加食物弹窗
     showAddFoodPopup() {
       this.showAddFood = true;
     },
-    
+
     // 显示手动记录弹窗
     showManualRecordPopup() {
       this.showManualRecord = true;
     },
-    
+
     // 提交手动记录的食物
     submitManualFood() {
       // 验证必填字段
@@ -447,10 +447,10 @@ export default {
         });
         return;
       }
-      
+
       // 获取认证信息
       const token = uni.getStorageSync('token') || '';
-      
+
       // 构建食物摄入数据
       const foodData = {
         name: this.manualFoodData.name,
@@ -463,7 +463,7 @@ export default {
         timestamp: new Date().toISOString(),
         notes: '手动添加'
       };
-      
+
       // 提交数据
       uni.request({
         url: '/api/nutrition/manual-food-intake',
@@ -478,7 +478,7 @@ export default {
               title: '记录成功',
               icon: 'success'
             });
-            
+
             // 关闭弹窗并重置表单
             this.showManualRecord = false;
             this.manualFoodData = {
@@ -490,7 +490,7 @@ export default {
               carbs: '',
               mealType: 'lunch'
             };
-            
+
             // 刷新数据
             this.loadNutritionData();
           } else {
@@ -508,7 +508,7 @@ export default {
         }
       });
     },
-    
+
     // 导航到食物识别页面
     navToFoodRecognition() {
       this.showAddFood = false;
@@ -516,35 +516,35 @@ export default {
         url: '/packageNutrition/pages/food-recognition/food-recognition'
       });
     },
-    
+
     // 导航到蛋白质分析页面
     navToProteinAnalysis() {
       uni.navigateTo({
         url: '/packageNutrition/pages/protein-analysis/protein-analysis'
       });
     },
-    
+
     // 导航到饮食建议页面
     navToDietSuggestion() {
       uni.navigateTo({
         url: '/packageNutrition/pages/diet-suggestion/diet-suggestion'
       });
     },
-    
+
     // 导航到乳清蛋白管理页面
     navToWheyProtein() {
       uni.navigateTo({
         url: '/packageNutrition/pages/whey-protein/whey-protein'
       });
     },
-    
+
     // 导航到营养历史记录页面
     navToNutritionHistory() {
       uni.navigateTo({
         url: '/packageNutrition/pages/nutrition-history/nutrition-history'
       });
     },
-    
+
     // 获取营养摄入状态对应的样式类名
     getNutritionStatusClass(percentage) {
       if (percentage > 100) {
@@ -554,7 +554,7 @@ export default {
       }
       return '';
     },
-    
+
     // 获取营养摄入状态对应的颜色
     getNutritionStatusColor(percentage) {
       if (percentage > 100) {
@@ -570,6 +570,4 @@ export default {
 
 <style lang="scss">
 @import './nutrition-index.scss';
-
-
 </style>

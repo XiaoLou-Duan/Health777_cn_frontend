@@ -13,7 +13,7 @@
       >
         <!-- 加载更多指示器 -->
         <view class="loading-more" v-if="isLoadingMore">
-          <u-loading mode="circle" size="24"></u-loading>
+          <u-loading-icon mode="circle" size="24"></u-loading-icon>
           <text>加载更多消息...</text>
         </view>
         
@@ -73,7 +73,7 @@
             <view class="message-status" v-if="message.isSelf">
               <u-icon name="checkmark-circle" size="18" color="#19be6b" v-if="message.status === 'sent'"></u-icon>
               <u-icon name="error-circle" size="18" color="#fa3534" v-if="message.status === 'failed'"></u-icon>
-              <u-loading mode="circle" size="18" v-if="message.status === 'sending'"></u-loading>
+              <u-loading-icon mode="circle" size="18" v-if="message.status === 'sending'"></u-loading-icon>
             </view>
           </view>
         </view>

@@ -62,7 +62,7 @@
 
         <!-- 加载更多 -->
         <view class="loading-more" v-if="isLoading">
-          <u-loading mode="circle" size="24"></u-loading>
+          <u-loading-icon mode="circle" size="24"></u-loading-icon>
           <text>加载中...</text>
         </view>
 
