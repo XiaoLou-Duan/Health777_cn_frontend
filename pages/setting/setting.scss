@@ -1,0 +1,123 @@
+.setting-container {
+  min-height: 100vh;
+  background-color: #f6f9fc;
+  display: flex;
+  flex-direction: column;
+  
+  .content-wrapper {
+    flex: 1;
+    padding-bottom: 30rpx;
+  }
+  
+  .user-section {
+    background-color: #ffffff;
+    padding: 40rpx 30rpx;
+      margin: 20rpx;
+      border-radius: 16rpx;
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      
+      .user-avatar {
+        width: 120rpx;
+        height: 120rpx;
+        border-radius: 50%;
+        margin-right: 30rpx;
+        border: 4rpx solid rgba(95, 184, 120, 0.2);
+      }
+      
+      .user-meta {
+        flex: 1;
+        
+        .user-name {
+          font-size: 36rpx;
+          font-weight: bold;
+          color: #2c3e50;
+          display: block;
+          margin-bottom: 10rpx;
+        }
+        
+        .user-id {
+          font-size: 26rpx;
+          color: #7f8c8d;
+          display: block;
+        }
+      }
+    }
+  }
+  
+  .section-title {
+    font-size: 28rpx;
+      color: #5FB878;
+      padding: 40rpx 40rpx 20rpx;
+    position: relative;
+    font-weight: 600;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      left: 30rpx;
+      bottom: 10rpx;
+      width: 40rpx;
+      height: 4rpx;
+      background-color: #5FB878;
+    }
+  }
+  
+  .settings-group {
+    margin: 0 20rpx 30rpx;
+      border-radius: 16rpx;
+      overflow: hidden;
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    
+    .u-cell {
+      background-color: #ffffff;
+        padding: 26rpx 30rpx;
+      .u-icon-wrap {
+        margin-right: 20rpx;
+        width: 50rpx;
+          height: 50rpx;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(95, 184, 120, 0.1);
+        }
+        
+        .u-cell__title {
+          font-size: 30rpx;
+          color: #2c3e50;
+        }
+        
+        &:not(:last-child)::after {
+          content: '';
+          position: absolute;
+          left: 30rpx;
+          right: 0;
+          bottom: 0;
+          height: 1rpx;
+          background-color: #f0f3f6;
+      }
+    }
+  }
+  
+  .logout-btn {
+    width: 90%;
+    height: 90rpx;
+    background-color: #ffffff;
+    color: #e74c3c;
+    font-size: 32rpx;
+    border-radius: 45rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 60rpx auto;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    
+      &:active {
+        background-color: #fdeeec;
+      }
+  }
+}

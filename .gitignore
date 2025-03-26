@@ -1,0 +1,70 @@
+# 编译输出目录
+/dist/
+/unpackage/
+/node_modules/
+
+# HBuilderX自动生成的文件
+.hbuilderx/
+.history/
+
+# 运行、构建、发布生成的文件
+.ide/
+.idea/
+.vscode/
+*.lock
+*.log
+*.temp
+*.tmp
+
+# 小程序运行时产生的文件
+/.sourcemap/
+/.tmp/
+
+# App构建时生成的文件
+/platforms/
+/release/
+
+# 证书文件
+*.key
+*.keystore
+*.p12
+*.pfx
+*.jks
+
+# 测试生成的文件
+/coverage/
+
+# 本地环境文件
+.env.local
+.env.*.local
+
+# 日志文件
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Mac系统文件
+.DS_Store
+
+# 个人配置文件
+project.private.config.json
+manifest.json.backup
+project.config.json.backup
+
+# uniapp特有的编译产出
+/wxcomponents/
+/components/firstui/fui-*/**/dist/
+/static/**/backup/
+
+# 微信/QQ小程序配置文件中的个人信息
+project.config.json
+
+# 打包上传时生成的临时文件
+.upload/
+
+# 编辑器生成的临时备份文件
+*.bak
+*.swp
+*.swo
+*~

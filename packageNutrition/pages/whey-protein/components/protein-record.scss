@@ -1,0 +1,68 @@
+.protein-record {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  .record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30rpx;
+
+    .record-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+  }
+  
+  .record-list {
+    .record-item {
+      border-bottom: 1px solid #f5f5f5;
+      padding: 20rpx 0;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+          
+      .record-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10rpx;
+        
+        .record-time {
+          font-size: 28rpx;
+          color: #333333;
+          font-weight: 500;
+        }
+        
+        .record-amount {
+          font-size: 28rpx;
+          color: #2979ff;
+          font-weight: 500;
+        }
+      }
+      
+      .record-detail {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .record-brand, .record-flavor, .record-note {
+          font-size: 24rpx;
+          color: #999999;
+          margin-right: 20rpx;
+        }
+      }
+    }
+    
+    .empty-record {
+      padding: 30rpx 0;
+    }
+  }
+}
+
+.u-button {
+  width: 5rem;
+  margin: 0;
+}

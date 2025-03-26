@@ -1,0 +1,106 @@
+.health-card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.today-date {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.health-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 16rpx;
+}
+
+.health-data-item {
+  height: 180rpx;
+  background-color: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.icon-wrapper {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+
+  &.protein {
+    background-color: rgba(76, 217, 100, 0.15);
+    color: #4cd964;
+  }
+
+  &.exercise {
+    background-color: rgba(0, 122, 255, 0.15);
+    color: #007aff;
+  }
+
+  &.muscle {
+    background-color: rgba(255, 149, 0, 0.15);
+    color: #ff9500;
+  }
+
+  &.steps {
+    background-color: rgba(88, 86, 214, 0.15);
+    color: #5856d6;
+  }
+}
+
+.health-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+.data-content {
+  flex: 1;
+}
+
+.data-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4rpx;
+}
+
+.unit {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: normal;
+  margin-left: 4rpx;
+}
+
+.data-label {
+  font-size: 24rpx;
+  color: #666;
+}

@@ -1,0 +1,338 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "肌少症健康管理"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/setting/setting",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/user/edit/edit",
+      "style": {
+        "navigationBarTitleText": "编辑个人信息"
+      }
+    },
+    {
+      "path": "pages/user/password/password",
+      "style": {
+        "navigationBarTitleText": "修改密码"
+      }
+    },
+    {
+      "path": "pages/user/phone/phone",
+      "style": {
+        "navigationBarTitleText": "修改手机号"
+      }
+    },
+    {
+      "path": "pages/user/profile/profile",
+      "style": {
+        "navigationBarTitleText": "个人资料"
+      }
+    },
+    {
+      "path": "pages/reminder/reminder-settings",
+      "style": {
+        "navigationBarTitleText": "提醒设置"
+      }
+    },
+    {
+      "path": "pages/reminder/reminder-type-settings",
+      "style": {
+        "navigationBarTitleText": "提醒类型设置"
+      }
+    },
+    {
+      "path": "pages/setting/notification/notification",
+      "style": {
+        "navigationBarTitleText": "消息通知"
+      }
+    },
+    {
+      "path": "pages/setting/privacy/privacy",
+      "style": {
+        "navigationBarTitleText": "隐私设置"
+      }
+    },
+    {
+      "path": "pages/about/about",
+      "style": {
+        "navigationBarTitleText": "关于我们"
+      }
+    },
+    {
+      "path": "pages/about/privacy-policy",
+      "style": {
+        "navigationBarTitleText": "隐私政策"
+      }
+    },
+    {
+      "path": "pages/about/user-agreement",
+      "style": {
+        "navigationBarTitleText": "用户协议"
+      }
+    },
+    {
+      "path": "pages/feedback/feedback",
+      "style": {
+        "navigationBarTitleText": "意见反馈"
+      }
+    },
+    {
+      "path": "pages/feedback/history",
+      "style": {
+        "navigationBarTitleText": "反馈历史"
+      }
+    },
+    {
+      "path": "pages/feedback/detail",
+      "style": {
+        "navigationBarTitleText": "反馈详情"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "packageNutrition",
+      "pages": [
+        {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "营养健康"
+          }
+        },
+        {
+          "path": "pages/food-recognition/food-recognition",
+          "style": {
+            "navigationBarTitleText": "AI食物识别"
+          }
+        },
+        {
+          "path": "pages/protein-analysis/protein-analysis",
+          "style": {
+            "navigationBarTitleText": "蛋白质摄入分析"
+          }
+        },
+        {
+          "path": "pages/diet-suggestion/diet-suggestion",
+          "style": {
+            "navigationBarTitleText": "个性化饮食建议"
+          }
+        },
+        {
+          "path": "pages/whey-protein/whey-protein",
+          "style": {
+            "navigationBarTitleText": "乳清蛋白管理"
+          }
+        },
+        {
+          "path": "pages/food-library/food-library",
+          "style": {
+            "navigationBarTitleText": "食物库"
+          }
+        },
+        {
+          "path": "pages/nutrition-history/nutrition-history",
+          "style": {
+            "navigationBarTitleText": "营养记录"
+          }
+        }
+      ]
+    },
+    {
+      "root": "packageExercise",
+      "pages": [
+        {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "运动健康"
+          }
+        },
+        {
+          "path": "pages/exercise-guidance/exercise-guidance",
+          "style": {
+            "navigationBarTitleText": "运动检测与指导"
+          }
+        },
+        {
+          "path": "pages/exercise-detection/exercise-detection",
+          "style": {
+            "navigationBarTitleText": "简易运动检测"
+          }
+        },
+        {
+          "path": "pages/exercise-video/exercise-video",
+          "style": {
+            "navigationBarTitleText": "运动指导视频"
+          }
+        },
+        {
+          "path": "pages/exercise-stats/exercise-stats",
+          "style": {
+            "navigationBarTitleText": "运动成果统计"
+          }
+        }
+      ]
+    },
+    {
+      "root": "packageSocial",
+      "pages": [
+        {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "社交健康"
+          }
+        },
+        {
+          "path": "pages/points/points",
+          "style": {
+            "navigationBarTitleText": "积分系统"
+          }
+        },
+        {
+          "path": "pages/rewards/rewards",
+          "style": {
+            "navigationBarTitleText": "虚拟奖励"
+          }
+        },
+        {
+          "path": "pages/community/community",
+          "style": {
+            "navigationBarTitleText": "社区"
+          }
+        },
+        {
+          "path": "pages/community/post-detail/post-detail",
+          "style": {
+            "navigationBarTitleText": "帖子详情"
+          }
+        },
+        {
+          "path": "pages/community/post-create/post-create",
+          "style": {
+            "navigationBarTitleText": "发布帖子"
+          }
+        }
+      ]
+    },
+    {
+      "root": "packageMedical",
+      "pages": [
+        {
+          "path": "pages/index/index",
+          "style": {
+            "navigationBarTitleText": "医疗健康"
+          }
+        },
+        {
+          "path": "pages/consultation/consultation",
+          "style": {
+            "navigationBarTitleText": "医生咨询"
+          }
+        },
+        {
+          "path": "pages/appointment/appointment",
+          "style": {
+            "navigationBarTitleText": "预约系统"
+          }
+        },
+        {
+          "path": "pages/doctor-detail/doctor-detail",
+          "style": {
+            "navigationBarTitleText": "医生详情"
+          }
+        },
+        {
+          "path": "pages/chat/consultation-chat",
+          "style": {
+            "navigationBarTitleText": "在线咨询"
+          }
+        },
+        {
+          "path": "pages/doctor-detail/reviews/doctor-reviews",
+          "style": {
+            "navigationBarTitleText": "医生评价"
+          }
+        },
+        {
+          "path": "pages/medical-record/medical-record",
+          "style": {
+            "navigationBarTitleText": "病情资料"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "肌少症健康管理APP",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/icons/home.svg",
+        "selectedIconPath": "static/icons/home-active.svg",
+        "text": "首页"
+      },
+      {
+        "pagePath": "packageNutrition/pages/index/index",
+        "iconPath": "static/icons/nutrition.svg",
+        "selectedIconPath": "static/icons/nutrition-active.svg",
+        "text": "营养"
+      },
+      {
+        "pagePath": "packageExercise/pages/index/index",
+        "iconPath": "static/icons/exercise.svg",
+        "selectedIconPath": "static/icons/exercise-active.svg",
+        "text": "运动"
+      },
+      {
+        "pagePath": "packageMedical/pages/index/index",
+        "iconPath": "static/icons/medical.svg",
+        "selectedIconPath": "static/icons/medical-active.svg",
+        "text": "医疗"
+      },
+      {
+        "pagePath": "packageSocial/pages/index/index",
+        "iconPath": "static/icons/community.svg",
+        "selectedIconPath": "static/icons/community-active.svg",
+        "text": "社区"
+      }
+    ]
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+    }
+  },
+  "uniIdRouter": {
+    "loginPage": "pages/login/login",
+    "needLogin": [
+      "packageNutrition/.*",
+      "packageExercise/.*",
+      "packageSocial/.*",
+      "packageMedical/.*"
+    ],
+    "resToLogin": true
+  }
+}

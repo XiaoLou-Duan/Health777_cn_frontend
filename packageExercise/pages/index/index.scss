@@ -1,0 +1,281 @@
+.exercise-index {
+	min-height: 100vh;
+	background-color: #f5f7fa; // 更改为更柔和的背景色
+	padding-bottom: 30rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #303133; // 更深的文字颜色
+	padding: 30rpx 30rpx 20rpx;
+	position: relative;
+		padding-left: 50rpx; // 增加左侧内边距，为装饰条留空间
+	
+		&::before {
+			// 添加与运动指导页面一致的装饰条
+			content: '';
+			position: absolute;
+			left: 30rpx;
+			top: 36rpx;
+			width: 8rpx;
+			height: 28rpx;
+			background-color: #409eff; // 主题色改为蓝色
+			border-radius: 4rpx;
+		}
+}
+
+/* 概览卡片 */
+.exercise-overview {
+	margin: 0 30rpx;
+}
+
+.overview-card {
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+	display: flex;
+	padding: 30rpx 0;
+}
+
+.overview-item {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.overview-item:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 20%;
+	height: 60%;
+	width: 1px;
+	background-color: #EBEEF5; // 更改分隔线颜色
+}
+
+.item-value {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #409eff; // 更改为主题蓝色
+	margin-bottom: 10rpx;
+}
+
+.item-label {
+	font-size: 26rpx; // 稍微增大字体
+		color: #606266; // 调整文字颜色
+}
+
+/* 功能导航 */
+.exercise-functions {
+	margin: 20rpx 30rpx;
+}
+
+.function-grid {
+	display: flex;
+	flex-wrap: wrap;
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+		padding: 24rpx; // 增加内边距
+	justify-content: space-around;
+}
+
+.function-item {
+	width: 45%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 30rpx 0;
+}
+
+.function-name {
+	font-size: 28rpx; // 增大字体
+		color: #303133; // 更深的文字颜色
+	margin-top: 16rpx;
+}
+
+/* 月度运动进度 */
+.exercise-monthly {
+	margin: 20rpx 30rpx;
+}
+
+.monthly-card {
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+	padding: 30rpx;
+}
+
+.monthly-progress {
+	display: flex;
+	align-items: center;
+}
+
+.progress-circle {
+	margin-right: 40rpx;
+}
+
+.progress-inner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.percent-value {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #409eff; // 更改为主题蓝色
+}
+
+.percent-label {
+	font-size: 24rpx;
+	color: #606266; // 调整文字颜色
+}
+
+.progress-info {
+	flex: 1;
+}
+
+.info-item {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 16rpx;
+}
+
+.info-item:last-child {
+	margin-bottom: 0;
+}
+
+.info-label {
+	font-size: 26rpx;
+	color: #606266; // 调整文字颜色
+}
+
+.info-value {
+	font-size: 28rpx; // 增大字体
+	font-weight: bold;
+	color: #303133; // 更深的文字颜色
+}
+
+/* 运动记录列表 */
+.exercise-records {
+	margin: 20rpx 30rpx;
+}
+
+.record-item {
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+	padding: 30rpx;
+	margin-bottom: 20rpx;
+	display: flex;
+	justify-content: space-between;
+}
+
+.record-left {
+	display: flex;
+	flex-direction: column;
+}
+
+.record-name {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #303133; // 更深的文字颜色
+	margin-bottom: 10rpx;
+}
+
+.record-time {
+	font-size: 24rpx;
+	color: #909399; // 调整次要文字颜色
+}
+
+.record-right {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.record-duration {
+	font-size: 28rpx;
+	color: #409eff; // 更改为主题蓝色
+	font-weight: bold;
+	margin-bottom: 10rpx;
+}
+
+.record-calories {
+	font-size: 24rpx;
+	color: #f56c6c;
+}
+
+.empty-records {
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+	padding: 50rpx 0;
+}
+
+/* 统计图表区域 */
+.exercise-stats-preview {
+	margin: 20rpx 30rpx;
+}
+
+.stats-card {
+	background-color: #fff;
+	border-radius: 16rpx; // 增大圆角
+		box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08); // 调整阴影效果
+	padding: 30rpx;
+}
+
+.stats-summary {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30rpx;
+	border-top: 1px solid #EBEEF5; // 更改分隔线颜色
+	padding-top: 20rpx;
+}
+
+.summary-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.summary-value {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #409eff; // 更改为主题蓝色
+	margin-bottom: 8rpx;
+}
+
+.summary-label {
+	font-size: 24rpx;
+	color: #606266; // 调整文字颜色
+}
+
+.icon-wrapper {
+	width: 80rpx;
+	height: 80rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	background-color: rgba(64, 158, 255, 0.1); // 适应新主题色
+	margin-bottom: 10rpx;
+}
+
+/* 确保图标能正确居中显示 */
+.function-icon {
+	/* 删除 display: flex !important; */
+		/* 删除自定义的对齐方式，使用 uView 默认的对齐方式 */
+}
+
+/* 调整uView图标的视觉效果 */
+.u-icon {
+	/* 删除这些样式覆盖，避免与 uView 原生样式冲突 */
+}

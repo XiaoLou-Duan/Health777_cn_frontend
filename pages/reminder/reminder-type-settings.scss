@@ -1,0 +1,170 @@
+.type-settings-container {
+  min-height: 100vh;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  
+  .content-wrapper {
+    flex: 1;
+    padding-bottom: 150rpx; // 为底部保存按钮留出空间
+  }
+  
+  .settings-section {
+    background-color: #ffffff;
+    border-radius: 12rpx;
+    margin: 20rpx;
+    padding: 30rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    margin-bottom: 30rpx;
+    
+    .section-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20rpx;
+      position: relative;
+      padding-left: 20rpx;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 10rpx;
+        width: 6rpx;
+        height: 30rpx;
+        background-color: #5FB878;
+        border-radius: 3rpx;
+      }
+    }
+    
+    .section-desc {
+      font-size: 26rpx;
+      color: #999;
+      margin-bottom: 20rpx;
+      padding-left: 20rpx;
+    }
+  }
+  
+  .time-list {
+    margin-top: 20rpx;
+    
+    .time-item {
+      height: 80rpx;
+      background-color: #f8f8f8;
+      border-radius: 8rpx;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20rpx;
+      margin-bottom: 20rpx;
+      
+      .time-text {
+        font-size: 30rpx;
+        color: #333;
+        font-weight: bold;
+      }
+      
+      .time-actions {
+        display: flex;
+        align-items: center;
+        
+        .edit-btn, .delete-btn {
+          width: 60rpx;
+          height: 60rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+    
+    .add-time-btn {
+      height: 80rpx;
+      border: 1px dashed #dcdcdc;
+      border-radius: 8rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      text {
+        font-size: 28rpx;
+        color: #5FB878;
+        margin-left: 10rpx;
+      }
+    }
+  }
+  
+  .weekday-selector {
+    display: flex;
+    justify-content: space-between;
+    margin: 20rpx 0;
+    
+    .weekday-item {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 50%;
+      background-color: #f8f8f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28rpx;
+      color: #333;
+      
+      &.active {
+        background-color: #5FB878;
+        color: #ffffff;
+      }
+    }
+  }
+  
+  .quick-select {
+    display: flex;
+    margin-top: 20rpx;
+    
+    .quick-btn {
+      flex: 1;
+      height: 60rpx;
+      background-color: #f8f8f8;
+      border-radius: 30rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24rpx;
+      color: #666;
+      margin: 0 10rpx;
+      
+      &:first-child {
+        margin-left: 0;
+      }
+      
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  
+  .custom-text {
+    margin-top: 20rpx;
+  }
+  
+  .save-btn-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 30rpx;
+    padding: 0 30rpx;
+    z-index: 10;
+    
+    .save-btn {
+      height: 90rpx;
+      background-color: #5FB878;
+      border-radius: 45rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32rpx;
+      color: #ffffff;
+      box-shadow: 0 6rpx 10rpx rgba(95, 184, 120, 0.3);
+    }
+  }
+}

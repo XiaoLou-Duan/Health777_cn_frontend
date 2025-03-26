@@ -1,0 +1,52 @@
+.protein-usage {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  
+  .usage-header {
+    margin-bottom: 30rpx;
+    
+    .usage-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+  }
+  
+  .usage-content {
+    display: flex;
+    flex-wrap: wrap;
+    
+    .usage-item {
+      width: 50%;
+      margin-bottom: 30rpx;
+      
+      .item-label {
+        font-size: 26rpx;
+        color: #999999;
+        display: block;
+        margin-bottom: 10rpx;
+      }
+      
+      .item-value-wrapper {
+        display: flex;
+        align-items: flex-end;
+
+        .item-value {
+          font-size: 36rpx;
+          font-weight: bold;
+          color: #333333;
+        }
+
+        .item-unit {
+          font-size: 24rpx;
+          color: #999999;
+          margin-left: 4rpx;
+          padding-bottom: 6rpx;
+        }
+      }
+    }
+  }
+}

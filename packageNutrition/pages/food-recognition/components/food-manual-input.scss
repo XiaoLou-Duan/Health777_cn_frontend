@@ -1,0 +1,27 @@
+.food-manual-input {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  
+  .input-header {
+    margin-bottom: 30rpx;
+    
+    .input-title {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333333;
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40rpx;
+    
+    .u-button {
+      width: 48%;
+    }
+  }
+}
