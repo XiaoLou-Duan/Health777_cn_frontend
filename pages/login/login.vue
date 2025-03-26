@@ -129,6 +129,10 @@
 </template>
 
 <script>
+import AuthService from '@/services/auth';
+import { validatePhone } from '@/common/js/validate';
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
@@ -149,7 +153,7 @@ export default {
   computed: {
     // 表单验证
     isFormValid() {
-      const phoneValid = /^1[3-9]\d{9}$/.test(this.phone);
+      const phoneValid = validatePhone(this.phone);
       const passwordValid = this.password.length >= 6;
       
       if (this.isRegister) {
@@ -172,6 +176,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', [
+      'loginByPassword',
+      'loginByPhone',
+      'register'
+    ]),
     // 切换密码可见性
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
@@ -229,7 +238,7 @@ export default {
       if (this.isSendingCode || this.countDown > 0) return;
       
       // 检查手机号
-      if (!/^1[3-9]\d{9}$/.test(this.phone)) {
+      if (!validatePhone(this.phone)) {
         uni.showToast({
           title: '请输入正确的手机号',
           icon: 'none'
@@ -239,40 +248,36 @@ export default {
       
       this.isSendingCode = true;
       
+      // 确定验证码类型
+      const type = this.isRegister ? 'register' : 'reset_password';
+      
       // 调用发送验证码API
-      uni.request({
-        url: '/api/user/send-verification-code',
-        method: 'POST',
-        data: {
-          phone: this.phone,
-          type: this.isRegister ? 'register' : 'reset-password'
-        },
-        success: (res) => {
-          this.isSendingCode = false;
-          
-          if (res.data.code === 0) {
-            this.startCountDown();
-            uni.showToast({
-              title: '验证码已发送',
-              icon: 'success'
-            });
-          } else {
-            uni.showToast({
-              title: res.data.message || '发送失败，请稍后再试',
-              icon: 'none'
-            });
-          }
-        },
-        fail: () => {
-          this.isSendingCode = false;
-          
-          // 模拟发送成功
+      AuthService.sendSmsCode({
+        phone: this.phone,
+        type: type
+      }).then(res => {
+        this.isSendingCode = false;
+        
+        if (res.code === 0 || res.status === 200) {
           this.startCountDown();
           uni.showToast({
             title: '验证码已发送',
             icon: 'success'
           });
+        } else {
+          uni.showToast({
+            title: res.message || '发送失败，请稍后再试',
+            icon: 'none'
+          });
         }
+      }).catch(err => {
+        this.isSendingCode = false;
+        console.error('发送验证码失败:', err);
+        
+        uni.showToast({
+          title: '发送失败，请稍后再试',
+          icon: 'none'
+        });
       });
     },
     
@@ -306,7 +311,40 @@ export default {
       });
       
       if (this.isRegister) {
-        this.register();
+        this.register({
+          phone: this.phone,
+          password: this.password,
+          code: this.verificationCode
+        }).then(result => {
+          uni.hideLoading();
+          
+          if (result.success) {
+            uni.showToast({
+              title: '注册成功',
+              icon: 'success'
+            });
+            
+            // 注册成功后跳转到首页
+            setTimeout(() => {
+              uni.switchTab({
+                url: '/pages/index/index'
+              });
+            }, 1500);
+          } else {
+            uni.showToast({
+              title: result.message || '注册失败，请稍后再试',
+              icon: 'none'
+            });
+          }
+        }).catch(err => {
+          uni.hideLoading();
+          console.error('注册失败:', err);
+          
+          uni.showToast({
+            title: '注册失败，请稍后再试',
+            icon: 'none'
+          });
+        });
       } else if (this.isForgotPassword) {
         this.resetPassword();
       } else {
@@ -319,161 +357,82 @@ export default {
       // 判断是密码登录还是验证码登录
       const isSmsLogin = this.password.length === 6 && /^\d{6}$/.test(this.password);
       
-      // 调用登录API
-      uni.request({
-        url: isSmsLogin ? '/api/auth/login-by-sms' : '/api/auth/login',
-        method: 'POST',
-        data: isSmsLogin ? {
-          phone: this.phone,
-          code: this.password
-        } : {
-          phone: this.phone,
-          password: this.password
-        },
-        success: (res) => {
-          uni.hideLoading();
-          
-          if (res.data.code === 0 && res.data.data) {
-            this.loginSuccess(res.data.data);
-          } else {
-            uni.showToast({
-              title: res.data.message || (isSmsLogin ? '登录失败，请检查验证码' : '登录失败，请检查账号密码'),
-              icon: 'none'
-            });
-          }
-        },
-        fail: () => {
-          uni.hideLoading();
-          
-          // 模拟登录成功
-          this.loginSuccess({
-            userId: '1001',
-            token: 'mock_token_12345',
-            nickName: '健康达人',
-            avatar: '/static/images/avatar.png'
+      const loginAction = isSmsLogin 
+        ? this.loginByPhone({
+            phone: this.phone,
+            code: this.password
+          })
+        : this.loginByPassword({
+            phone: this.phone,
+            password: this.password
           });
-        }
-      });
-    },
-    
-    // 注册
-    register() {
-      // 调用注册API
-      uni.request({
-        url: '/api/user/register',
-        method: 'POST',
-        data: {
-          phone: this.phone,
-          password: this.password,
-          verificationCode: this.verificationCode
-        },
-        success: (res) => {
-          uni.hideLoading();
-          
-          if (res.data.code === 0 && res.data.data) {
-            uni.showToast({
-              title: '注册成功',
-              icon: 'success'
-            });
-            
-            // 注册成功后自动登录
-            setTimeout(() => {
-              this.loginSuccess(res.data.data);
-            }, 1500);
-          } else {
-            uni.showToast({
-              title: res.data.message || '注册失败，请稍后再试',
-              icon: 'none'
-            });
-          }
-        },
-        fail: () => {
-          uni.hideLoading();
-          
-          // 模拟注册成功
+      
+      loginAction.then(result => {
+        uni.hideLoading();
+        
+        if (result.success) {
           uni.showToast({
-            title: '注册成功',
+            title: '登录成功',
             icon: 'success'
           });
           
-          // 自动登录
+          // 登录成功后跳转到首页
           setTimeout(() => {
-            this.loginSuccess({
-              userId: '1001',
-              token: 'mock_token_12345',
-              nickName: '健康达人',
-              avatar: '/static/images/avatar.png'
+            uni.switchTab({
+              url: '/pages/index/index'
             });
           }, 1500);
+        } else {
+          uni.showToast({
+            title: result.message || (isSmsLogin ? '登录失败，请检查验证码' : '登录失败，请检查账号密码'),
+            icon: 'none'
+          });
         }
+      }).catch(err => {
+        uni.hideLoading();
+        console.error('登录失败:', err);
+        
+        uni.showToast({
+          title: '登录失败，请稍后再试',
+          icon: 'none'
+        });
       });
     },
     
     // 重置密码
     resetPassword() {
-      // 调用重置密码API
-      uni.request({
-        url: '/api/user/reset-password',
-        method: 'POST',
-        data: {
-          phone: this.phone,
-          newPassword: this.password,
-          verificationCode: this.verificationCode
-        },
-        success: (res) => {
-          uni.hideLoading();
-          
-          if (res.data.code === 0) {
-            uni.showToast({
-              title: '密码重置成功',
-              icon: 'success'
-            });
-            
-            // 重置成功后返回登录页
-            setTimeout(() => {
-              this.switchToLogin();
-            }, 1500);
-          } else {
-            uni.showToast({
-              title: res.data.message || '重置失败，请稍后再试',
-              icon: 'none'
-            });
-          }
-        },
-        fail: () => {
-          uni.hideLoading();
-          
-          // 模拟重置成功
+      AuthService.resetPassword({
+        phone: this.phone,
+        newPassword: this.password,
+        code: this.verificationCode
+      }).then(res => {
+        uni.hideLoading();
+        
+        if (res.code === 0 || res.status === 200) {
           uni.showToast({
             title: '密码重置成功',
             icon: 'success'
           });
           
-          // 返回登录页
+          // 重置成功后返回登录页
           setTimeout(() => {
             this.switchToLogin();
           }, 1500);
+        } else {
+          uni.showToast({
+            title: res.message || '重置失败，请稍后再试',
+            icon: 'none'
+          });
         }
-      });
-    },
-    
-    // 登录成功处理
-    loginSuccess(userData) {
-      // 存储用户信息
-      uni.setStorageSync('userInfo', JSON.stringify(userData));
-      uni.setStorageSync('token', userData.token);
-      
-      uni.showToast({
-        title: '登录成功',
-        icon: 'success'
-      });
-      
-      // 跳转到首页
-      setTimeout(() => {
-        uni.switchTab({
-          url: '/pages/index/index'
+      }).catch(err => {
+        uni.hideLoading();
+        console.error('重置密码失败:', err);
+        
+        uni.showToast({
+          title: '重置失败，请稍后再试',
+          icon: 'none'
         });
-      }, 1500);
+      });
     },
     
     // 快捷登录
@@ -489,12 +448,17 @@ export default {
         uni.hideLoading();
         
         // 模拟第三方登录成功
-        this.loginSuccess({
-          userId: '1001',
-          token: `mock_token_${type}_12345`,
-          nickName: '健康达人',
-          avatar: '/static/images/avatar.png'
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success'
         });
+        
+        // 登录成功后跳转到首页
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index/index'
+          });
+        }, 1500);
       }, 1500);
     },
     

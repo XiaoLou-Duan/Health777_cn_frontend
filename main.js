@@ -3,6 +3,8 @@ import uView from 'uview-ui'
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
+import store from './store'
+import { setupRouterGuard } from './common/js/permission'
 
 import DefaultAvatar from './components/DefaultAvatar.vue'
 
@@ -14,8 +16,16 @@ Vue.use(uView)
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
-  ...App
+  ...App,
+  store
 })
+
+// 初始化路由拦截
+setupRouterGuard()
+
+// 初始化应用
+store.dispatch('initApp')
+
 app.$mount()
 // #endif
 

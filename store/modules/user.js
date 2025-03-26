@@ -1,7 +1,8 @@
 /**
  * 用户模块状态管理
  */
-import { USER_API } from '@/config/api.js';
+import { API } from '@/config/api.js';
+import AuthService from '@/services/auth';
 
 const state = {
   // 登录状态
@@ -104,40 +105,38 @@ const mutations = {
 const actions = {
   // 初始化用户信息
   initUser({ commit, dispatch }) {
-    // 从本地存储获取令牌
-    const token = uni.getStorageSync('token');
-    if (token) {
-      commit('SET_TOKEN', token);
-      commit('SET_LOGIN_STATE', true);
-      // 获取用户信息
-      dispatch('getUserInfo');
+    // 检查是否已登录
+    if (AuthService.isLoggedIn()) {
+      // 获取token
+      const token = AuthService.getCurrentUser()?.token || uni.getStorageSync('token');
+      if (token) {
+        commit('SET_TOKEN', token);
+        commit('SET_LOGIN_STATE', true);
+        // 获取用户信息
+        dispatch('getUserInfo');
+      }
     }
   },
   
-  // 用户登录
-  async login({ commit, dispatch }, { username, password }) {
+  // 用户登录（密码登录）
+  async loginByPassword({ commit, dispatch }, { phone, password }) {
     try {
-      const response = await uni.request({
-        url: USER_API.login,
-        method: 'POST',
-        data: { username, password }
-      });
+      const response = await AuthService.loginByPassword({ phone, password });
       
-      const { code, data, message } = response.data;
-      
-      if (code === 0 && data) {
-        const { token } = data;
-        // 保存令牌
-        commit('SET_TOKEN', token);
-        uni.setStorageSync('token', token);
+      if (response.code === 0 || response.status === 200) {
+        // 保存登录信息
+        AuthService.saveLoginInfo(response.data);
+        
+        // 更新状态
+        commit('SET_TOKEN', response.data.access_token);
         commit('SET_LOGIN_STATE', true);
         
         // 获取用户信息
         await dispatch('getUserInfo');
         
-        return { success: true };
+        return { success: true, data: response.data };
       } else {
-        return { success: false, message };
+        return { success: false, message: response.message || '登录失败' };
       }
     } catch (error) {
       console.error('登录失败', error);
@@ -148,30 +147,51 @@ const actions = {
   // 手机号登录
   async loginByPhone({ commit, dispatch }, { phone, code }) {
     try {
-      const response = await uni.request({
-        url: USER_API.loginByPhone,
-        method: 'POST',
-        data: { phone, code }
-      });
+      const response = await AuthService.loginByPhone({ phone, code });
       
-      const { code: resCode, data, message } = response.data;
-      
-      if (resCode === 0 && data) {
-        const { token } = data;
-        // 保存令牌
-        commit('SET_TOKEN', token);
-        uni.setStorageSync('token', token);
+      if (response.code === 0 || response.status === 200) {
+        // 保存登录信息
+        AuthService.saveLoginInfo(response.data);
+        
+        // 更新状态
+        commit('SET_TOKEN', response.data.access_token);
         commit('SET_LOGIN_STATE', true);
         
         // 获取用户信息
         await dispatch('getUserInfo');
         
-        return { success: true };
+        return { success: true, data: response.data };
       } else {
-        return { success: false, message };
+        return { success: false, message: response.message || '登录失败' };
       }
     } catch (error) {
       console.error('手机号登录失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
+  },
+  
+  // 用户注册
+  async register({ commit, dispatch }, { phone, password, code }) {
+    try {
+      const response = await AuthService.register({ phone, password, code });
+      
+      if (response.code === 0 || response.status === 200) {
+        // 保存登录信息
+        AuthService.saveLoginInfo(response.data);
+        
+        // 更新状态
+        commit('SET_TOKEN', response.data.access_token);
+        commit('SET_LOGIN_STATE', true);
+        
+        // 获取用户信息
+        await dispatch('getUserInfo');
+        
+        return { success: true, data: response.data };
+      } else {
+        return { success: false, message: response.message || '注册失败' };
+      }
+    } catch (error) {
+      console.error('注册失败', error);
       return { success: false, message: '网络错误，请重试' };
     }
   },
@@ -181,23 +201,24 @@ const actions = {
     if (!state.token) return { success: false, message: '未登录' };
     
     try {
-      const response = await uni.request({
-        url: USER_API.getUserInfo,
-        method: 'GET',
-        header: { 'Authorization': `Bearer ${state.token}` }
-      });
+      const response = await AuthService.getUserProfile();
       
-      const { code, data, message } = response.data;
-      
-      if (code === 0 && data) {
+      if (response.code === 0 || response.status === 200) {
         // 保存用户信息
-        commit('SET_USER_INFO', data.userInfo);
-        commit('SET_HEALTH_PROFILE', data.healthProfile);
-        commit('SET_PREFERENCES', data.preferences);
+        commit('SET_USER_INFO', response.data);
         
-        return { success: true, data };
+        // 如果有健康档案和偏好设置，也保存
+        if (response.data.healthProfile) {
+          commit('SET_HEALTH_PROFILE', response.data.healthProfile);
+        }
+        
+        if (response.data.preferences) {
+          commit('SET_PREFERENCES', response.data.preferences);
+        }
+        
+        return { success: true, data: response.data };
       } else {
-        return { success: false, message };
+        return { success: false, message: response.message || '获取用户信息失败' };
       }
     } catch (error) {
       console.error('获取用户信息失败', error);
@@ -210,22 +231,14 @@ const actions = {
     if (!state.token) return { success: false, message: '未登录' };
     
     try {
-      const response = await uni.request({
-        url: USER_API.updateUserInfo,
-        method: 'POST',
-        header: { 'Authorization': `Bearer ${state.token}` },
-        data: userInfo
-      });
+      const response = await AuthService.updateUserProfile(userInfo);
       
-      const { code, data, message } = response.data;
-      
-      if (code === 0) {
+      if (response.code === 0 || response.status === 200) {
         // 更新用户信息
         commit('UPDATE_USER_INFO', userInfo);
-        
         return { success: true };
       } else {
-        return { success: false, message };
+        return { success: false, message: response.message || '更新用户信息失败' };
       }
     } catch (error) {
       console.error('更新用户信息失败', error);
@@ -238,19 +251,19 @@ const actions = {
     if (!state.token) return { success: false, message: '未登录' };
     
     try {
+      // 这里需要根据实际API调整
       const response = await uni.request({
-        url: USER_API.updateHealthProfile,
-        method: 'POST',
-        header: { 'Authorization': `Bearer ${state.token}` },
-        data: healthProfile
+        url: API.USER.HEALTH_INFO,
+        method: 'PUT',
+        data: healthProfile,
+        header: { 'Authorization': `Bearer ${state.token}` }
       });
       
-      const { code, data, message } = response.data;
+      const { code, message } = response.data;
       
       if (code === 0) {
         // 更新健康档案
         commit('UPDATE_HEALTH_PROFILE', healthProfile);
-        
         return { success: true };
       } else {
         return { success: false, message };
@@ -266,19 +279,19 @@ const actions = {
     if (!state.token) return { success: false, message: '未登录' };
     
     try {
+      // 这里需要根据实际API调整
       const response = await uni.request({
-        url: USER_API.updatePreferences,
-        method: 'POST',
-        header: { 'Authorization': `Bearer ${state.token}` },
-        data: preferences
+        url: API.USER.UPDATE_INFO,
+        method: 'PUT',
+        data: { preferences },
+        header: { 'Authorization': `Bearer ${state.token}` }
       });
       
-      const { code, data, message } = response.data;
+      const { code, message } = response.data;
       
       if (code === 0) {
         // 更新偏好设置
         commit('UPDATE_PREFERENCES', preferences);
-        
         return { success: true };
       } else {
         return { success: false, message };
@@ -289,11 +302,33 @@ const actions = {
     }
   },
   
+  // 检查登录状态
+  checkLoginStatus({ state, dispatch }) {
+    // 如果已登录，返回true
+    if (state.isLoggedIn && state.token) {
+      return true;
+    }
+    
+    // 如果本地有token但状态未更新，尝试初始化
+    if (AuthService.isLoggedIn()) {
+      dispatch('initUser');
+      return true;
+    }
+    
+    // 未登录，跳转到登录页
+    uni.navigateTo({
+      url: '/pages/login/login'
+    });
+    
+    return false;
+  },
+  
   // 用户退出
   logout({ commit }) {
-    // 清除令牌
-    uni.removeStorageSync('token');
-    // 清除用户信息
+    // 清除令牌和用户信息
+    AuthService.clearLoginInfo();
+    
+    // 清除状态
     commit('CLEAR_USER_INFO');
     
     // 跳转到登录页
