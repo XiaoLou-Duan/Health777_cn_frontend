@@ -28,8 +28,8 @@ const AuthService = {
    * @returns {Promise} 登录结果
    */
   loginByPassword(data) {
-    return post(API.USER.LOGIN_BY_PASSWORD, {
-      phone: data.phone,
+    return post(API.USER.LOGIN, {
+      mobile: data.phone,
       password: data.password
     });
   },
@@ -40,8 +40,8 @@ const AuthService = {
    * @returns {Promise} 登录结果
    */
   loginByPhone(data) {
-    return post(API.USER.LOGIN_BY_PHONE, {
-      phone: data.phone,
+    return post(API.USER.LOGIN_BY_SMS, {
+      mobile: data.phone,
       code: data.code
     });
   },
@@ -53,8 +53,21 @@ const AuthService = {
    */
   sendSmsCode(data) {
     return post(API.USER.SEND_SMS, {
-      phone: data.phone,
-      type: data.type
+      mobile: data.phone,
+      scene: data.scene || '21' // 默认登录场景为21
+    });
+  },
+
+  /**
+   * 验证短信验证码
+   * @param {Object} data 验证码数据
+   * @returns {Promise} 验证结果
+   */
+  verifySmsCode(data) {
+    return post(API.USER.VERIFY_SMS, {
+      mobile: data.phone,
+      code: data.code,
+      scene: data.scene || '21' // 默认登录场景为21
     });
   },
 
@@ -113,12 +126,46 @@ const AuthService = {
   },
 
   /**
+   * 刷新令牌
+   * @param {String} refreshToken 刷新令牌
+   * @returns {Promise} 刷新结果
+   */
+  refreshToken(refreshToken) {
+    return post(API.USER.REFRESH_TOKEN, {
+      refreshToken
+    });
+  },
+
+  /**
+   * 退出登录
+   * @returns {Promise} 退出结果
+   */
+  logout() {
+    return post(API.USER.LOGOUT);
+  },
+
+  /**
    * 保存用户登录信息
    * @param {Object} data 登录返回的数据
    */
   saveLoginInfo(data) {
     // 保存token
-    Storage.set('token', data.access_token);
+    Storage.set('token', data.accessToken);
+    
+    // 保存刷新令牌
+    if (data.refreshToken) {
+      Storage.set('refreshToken', data.refreshToken);
+    }
+    
+    // 保存过期时间
+    if (data.expiresTime) {
+      Storage.set('expiresTime', data.expiresTime);
+    }
+    
+    // 保存用户ID
+    if (data.userId) {
+      Storage.set('userId', data.userId);
+    }
     
     // 如果有用户信息，保存用户信息
     if (data.user) {
@@ -131,6 +178,9 @@ const AuthService = {
    */
   clearLoginInfo() {
     Storage.remove('token');
+    Storage.remove('refreshToken');
+    Storage.remove('expiresTime');
+    Storage.remove('userId');
     Storage.remove('userInfo');
   },
 
@@ -147,7 +197,13 @@ const AuthService = {
    * @returns {Object|null} 用户信息
    */
   getCurrentUser() {
-    return Storage.get('userInfo');
+    return {
+      userId: Storage.get('userId'),
+      token: Storage.get('token'),
+      refreshToken: Storage.get('refreshToken'),
+      expiresTime: Storage.get('expiresTime'),
+      userInfo: Storage.get('userInfo')
+    };
   }
 };
 

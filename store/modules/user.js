@@ -106,16 +106,23 @@ const actions = {
   // 初始化用户信息
   initUser({ commit, dispatch }) {
     // 检查是否已登录
-    if (AuthService.isLoggedIn()) {
-      // 获取token
-      const token = AuthService.getCurrentUser()?.token || uni.getStorageSync('token');
-      if (token) {
-        commit('SET_TOKEN', token);
-        commit('SET_LOGIN_STATE', true);
-        // 获取用户信息
-        dispatch('getUserInfo');
+    const userInfo = AuthService.getCurrentUser();
+    if (userInfo && userInfo.token) {
+      // 将 token 和登录状态保存到 Vuex 中
+      commit('SET_TOKEN', userInfo.token);
+      commit('SET_LOGIN_STATE', true);
+      
+      // 如果有用户信息，也保存到 Vuex 中
+      if (userInfo.userInfo) {
+        commit('SET_USER_INFO', userInfo.userInfo);
       }
+      
+      // 获取最新的用户信息
+      dispatch('getUserInfo');
+      
+      return true;
     }
+    return false;
   },
   
   // 用户登录（密码登录）
@@ -124,17 +131,24 @@ const actions = {
       const response = await AuthService.loginByPassword({ phone, password });
       
       if (response.code === 0 || response.status === 200) {
-        // 保存登录信息
-        AuthService.saveLoginInfo(response.data);
+        const userData = response.data;
         
-        // 更新状态
-        commit('SET_TOKEN', response.data.access_token);
+        // 保存登录信息到本地存储
+        AuthService.saveLoginInfo(userData);
+        
+        // 更新 Vuex 状态
+        commit('SET_TOKEN', userData.accessToken);
         commit('SET_LOGIN_STATE', true);
         
-        // 获取用户信息
-        await dispatch('getUserInfo');
+        // 如果响应中包含用户信息，也保存到 Vuex 中
+        if (userData.user) {
+          commit('SET_USER_INFO', userData.user);
+        } else {
+          // 获取用户信息
+          await dispatch('getUserInfo');
+        }
         
-        return { success: true, data: response.data };
+        return { success: true, data: userData };
       } else {
         return { success: false, message: response.message || '登录失败' };
       }
@@ -150,17 +164,24 @@ const actions = {
       const response = await AuthService.loginByPhone({ phone, code });
       
       if (response.code === 0 || response.status === 200) {
-        // 保存登录信息
-        AuthService.saveLoginInfo(response.data);
+        const userData = response.data;
         
-        // 更新状态
-        commit('SET_TOKEN', response.data.access_token);
+        // 保存登录信息到本地存储
+        AuthService.saveLoginInfo(userData);
+        
+        // 更新 Vuex 状态
+        commit('SET_TOKEN', userData.accessToken);
         commit('SET_LOGIN_STATE', true);
         
-        // 获取用户信息
-        await dispatch('getUserInfo');
+        // 如果响应中包含用户信息，也保存到 Vuex 中
+        if (userData.user) {
+          commit('SET_USER_INFO', userData.user);
+        } else {
+          // 获取用户信息
+          await dispatch('getUserInfo');
+        }
         
-        return { success: true, data: response.data };
+        return { success: true, data: userData };
       } else {
         return { success: false, message: response.message || '登录失败' };
       }
@@ -176,11 +197,11 @@ const actions = {
       const response = await AuthService.register({ phone, password, code });
       
       if (response.code === 0 || response.status === 200) {
-        // 保存登录信息
+        // 保存登录信息到本地存储
         AuthService.saveLoginInfo(response.data);
         
-        // 更新状态
-        commit('SET_TOKEN', response.data.access_token);
+        // 更新 Vuex 状态
+        commit('SET_TOKEN', response.data.accessToken);
         commit('SET_LOGIN_STATE', true);
         
         // 获取用户信息
@@ -304,37 +325,25 @@ const actions = {
   
   // 检查登录状态
   checkLoginStatus({ state, dispatch }) {
-    // 如果已登录，返回true
     if (state.isLoggedIn && state.token) {
       return true;
     }
     
-    // 如果本地有token但状态未更新，尝试初始化
-    if (AuthService.isLoggedIn()) {
-      dispatch('initUser');
-      return true;
-    }
-    
-    // 未登录，跳转到登录页
-    uni.navigateTo({
-      url: '/pages/login/login'
-    });
-    
-    return false;
+    // 如果 Vuex 中没有登录状态，尝试从本地存储初始化
+    const isInitSuccess = dispatch('initUser');
+    return isInitSuccess;
   },
   
   // 用户退出
   logout({ commit }) {
-    // 清除令牌和用户信息
-    AuthService.clearLoginInfo();
-    
-    // 清除状态
-    commit('CLEAR_USER_INFO');
-    
-    // 跳转到登录页
-    uni.reLaunch({
-      url: '/pages/login/login'
+    // 调用退出登录接口
+    AuthService.logout().finally(() => {
+      // 无论接口是否成功，都清除本地存储和状态
+      AuthService.clearLoginInfo();
+      commit('CLEAR_USER_INFO');
     });
+    
+    return { success: true };
   }
 };
 

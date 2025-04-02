@@ -4,24 +4,11 @@
  */
 import store from '@/store';
 
-// 需要登录才能访问的页面路径
-const loginPages = [
-  '/pages/user/profile',
-  '/pages/user/settings',
-  '/pages/health/record',
-  '/pages/nutrition/plan',
-  '/pages/exercise/plan',
-  '/pages/social/friends',
-  '/pages/medical/records'
-];
-
-// 不需要登录就能访问的页面路径
+// 不需要登录就能访问的页面路径（白名单）
 const publicPages = [
   '/pages/login/login',
   '/pages/login/register',
   '/pages/login/forgot-password',
-  '/pages/index/index',
-  '/pages/about/about',
   '/pages/about/privacy',
   '/pages/about/terms'
 ];
@@ -39,22 +26,20 @@ export function setupRouterGuard() {
       return true;
     }
     
-    // 如果是需要登录的页面，检查登录状态
-    if (loginPages.some(page => to.url.startsWith(page))) {
-      const isLoggedIn = store.getters['user/isLoggedIn'];
+    // 其他所有页面都需要登录
+    const isLoggedIn = store.getters['user/isLoggedIn'];
+    
+    // 如果未登录，尝试初始化用户信息
+    if (!isLoggedIn) {
+      // 尝试初始化用户信息，可能本地有token但状态未更新
+      await store.dispatch('user/initUser');
       
-      // 如果未登录，跳转到登录页
-      if (!isLoggedIn) {
-        // 尝试初始化用户信息，可能本地有token但状态未更新
-        await store.dispatch('user/initUser');
-        
-        // 再次检查登录状态
-        if (!store.getters['user/isLoggedIn']) {
-          uni.navigateTo({
-            url: '/pages/login/login'
-          });
-          return false;
-        }
+      // 再次检查登录状态
+      if (!store.getters['user/isLoggedIn']) {
+        uni.navigateTo({
+          url: '/pages/login/login'
+        });
+        return false;
       }
     }
     
@@ -110,12 +95,7 @@ export function checkPagePermission(url) {
     return false;
   }
   
-  // 如果是需要登录的页面，需要登录
-  if (loginPages.some(page => url.startsWith(page))) {
-    return true;
-  }
-  
-  // 默认需要登录
+  // 其他所有页面都需要登录
   return true;
 }
 

@@ -6,8 +6,6 @@ import Vuex from 'vuex';
 import user from './modules/user';
 import nutrition from './modules/nutrition';
 import exercise from './modules/exercise';
-import social from './modules/social';
-import medical from './modules/medical';
 import { ELDERLY_CONFIG } from '@/config/config.js';
 
 Vue.use(Vuex);
@@ -181,8 +179,6 @@ export default new Vuex.Store({
   modules: {
     user,
     nutrition,
-    exercise,
-    social,
-    medical
+    exercise
   }
 });

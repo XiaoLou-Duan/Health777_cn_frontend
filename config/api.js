@@ -14,19 +14,22 @@ const timeout = 60000;
 export const API = {
   // 用户相关
   USER: {
-    LOGIN: '/auth/login', // 登录
-    LOGIN_BY_SMS: '/auth/login-by-sms', // 短信验证码登录
+    LOGIN: '/member/auth/login', // 手机号+密码登录
+    LOGIN_BY_SMS: '/member/auth/sms-login', // 短信验证码登录
     REGISTER: '/auth/register', // 注册
-    LOGOUT: '/auth/logout', // 登出
+    LOGOUT: '/member/auth/logout', // 登出
     GET_INFO: '/user/profile', // 获取用户信息
     UPDATE_INFO: '/user/profile', // 更新用户信息
-    SEND_SMS: '/sms/send', // 发送短信
-    VERIFY_SMS: '/sms/verify', // 验证短信
+    SEND_SMS: '/member/auth/send-sms-code', // 发送短信验证码
+    VERIFY_SMS: '/member/auth/validate-sms-code', // 验证短信验证码
     CHANGE_PASSWORD: '/user/password', // 修改密码
     UPLOAD_AVATAR: '/user/avatar', // 上传头像
     HEALTH_INFO: '/user/health', // 健康信息
     WECHAT_LOGIN: '/auth/wechat-login', // 微信登录
-    APPLE_LOGIN: '/auth/apple-login' // Apple登录
+    APPLE_LOGIN: '/auth/apple-login', // Apple登录
+    PASSWORD_RESET: '/auth/password-reset', // 重置密码
+    PHONE_CHANGE: '/user/phone-change', // 修改手机号
+    REFRESH_TOKEN: '/member/auth/refresh-token' // 刷新令牌
   },
   
   // 营养相关

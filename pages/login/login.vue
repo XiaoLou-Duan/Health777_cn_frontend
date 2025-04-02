@@ -13,6 +13,24 @@
         <text class="title-text">{{ isRegister ? '注册账号' : '账号登录' }}</text>
       </view>
       
+      <!-- 登录方式切换 -->
+      <view class="login-type-switch" v-if="!isRegister && !isForgotPassword">
+        <view 
+          class="switch-item" 
+          :class="{ active: loginType === 'password' }" 
+          @click="switchLoginType('password')"
+        >
+          密码登录
+        </view>
+        <view 
+          class="switch-item" 
+          :class="{ active: loginType === 'sms' }" 
+          @click="switchLoginType('sms')"
+        >
+          验证码登录
+        </view>
+      </view>
+      
       <!-- 手机号输入 -->
       <view class="input-group">
         <u-icon name="phone" size="36" color="#5FB878"></u-icon>
@@ -25,8 +43,8 @@
         />
       </view>
       
-      <!-- 密码输入 -->
-      <view class="input-group">
+      <!-- 密码输入 - 密码登录方式 -->
+      <view class="input-group" v-if="(loginType === 'password' && !isRegister && !isForgotPassword) || isRegister || isForgotPassword">
         <u-icon name="lock" size="36" color="#5FB878"></u-icon>
         <input
           class="input-field"
@@ -39,22 +57,8 @@
         </view>
       </view>
       
-      <!-- 注册时的确认密码 -->
-      <view class="input-group" v-if="isRegister">
-        <u-icon name="lock" size="36" color="#5FB878"></u-icon>
-        <input
-          class="input-field"
-          :type="showConfirmPassword ? 'text' : 'password'"
-          v-model="confirmPassword"
-          placeholder="请确认密码"
-        />
-        <view class="password-icon" @click="toggleConfirmPasswordVisibility">
-          <u-icon :name="showConfirmPassword ? 'eye' : 'eye-off'" size="36" color="#c0c4cc"></u-icon>
-        </view>
-      </view>
-      
-      <!-- 验证码输入 -->
-      <view class="input-group" v-if="isRegister || isForgotPassword">
+      <!-- 验证码输入 - 验证码登录方式 -->
+      <view class="input-group" v-if="loginType === 'sms' || isRegister || isForgotPassword">
         <u-icon name="checkmark-circle" size="36" color="#5FB878"></u-icon>
         <input
           class="input-field verification-input"
@@ -72,6 +76,20 @@
         </view>
       </view>
       
+      <!-- 注册时的确认密码 -->
+      <view class="input-group" v-if="isRegister">
+        <u-icon name="lock" size="36" color="#5FB878"></u-icon>
+        <input
+          class="input-field"
+          :type="showConfirmPassword ? 'text' : 'password'"
+          v-model="confirmPassword"
+          placeholder="请确认密码"
+        />
+        <view class="password-icon" @click="toggleConfirmPasswordVisibility">
+          <u-icon :name="showConfirmPassword ? 'eye' : 'eye-off'" size="36" color="#c0c4cc"></u-icon>
+        </view>
+      </view>
+      
       <!-- 登录按钮 -->
       <view 
         class="login-btn" 
@@ -86,27 +104,7 @@
         <text @click="switchToForgotPassword" v-if="!isRegister && !isForgotPassword">忘记密码</text>
         <text @click="switchToRegister" v-if="!isRegister && !isForgotPassword">注册账号</text>
         <text @click="switchToLogin" v-if="isRegister || isForgotPassword">返回登录</text>
-      </view>
-      
-      <!-- 快捷登录选项 -->
-      <view class="quick-login" v-if="!isRegister && !isForgotPassword">
-        <view class="divider">
-          <view class="line"></view>
-          <text>快捷登录</text>
-          <view class="line"></view>
-        </view>
-        
-        <view class="quick-options">
-          <view class="quick-item" @click="quickLogin('wechat')">
-            <u-icon name="weixin-fill" size="50" color="#09BB07"></u-icon>
-            <text>微信</text>
-          </view>
-          <view class="quick-item" @click="quickLogin('apple')">
-            <u-icon name="apple-fill" size="50" color="#333333"></u-icon>
-            <text>Apple</text>
-          </view>
-        </view>
-      </view>
+      </view> 
     </view>
     
     <!-- 底部协议提示 -->
@@ -147,24 +145,31 @@ export default {
       isAgree: true,
       isSendingCode: false,
       countDown: 0,
-      timer: null
+      timer: null,
+      loginType: 'password' // 默认密码登录，可选值：password-密码登录, sms-验证码登录
     }
   },
   computed: {
     // 表单验证
     isFormValid() {
       const phoneValid = validatePhone(this.phone);
-      const passwordValid = this.password.length >= 6;
       
       if (this.isRegister) {
+        const passwordValid = this.password.length >= 6;
         const confirmValid = this.password === this.confirmPassword;
         const codeValid = this.verificationCode.length === 6;
         return phoneValid && passwordValid && confirmValid && codeValid && this.isAgree;
       } else if (this.isForgotPassword) {
+        const passwordValid = this.password.length >= 6;
         const codeValid = this.verificationCode.length === 6;
         return phoneValid && passwordValid && codeValid && this.isAgree;
-      } else {
+      } else if (this.loginType === 'password') {
+        const passwordValid = this.password.length >= 4;
         return phoneValid && passwordValid && this.isAgree;
+      } else {
+        // 验证码登录
+        const codeValid = this.verificationCode.length === 6;
+        return phoneValid && codeValid && this.isAgree;
       }
     }
   },
@@ -181,6 +186,17 @@ export default {
       'loginByPhone',
       'register'
     ]),
+    // 切换登录方式
+    switchLoginType(type) {
+      this.loginType = type;
+      // 清空相关字段
+      if (type === 'password') {
+        this.verificationCode = '';
+      } else {
+        this.password = '';
+      }
+    },
+    
     // 切换密码可见性
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
@@ -235,9 +251,10 @@ export default {
     
     // 发送验证码
     sendVerificationCode() {
+      // 如果正在发送或倒计时中，不处理
       if (this.isSendingCode || this.countDown > 0) return;
       
-      // 检查手机号
+      // 验证手机号
       if (!validatePhone(this.phone)) {
         uni.showToast({
           title: '请输入正确的手机号',
@@ -248,18 +265,25 @@ export default {
       
       this.isSendingCode = true;
       
-      // 确定验证码类型
-      const type = this.isRegister ? 'register' : 'reset_password';
+      // 确定场景编号
+      let scene = '21'; // 默认登录场景
+      if (this.isRegister) {
+        scene = '22'; // 注册场景
+      } else if (this.isForgotPassword) {
+        scene = '23'; // 忘记密码场景
+      }
       
-      // 调用发送验证码API
+      // 调用发送验证码接口
       AuthService.sendSmsCode({
         phone: this.phone,
-        type: type
+        scene: scene
       }).then(res => {
         this.isSendingCode = false;
         
         if (res.code === 0 || res.status === 200) {
+          // 发送成功，开始倒计时
           this.startCountDown();
+          
           uni.showToast({
             title: '验证码已发送',
             icon: 'success'
@@ -354,49 +378,77 @@ export default {
     
     // 登录
     login() {
-      // 判断是密码登录还是验证码登录
-      const isSmsLogin = this.password.length === 6 && /^\d{6}$/.test(this.password);
-      
-      const loginAction = isSmsLogin 
-        ? this.loginByPhone({
-            phone: this.phone,
-            code: this.password
-          })
-        : this.loginByPassword({
-            phone: this.phone,
-            password: this.password
-          });
-      
-      loginAction.then(result => {
-        uni.hideLoading();
-        
-        if (result.success) {
-          uni.showToast({
-            title: '登录成功',
-            icon: 'success'
-          });
+      if (this.loginType === 'password') {
+        // 密码登录
+        this.loginByPassword({
+          phone: this.phone,
+          password: this.password
+        }).then(result => {
+          uni.hideLoading();
           
-          // 登录成功后跳转到首页
-          setTimeout(() => {
-            uni.switchTab({
-              url: '/pages/index/index'
+          if (result.success) {
+            uni.showToast({
+              title: '登录成功',
+              icon: 'success'
             });
-          }, 1500);
-        } else {
+            
+            // 登录成功后跳转到首页
+            setTimeout(() => {
+              uni.switchTab({
+                url: '/pages/index/index'
+              });
+            }, 1500);
+          } else {
+            uni.showToast({
+              title: result.message || '登录失败，请检查账号密码',
+              icon: 'none'
+            });
+          }
+        }).catch(err => {
+          uni.hideLoading();
+          console.error('登录失败:', err);
+          
           uni.showToast({
-            title: result.message || (isSmsLogin ? '登录失败，请检查验证码' : '登录失败，请检查账号密码'),
+            title: '登录失败，请稍后再试',
             icon: 'none'
           });
-        }
-      }).catch(err => {
-        uni.hideLoading();
-        console.error('登录失败:', err);
-        
-        uni.showToast({
-          title: '登录失败，请稍后再试',
-          icon: 'none'
         });
-      });
+      } else {
+        // 验证码登录
+        this.loginByPhone({
+          phone: this.phone,
+          code: this.verificationCode
+        }).then(result => {
+          uni.hideLoading();
+          
+          if (result.success) {
+            uni.showToast({
+              title: '登录成功',
+              icon: 'success'
+            });
+            
+            // 登录成功后跳转到首页
+            setTimeout(() => {
+              uni.switchTab({
+                url: '/pages/index/index'
+              });
+            }, 1500);
+          } else {
+            uni.showToast({
+              title: result.message || '登录失败，请检查验证码',
+              icon: 'none'
+            });
+          }
+        }).catch(err => {
+          uni.hideLoading();
+          console.error('登录失败:', err);
+          
+          uni.showToast({
+            title: '登录失败，请稍后再试',
+            icon: 'none'
+          });
+        });
+      }
     },
     
     // 重置密码
@@ -525,6 +577,24 @@ export default {
   font-size: 36rpx;
   font-weight: bold;
   color: #333;
+}
+
+.login-type-switch {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40rpx;
+}
+
+.switch-item {
+  font-size: 28rpx;
+  color: #666;
+  padding: 10rpx 20rpx;
+  border-bottom: 2rpx solid transparent;
+}
+
+.switch-item.active {
+  color: #5FB878;
+  border-bottom-color: #5FB878;
 }
 
 .input-group {
