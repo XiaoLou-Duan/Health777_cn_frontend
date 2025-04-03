@@ -3,6 +3,7 @@
  */
 import { getApiUrl } from '@/config/api';
 import Storage from './storage';
+import { publicApiPaths } from '@/common/js/permission';
 
 /**
  * 请求拦截器
@@ -13,8 +14,12 @@ function requestInterceptor(config) {
   // 获取token
   const token = Storage.get('token');
   
-  // 如果有token，添加到header
-  if (token) {
+  // 检查当前请求是否需要登录检测
+  // 使用permission.js中定义的公共API路径列表
+  const needAuth = !publicApiPaths.some(path => config.url.includes(path));
+  
+  // 如果有token且需要登录检测，添加到header
+  if (token && needAuth) {
     config.header = {
       ...config.header,
       'Authorization': `Bearer ${token}`
@@ -30,8 +35,13 @@ function requestInterceptor(config) {
  * @returns {Object} 处理后的响应数据
  */
 function responseInterceptor(response) {
-  // 如果返回的状态码为401，说明token已过期，需要重新登录
-  if (response.statusCode === 401) {
+  // 检查当前请求是否需要登录检测
+  // 使用permission.js中定义的公共API路径列表
+  const requestUrl = response.config ? response.config.url : '';
+  const needAuth = !publicApiPaths.some(path => requestUrl.includes(path));
+  
+  // 如果返回的状态码为401，且需要登录检测，说明token已过期，需要重新登录
+  if (response.statusCode === 401 && needAuth) {
     // 清除本地存储的用户信息和token
     Storage.remove('userInfo');
     Storage.remove('token');
@@ -61,7 +71,20 @@ function responseInterceptor(response) {
  */
 function request(options) {
   // 处理请求URL
-  const url = options.url.startsWith('http') ? options.url : getApiUrl(options.url);
+  if (!options.url) {
+    console.error('请求URL不能为空');
+    return Promise.reject(new Error('请求URL不能为空'));
+  }
+  
+  // 确保请求URL是完整的
+  let url;
+  if (options.url.startsWith('http')) {
+    url = options.url;
+  } else {
+    url = getApiUrl(options.url);
+  }
+  
+  console.log('请求URL:', url); // 调试日志
   
   // 请求拦截
   const config = requestInterceptor({

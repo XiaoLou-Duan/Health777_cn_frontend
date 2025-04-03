@@ -9,3 +9,27 @@
 8. 需求文档是 原始需求.md
 9. 4个模块放在根目录下，分别是packageExercise运动模块，packageNutrition营养模块，packageMedical医疗模块，packageSocial社交模块
 10. 根目录下的pages目录，是一些其他页面，比如登录，反馈，设置，关于和隐私等等页面
+11. 因为是测试，如果要使用头像，则使用https://randomuser.me/上的头像，如果是图片请使用https://img.freepik.com/free-photo的图片
+12. APP配色方案：
+主色调：
+医疗蓝：#2096F3
+健康绿：#4CAF50
+
+辅助色：
+浅灰背景：#F5F7FA
+中性灰：#9E9E9E
+
+强调色：
+橙色：#FF9800
+黄色：#FFC107
+
+功能色：
+警示红：#F44336
+成功绿：#66BB6A
+提示蓝：#29B6F6
+
+文字颜色：
+主要文字：#212121
+次要文字：#757575
+提示文字：#9E9E9E
+反白文字：#FFFFFF

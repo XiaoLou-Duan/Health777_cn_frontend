@@ -9,8 +9,24 @@ const publicPages = [
   '/pages/login/login',
   '/pages/login/register',
   '/pages/login/forgot-password',
-  '/pages/about/privacy',
-  '/pages/about/terms'
+  '/pages/about/privacy-policy',
+  '/pages/about/user-agreement',
+  '/pages/about/terms',
+  '/pages/about/about',
+  '/pages/about/feedback'
+];
+
+// 不需要登录检测的API路径
+// 这些路径在utils/request.js中也应该配置相同的白名单
+export const publicApiPaths = [
+  '/app-api/member/auth/login',
+  '/app-api/member/auth/sms-login',
+  '/app-api/auth/register',
+  '/app-api/member/auth/send-sms-code',
+  '/app-api/member/auth/validate-sms-code',
+  '/app-api/auth/password-reset',
+  '/app-api/auth/wechat-login',
+  '/app-api/auth/apple-login'
 ];
 
 /**

@@ -2,7 +2,7 @@
   <view class="login-container">
     <!-- 顶部登录图标区域 -->
     <view class="login-header">
-      <image class="logo-image" src="/static/images/logo.png" mode="aspectFit"></image>
+      <image class="logo-image" src="https://img.freepik.com/free-photo/medical-banner-with-stethoscope.jpg" mode="aspectFit"></image>
       <text class="app-name">肌少症健康管理</text>
       <text class="app-slogan">科学管理健康，积极预防肌少症</text>
     </view>
@@ -33,7 +33,7 @@
       
       <!-- 手机号输入 -->
       <view class="input-group">
-        <u-icon name="phone" size="36" color="#5FB878"></u-icon>
+        <u-icon name="phone" size="36" color="#2096F3"></u-icon>
         <input
           class="input-field"
           type="number"
@@ -45,7 +45,7 @@
       
       <!-- 密码输入 - 密码登录方式 -->
       <view class="input-group" v-if="(loginType === 'password' && !isRegister && !isForgotPassword) || isRegister || isForgotPassword">
-        <u-icon name="lock" size="36" color="#5FB878"></u-icon>
+        <u-icon name="lock" size="36" color="#2096F3"></u-icon>
         <input
           class="input-field"
           :type="showPassword ? 'text' : 'password'"
@@ -59,7 +59,7 @@
       
       <!-- 验证码输入 - 验证码登录方式 -->
       <view class="input-group" v-if="loginType === 'sms' || isRegister || isForgotPassword">
-        <u-icon name="checkmark-circle" size="36" color="#5FB878"></u-icon>
+        <u-icon name="checkmark-circle" size="36" color="#2096F3"></u-icon>
         <input
           class="input-field verification-input"
           type="number"
@@ -78,7 +78,7 @@
       
       <!-- 注册时的确认密码 -->
       <view class="input-group" v-if="isRegister">
-        <u-icon name="lock" size="36" color="#5FB878"></u-icon>
+        <u-icon name="lock" size="36" color="#2096F3"></u-icon>
         <input
           class="input-field"
           :type="showConfirmPassword ? 'text' : 'password'"
@@ -113,7 +113,7 @@
         <u-icon 
           :name="isAgree ? 'checkbox-mark' : 'checkbox'" 
           size="30" 
-          :color="isAgree ? '#5FB878' : '#c0c4cc'"
+          :color="isAgree ? '#4CAF50' : '#9E9E9E'"
         ></u-icon>
       </view>
       <text class="agreement-text">
@@ -175,7 +175,7 @@ export default {
   },
   onUnload() {
     // 页面卸载清除定时器
-    if (this.timer) {
+    if (this.timer) { fgvbbvf
       clearInterval(this.timer);
       this.timer = null;
     }
@@ -266,11 +266,11 @@ export default {
       this.isSendingCode = true;
       
       // 确定场景编号
-      let scene = '21'; // 默认登录场景
+      let scene = '1'; // 默认登录场景
       if (this.isRegister) {
-        scene = '22'; // 注册场景
+        scene = '2'; // 注册场景
       } else if (this.isForgotPassword) {
-        scene = '23'; // 忘记密码场景
+        scene = '4'; // 忘记密码场景
       }
       
       // 调用发送验证码接口
@@ -487,32 +487,7 @@ export default {
       });
     },
     
-    // 快捷登录
-    quickLogin(type) {
-      uni.showLoading({
-        title: '登录中...'
-      });
-      
-      // 根据类型调用不同的API
-      let apiUrl = type === 'wechat' ? '/api/user/wechat-login' : '/api/user/apple-login';
-      
-      setTimeout(() => {
-        uni.hideLoading();
-        
-        // 模拟第三方登录成功
-        uni.showToast({
-          title: '登录成功',
-          icon: 'success'
-        });
-        
-        // 登录成功后跳转到首页
-        setTimeout(() => {
-          uni.switchTab({
-            url: '/pages/index/index'
-          });
-        }, 1500);
-      }, 1500);
-    },
+    // 查看用户协议
     
     // 查看用户协议
     viewAgreement() {
@@ -536,7 +511,7 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #F5F7FA;
 }
 
 .login-header {
@@ -547,26 +522,31 @@ export default {
 }
 
 .logo-image {
-  width: 160rpx;
+  width: 200rpx;
   height: 160rpx;
   margin-bottom: 30rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 20rpx rgba(32, 150, 243, 0.2);
 }
 
 .app-name {
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: #212121;
   margin-bottom: 16rpx;
 }
 
 .app-slogan {
   font-size: 28rpx;
-  color: #999;
+  color: #757575;
 }
 
 .login-form {
-  padding: 0 60rpx;
+  padding: 40rpx 60rpx;
   flex: 1;
+  background-color: #FFFFFF;
+  border-radius: 30rpx 30rpx 0 0;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
 .form-title {
@@ -576,25 +556,39 @@ export default {
 .title-text {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: #212121;
 }
 
 .login-type-switch {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-bottom: 40rpx;
+  position: relative;
 }
 
 .switch-item {
-  font-size: 28rpx;
-  color: #666;
-  padding: 10rpx 20rpx;
-  border-bottom: 2rpx solid transparent;
+  font-size: 30rpx;
+  color: #757575;
+  padding: 10rpx 30rpx;
+  position: relative;
+  transition: all 0.3s;
 }
 
 .switch-item.active {
-  color: #5FB878;
-  border-bottom-color: #5FB878;
+  color: #2096F3;
+  font-weight: bold;
+}
+
+.switch-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 6rpx;
+  background-color: #2096F3;
+  border-radius: 3rpx;
 }
 
 .input-group {
@@ -610,6 +604,7 @@ export default {
   height: 100%;
   font-size: 30rpx;
   padding: 0 20rpx;
+  color: #18191c;
 }
 
 .verification-input {
@@ -618,12 +613,15 @@ export default {
 
 .verification-btn {
   font-size: 26rpx;
-  color: #5FB878;
-  padding: 0 20rpx;
+  color: #2096F3;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  background-color: rgba(32, 150, 243, 0.1);
 }
 
 .verification-btn.disabled {
   color: #c0c4cc;
+  background-color: #f5f5f5;
 }
 
 .password-icon {
@@ -632,18 +630,26 @@ export default {
 
 .login-btn {
   height: 90rpx;
-  background-color: #5FB878;
-  color: #ffffff;
+  background-color: #2096F3;
+  color: #FFFFFF;
   font-size: 32rpx;
   border-radius: 45rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 80rpx;
+  box-shadow: 0 6rpx 20rpx rgba(32, 150, 243, 0.3);
+  transition: all 0.3s;
+}
+
+.login-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 10rpx rgba(32, 150, 243, 0.3);
 }
 
 .login-btn.disabled {
   background-color: #cccccc;
+  box-shadow: none;
 }
 
 .other-options {
@@ -654,48 +660,7 @@ export default {
 
 .other-options text {
   font-size: 28rpx;
-  color: #5FB878;
-}
-
-.quick-login {
-  margin-top: 80rpx;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 40rpx;
-}
-
-.line {
-  width: 80rpx;
-  height: 1rpx;
-  background-color: #e5e5e5;
-}
-
-.divider text {
-  font-size: 24rpx;
-  color: #999;
-  margin: 0 20rpx;
-}
-
-.quick-options {
-  display: flex;
-  justify-content: center;
-}
-
-.quick-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 50rpx;
-}
-
-.quick-item text {
-  font-size: 24rpx;
-  color: #666;
-  margin-top: 16rpx;
+  color: #2096F3;
 }
 
 .agreement-tip {
@@ -711,10 +676,10 @@ export default {
 
 .agreement-text {
   font-size: 24rpx;
-  color: #999;
+  color: #61666d;
 }
 
 .link {
-  color: #5FB878;
+  color: #2096F3;
 }
 </style>

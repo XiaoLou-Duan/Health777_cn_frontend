@@ -54,7 +54,7 @@ const AuthService = {
   sendSmsCode(data) {
     return post(API.USER.SEND_SMS, {
       mobile: data.phone,
-      scene: data.scene || '21' // 默认登录场景为21
+      scene: data.scene || '1' // 默认登录场景为21
     });
   },
 
@@ -67,7 +67,7 @@ const AuthService = {
     return post(API.USER.VERIFY_SMS, {
       mobile: data.phone,
       code: data.code,
-      scene: data.scene || '21' // 默认登录场景为21
+      scene: data.scene || '1' // 默认登录场景为21
     });
   },
 

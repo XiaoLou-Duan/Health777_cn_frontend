@@ -1,7 +1,7 @@
 const baseUrl = {
-  dev: 'http://localhost:3000/api', // 开发环境
-  test: 'https://test-api.hearthgood.com/api', // 测试环境
-  prod: 'https://api.hearthgood.com/api' // 生产环境
+  dev: 'http://localhost:48080', // 开发环境
+  test: 'https://test-api.hearthgood.com', // 测试环境
+  prod: 'https://api.hearthgood.com' // 生产环境
 };
 
 // 当前环境
@@ -89,7 +89,22 @@ export const API = {
  * @returns {String} 完整的API URL
  */
 export function getApiUrl(path) {
-  return `${baseUrl[env]}${path}`;
+  if (!path) {
+    console.error('路径不能为空');
+    return '';
+  }
+  
+  // 当前环境的基础URL
+  const base = baseUrl[env] || baseUrl['dev'];
+  
+  // 确保路径正确格式化
+  let apiPath = path;
+  if (!apiPath.startsWith('/')) {
+    apiPath = `/${apiPath}`;
+  }
+  
+  // 构建完整URL
+  return `${base}/app-api${apiPath}`;
 }
 
 export default {
