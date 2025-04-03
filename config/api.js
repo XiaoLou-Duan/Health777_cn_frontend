@@ -18,7 +18,7 @@ export const API = {
     LOGIN_BY_SMS: '/member/auth/sms-login', // 短信验证码登录
     REGISTER: '/auth/register', // 注册
     LOGOUT: '/member/auth/logout', // 登出
-    GET_INFO: '/user/profile', // 获取用户信息
+    GET_INFO: '/member/user/get', // 获取用户信息
     UPDATE_INFO: '/user/profile', // 更新用户信息
     SEND_SMS: '/member/auth/send-sms-code', // 发送短信验证码
     VERIFY_SMS: '/member/auth/validate-sms-code', // 验证短信验证码

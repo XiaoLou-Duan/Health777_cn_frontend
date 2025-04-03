@@ -110,10 +110,13 @@ const AuthService = {
 
   /**
    * 获取用户资料
+   * @param {Object} data 可选参数
    * @returns {Promise} 用户资料
    */
-  getUserProfile() {
-    return get(API.USER.GET_INFO);
+  getUserProfile(data = {}) {
+    // 如果有userId参数才传入，否则不传参数
+    const params = data.userId ? { userId: data.userId } : {};
+    return get(API.USER.GET_INFO, params);  
   },
 
   /**

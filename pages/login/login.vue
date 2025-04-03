@@ -168,14 +168,14 @@ export default {
         return phoneValid && passwordValid && this.isAgree;
       } else {
         // 验证码登录
-        const codeValid = this.verificationCode.length === 6;
+        const codeValid = /^\d{4,}$/.test(this.verificationCode);
         return phoneValid && codeValid && this.isAgree;
       }
     }
   },
   onUnload() {
     // 页面卸载清除定时器
-    if (this.timer) { fgvbbvf
+    if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
     }
