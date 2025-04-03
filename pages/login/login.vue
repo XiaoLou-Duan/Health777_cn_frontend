@@ -397,7 +397,7 @@ export default {
               uni.switchTab({
                 url: '/pages/index/index'
               });
-            }, 1500);
+            }, 200);
           } else {
             uni.showToast({
               title: result.message || '登录失败，请检查账号密码',
@@ -432,7 +432,7 @@ export default {
               uni.switchTab({
                 url: '/pages/index/index'
               });
-            }, 1500);
+            }, 200);
           } else {
             uni.showToast({
               title: result.message || '登录失败，请检查验证码',
@@ -468,8 +468,8 @@ export default {
           
           // 重置成功后返回登录页
           setTimeout(() => {
-            this.switchToLogin();
-          }, 1500);
+            this.switchToLogin(); 
+          }, 200);
         } else {
           uni.showToast({
             title: res.message || '重置失败，请稍后再试',

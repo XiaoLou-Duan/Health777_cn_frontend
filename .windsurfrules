@@ -59,6 +59,14 @@
    - 在`store/index.js`中聚合所有模块
    - 每个模块包含state、mutations、actions、getters
 
+4. u-form 智能通过如下方法设置规则
+   ```javascript
+   onReady() {
+     //onReady 为uni-app支持的生命周期之一
+     this.$refs.uForm.setRules(this.rules)
+   }
+   ```   
+
 ## 开发规范
 1. 组件使用：
    - 优先使用uView UI 2.0组件库

@@ -18,9 +18,9 @@
         <!-- 个人信息表单 -->
         <view class="user-edit__info">
           <view class="user-edit__section-title">基本信息</view>
-          <u-form :model="userInfo" ref="uForm" :errorType="['message']">
+          <u-form labelWidth="auto" :model="userInfo" :rules="rules" ref="uForm" errorType="message">
             <u-form-item label="昵称" prop="nickname" :borderBottom="true">
-              <u-input v-model="userInfo.nickname" placeholder="请输入昵称" :border="false" />
+              <u-input v-model="userInfo.nickname" placeholder="请输入昵称" border="none" />
             </u-form-item>
 
             <u-form-item label="性别" prop="sex" :borderBottom="true">
@@ -33,13 +33,13 @@
             <!-- 手机号显示 -->
             <u-form-item label="手机号" prop="mobile">
               <text class="user-edit__phone">{{ maskPhone(userInfo.mobile) }}</text>
-              <u-button type="primary" size="mini" @click="goToChangeMobile" class="user-edit__btn-change">修改</u-button>
+              <u-button type="primary" @click="goToChangeMobile" class="user-edit__btn-change">修改</u-button>
             </u-form-item>
           </u-form>
         </view>
       </view>
 
-      <u-button type="primary" class="user-edit__submit" @click="saveUserInfo">保存修改</u-button>
+      <u-button type="primary" class="user-edit__submit" @click="saveUserInfo" :loading="loading">保存修改</u-button>
     </view>
 
     <!-- 上传头像操作菜单 -->
@@ -54,6 +54,7 @@ import { maskPhoneNumber } from '@/utils/validation.js'
 export default {
   data() {
     return {
+      loading: false,
       userInfo: {
         id: '',
         nickname: '',
@@ -89,13 +90,16 @@ export default {
     ...mapState('user', ['userProfile'])
   },
   onLoad() {
-    this.getUserInfo();
+    this.fetchUserInfo();
   },
+  onReady() {
+		this.$refs.uForm.setRules(this.rules);
+	},
   methods: {
-    ...mapActions('user', ['getUserInfo', 'updateUserProfile']),
+    ...mapActions('user', ['getUserInfo', 'updateUserInfo']),
     
     // 获取用户信息
-    getUserInfo() {
+    fetchUserInfo() {
       uni.showLoading({
         title: '加载中'
       });
@@ -119,15 +123,6 @@ export default {
           title: '获取用户信息失败',
           icon: 'none'
         });
-        console.error('获取用户信息失败:', err);
-        // 使用模拟数据
-        this.userInfo = {
-          id: '1001',
-          nickname: '张三',
-          avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-          sex: 1,
-          mobile: '13812345678'
-        };
       });
     },
     
@@ -251,39 +246,40 @@ export default {
 
     // 保存用户信息
     saveUserInfo() {
-      // 验证表单
-      this.$refs.uForm.validate(valid => {
-        if (!valid) return;
-        
-        uni.showLoading({
-          title: '保存中...'
+      console.log('保存按钮被点击');
+      
+      // 防止重复提交
+      if (this.loading) return;
+      this.loading = true;
+      
+      // 使用Promise方式进行表单验证，根据uView官方文档
+      this.$refs.uForm.validate().then(valid => {
+        console.log('表单验证通过');
+        // 验证通过，执行提交操作
+        this.submitUserInfo();
+      }).catch(errors => {
+        console.log('表单验证失败:', errors);
+        this.loading = false;
+        uni.showToast({
+          title: '请完善表单信息',
+          icon: 'none'
         });
+      });
+      
+    },
+    
+    // 提交用户信息
+    submitUserInfo() {
+      uni.showLoading({
+        title: '保存中...'
+      });
+      
+      // 调用更新用户信息API
+      this.$store.dispatch('user/updateUserInfo', this.userInfo).then(res => {
+        uni.hideLoading();
+        this.loading = false;
         
-        // 调用更新用户信息API
-        this.updateUserProfile(this.userInfo).then(res => {
-          uni.hideLoading();
-          
-          if (res.success) {
-            uni.showToast({
-              title: '保存成功',
-              icon: 'success',
-              duration: 1500
-            });
-            
-            setTimeout(() => {
-              uni.navigateBack();
-            }, 1500);
-          } else {
-            uni.showToast({
-              title: res.message || '保存失败，请稍后再试',
-              icon: 'none'
-            });
-          }
-        }).catch(err => {
-          uni.hideLoading();
-          console.error('保存用户信息失败:', err);
-          
-          // 模拟保存成功
+        if (res && res.success) {
           uni.showToast({
             title: '保存成功',
             icon: 'success',
@@ -292,14 +288,28 @@ export default {
           
           setTimeout(() => {
             uni.navigateBack();
-          }, 1500);
-        });
+          }, 200);
+        } else {
+          uni.showToast({
+            title: (res && res.message) || '保存失败，请稍后再试',
+            icon: 'none'
+          });
+        }
+      }).catch(err => {
+        uni.hideLoading();
+        this.loading = false;
+        setTimeout(() => {
+          uni.navigateBack();
+        }, 200);
       });
     },
     
     // 返回上一页
     goBack() {
       uni.navigateBack();
+      // uni.navigateTo({
+      //   url: '/pages/user/profile/profile'
+      // });
     }
   }
 }
@@ -311,10 +321,13 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   background-color: #F5F7FA;
-  
+  .u-button {
+    width: auto;
+  }
   &__content {
     flex: 1;
-    padding: 30rpx;
+    margin-top: 44px;
+    padding: 30rpx; 
   }
   
   &__form {

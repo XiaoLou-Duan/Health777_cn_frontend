@@ -40,23 +40,36 @@ function responseInterceptor(response) {
   const requestUrl = response.config ? response.config.url : '';
   const needAuth = !publicApiPaths.some(path => requestUrl.includes(path));
   
-  // 如果返回的状态码为401，且需要登录检测，说明token已过期，需要重新登录
-  if (response.statusCode === 401 && needAuth) {
+  // 如果返回的状态码为401，说明 token已过期或无效，需要重新登录
+  if (response.statusCode === 401 || response.data.code === 401) {
     // 清除本地存储的用户信息和token
     Storage.remove('userInfo');
     Storage.remove('token');
     
-    // 跳转到登录页
-    uni.showToast({
-      title: '登录已过期，请重新登录',
-      icon: 'none'
-    });
+    // 清除Vuex中的用户状态
+    const store = require('@/store').default;
+    store.commit('user/SET_LOGIN_STATE', false);
+    store.commit('user/SET_USER_INFO', null);
+    store.commit('user/SET_TOKEN', '');
     
-    setTimeout(() => {
-      uni.navigateTo({
-        url: '/pages/login/login'
+    // 如果当前页面不是登录页，则显示提示并跳转
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    const currentRoute = currentPage ? currentPage.route : '';
+    
+    if (!currentRoute.includes('/pages/login/')) {
+      uni.showToast({
+        title: '登录已过期，请重新登录',
+        icon: 'none',
+        duration: 1500
       });
-    }, 1500);
+      
+      setTimeout(() => {
+        uni.reLaunch({
+          url: '/pages/login/login'
+        });
+      }, 1500);
+    }
     
     return Promise.reject(new Error('登录已过期'));
   }

@@ -173,6 +173,7 @@ export default {
 .content-wrapper {
   flex: 1;
   padding: 30rpx;
+  margin-top: 44px;
 }
 
 .info-card, .health-card {
