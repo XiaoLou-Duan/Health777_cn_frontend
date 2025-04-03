@@ -122,3 +122,4 @@ export function checkPagePermission(url) {
 export function checkLoginStatus() {
   return store.dispatch('user/checkLoginStatus');
 }
+  

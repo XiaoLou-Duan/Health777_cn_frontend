@@ -1,6 +1,6 @@
 <script>
 	import store from './store';
-	import { checkPagePermission } from './common/js/permission';
+	import { checkPagePermission } from './utils/permission.js';
 	export default {
 		onLaunch: function() {
 			this.checkLoginOnStart();

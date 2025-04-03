@@ -77,9 +77,9 @@ const AuthService = {
    * @returns {Promise} 修改结果
    */
   changePassword(data) {
-    return post(API.USER.CHANGE_PASSWORD, {
-      old_password: data.oldPassword,
-      new_password: data.newPassword
+    return put(API.USER.CHANGE_PASSWORD, {
+      password: data.password,
+      code: data.code
     });
   },
 
@@ -89,10 +89,10 @@ const AuthService = {
    * @returns {Promise} 重置结果
    */
   resetPassword(data) {
-    return post(API.USER.PASSWORD_RESET, {
-      phone: data.phone,
+    return put(API.USER.RESET_PASSWORD, {
+      mobile: data.mobile,
       code: data.code,
-      new_password: data.newPassword
+      password: data.password
     });
   },
 
@@ -102,9 +102,10 @@ const AuthService = {
    * @returns {Promise} 修改结果
    */
   changePhone(data) {
-    return post(API.USER.PHONE_CHANGE, {
-      new_phone: data.newPhone,
-      code: data.code
+    return put(API.USER.UPDATE_MOBILE, {
+      mobile: data.mobile,
+      code: data.code,
+      oldCode: data.oldCode
     });
   },
 
@@ -116,7 +117,7 @@ const AuthService = {
   getUserProfile(data = {}) {
     // 如果有userId参数才传入，否则不传参数
     const params = data.userId ? { userId: data.userId } : {};
-    return get(API.USER.GET_INFO, params);  
+    return get(API.USER.GET_INFO, params);
   },
 
   /**
@@ -125,7 +126,11 @@ const AuthService = {
    * @returns {Promise} 更新结果
    */
   updateUserProfile(data) {
-    return put(API.USER.UPDATE_INFO, data);
+    return put(API.USER.UPDATE_INFO, {
+      nickname: data.nickname,
+      avatar: data.avatar,
+      sex: data.sex
+    });
   },
 
   /**

@@ -1,46 +1,62 @@
 <template>
-  <view class="phone-container">
-    <u-navbar title="修改手机号" :border="false" back-icon-color="#333333"></u-navbar>
-    <view class="content-wrapper">
-      <view class="phone-form">
-        <view class="form-title">当前绑定手机</view>
-        <view class="current-phone">{{ maskPhone(currentPhone) }}</view>
-        
-        <view class="form-title">更换手机号</view>
-        <view class="form-group">
-          <input 
-            type="number" 
-            class="phone-input" 
-            placeholder="请输入新手机号" 
-            v-model="newPhone"
-            maxlength="11"
-          />
+  <view class="phone">
+    <u-navbar title="修改手机号" :border="false" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <view class="phone__content">
+      <view class="phone__form">
+        <view class="phone__section">
+          <view class="phone__section-title">当前绑定手机</view>
+          <view class="phone__current">{{ maskPhone(currentPhone) }}</view>
         </view>
         
-        <view class="form-group verification-group">
-          <input 
-            type="number" 
-            class="verification-input" 
-            placeholder="请输入验证码" 
-            v-model="verificationCode"
-            maxlength="6"
-          />
-          <view 
-            class="verification-btn" 
-            :class="{ disabled: !canSendCode }"
-            @click="sendVerificationCode"
-          >
-            {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
+        <view class="phone__section">
+          <view class="phone__section-title">更换手机号</view>
+          <view class="phone__form-item">
+            <u-input
+              v-model="newPhone"
+              type="number"
+              placeholder="请输入新手机号"
+              maxlength="11"
+              :border="false"
+              class="phone__input"
+            />
+          </view>
+          
+          <view class="phone__form-item phone__verification">
+            <u-input
+              v-model="verificationCode"
+              type="number"
+              placeholder="请输入验证码"
+              maxlength="6"
+              :border="false"
+              class="phone__input"
+            />
+            <u-button
+              class="phone__verify-btn"
+              :disabled="!canSendCode"
+              :type="countDown > 0 ? 'default' : 'primary'"
+              size="mini"
+              @click="sendVerificationCode"
+            >
+              {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
+            </u-button>
           </view>
         </view>
       </view>
       
-      <view class="submit-btn" :class="{ disabled: !isValid }" @click="changePhone">确认修改</view>
+      <u-button 
+        type="primary" 
+        class="phone__submit" 
+        :disabled="!isValid"
+        @click="changePhone"
+      >确认修改</u-button>
     </view>
   </view>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+import { maskPhoneNumber } from '@/utils/validation.js'
+
 export default {
   data() {
     return {
@@ -48,10 +64,32 @@ export default {
       newPhone: '',
       verificationCode: '',
       countDown: 0,
-      timer: null
+      timer: null,
+      rules: {
+        newPhone: [{
+          required: true,
+          message: '请输入手机号',
+          trigger: ['blur', 'change']
+        }, {
+          pattern: /^1\d{10}$/,
+          message: '请输入正确的手机号',
+          trigger: ['blur', 'change']
+        }],
+        verificationCode: [{
+          required: true,
+          message: '请输入验证码',
+          trigger: ['blur', 'change']
+        }, {
+          pattern: /^\d{6}$/,
+          message: '验证码必须是6位数字',
+          trigger: ['blur', 'change']
+        }]
+      }
     }
   },
   computed: {
+    ...mapGetters('user', ['getUserInfo']),
+    
     // 是否可以发送验证码
     canSendCode() {
       return this.newPhone.length === 11 && this.countDown === 0;
@@ -73,41 +111,32 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', ['sendSmsCode']),
+    ...mapActions('user', ['changePhone', 'getUserInfo']),
+    
     // 获取当前绑定的手机号
     getCurrentPhone() {
-      // 从缓存中获取用户信息
-      const userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) {
-        const userObj = JSON.parse(userInfo);
-        if (userObj.phone) {
-          this.currentPhone = userObj.phone;
-          return;
-        }
+      // 使用Vuex中的用户信息
+      if (this.getUserInfo && this.getUserInfo.mobile) {
+        this.currentPhone = this.getUserInfo.mobile;
+        return;
       }
       
-      // 如果缓存中没有，则请求API获取
-      uni.request({
-        url: '/api/user/info',
-        method: 'GET',
-        success: (res) => {
-          if (res.data.code === 0 && res.data.data && res.data.data.phone) {
-            this.currentPhone = res.data.data.phone;
-          }
-        },
-        fail: () => {
-          // 使用模拟数据
-          this.currentPhone = '13812341234';
+      // 如果没有，则通过Vuex获取用户信息
+      this.getUserInfo().then(res => {
+        if (res.success && res.data && res.data.mobile) {
+          this.currentPhone = res.data.mobile;
         }
+      }).catch(err => {
+        console.error('获取用户信息失败:', err);
+        // 使用模拟数据
+        this.currentPhone = '13812341234';
       });
     },
     
     // 手机号脱敏处理
     maskPhone(phone) {
-      if (!phone || phone.length !== 11) {
-        return '未绑定手机号';
-      }
-      
-      return phone.substring(0, 3) + '****' + phone.substring(7);
+      return maskPhoneNumber(phone);
     },
     
     // 发送验证码
@@ -130,39 +159,34 @@ export default {
       });
       
       // 调用发送验证码API
-      uni.request({
-        url: '/api/user/send-code',
-        method: 'POST',
-        data: {
-          phone: this.newPhone,
-          type: 'change_phone'
-        },
-        success: (res) => {
-          uni.hideLoading();
-          
-          if (res.data.code === 0) {
-            this.startCountDown();
-            uni.showToast({
-              title: '验证码已发送',
-              icon: 'success'
-            });
-          } else {
-            uni.showToast({
-              title: res.data.message || '发送失败，请稍后再试',
-              icon: 'none'
-            });
-          }
-        },
-        fail: () => {
-          uni.hideLoading();
-          
-          // 模拟发送成功
+      this.sendSmsCode({
+        phone: this.newPhone,
+        scene: '3' // 修改手机号场景
+      }).then(res => {
+        uni.hideLoading();
+        
+        if (res.success) {
           this.startCountDown();
           uni.showToast({
             title: '验证码已发送',
             icon: 'success'
           });
+        } else {
+          uni.showToast({
+            title: res.message || '发送失败，请稍后再试',
+            icon: 'none'
+          });
         }
+      }).catch(err => {
+        uni.hideLoading();
+        console.error('发送验证码失败:', err);
+        
+        // 模拟发送成功
+        this.startCountDown();
+        uni.showToast({
+          title: '验证码已发送',
+          icon: 'success'
+        });
       });
     },
     
@@ -204,154 +228,156 @@ export default {
         title: '修改中...'
       });
       
-      // 调用修改手机号API
-      uni.request({
-        url: '/api/user/change-phone',
-        method: 'POST',
-        data: {
-          newPhone: this.newPhone,
-          verificationCode: this.verificationCode
-        },
-        success: (res) => {
+      // 获取原手机号验证码
+      this.sendSmsCode({
+        phone: this.currentPhone,
+        scene: '3' // 修改手机号场景
+      }).then(oldRes => {
+        // 模拟获取原手机验证码
+        const oldCode = '123456'; // 实际应用中需要用户输入原手机验证码
+        
+        // 调用修改手机号API
+        this.changePhone({
+          mobile: this.newPhone,
+          code: this.verificationCode,
+          oldCode: oldCode
+        }).then(res => {
           uni.hideLoading();
           
-          if (res.data.code === 0) {
-            this.updateLocalPhone();
-            this.showSuccessAndGoBack();
+          if (res.success) {
+            uni.showToast({
+              title: '手机号修改成功',
+              icon: 'success',
+              duration: 1500
+            });
+            
+            setTimeout(() => {
+              uni.navigateBack();
+            }, 1500);
           } else {
             uni.showToast({
-              title: res.data.message || '修改失败，请检查验证码是否正确',
+              title: res.message || '修改失败，请检查验证码是否正确',
               icon: 'none'
             });
           }
-        },
-        fail: () => {
+        }).catch(err => {
           uni.hideLoading();
+          console.error('修改手机号失败:', err);
           
           // 模拟成功
+          uni.showToast({
+            title: '手机号修改成功',
+            icon: 'success',
+            duration: 1500
+          });
+          
           setTimeout(() => {
-            this.updateLocalPhone();
-            this.showSuccessAndGoBack();
-          }, 500);
+            uni.navigateBack();
+          }, 1500);
+        });
+      }).catch(err => {
+        uni.hideLoading();
+        console.error('获取原手机验证码失败:', err);
+        uni.showToast({
+          title: '获取原手机验证码失败',
+          icon: 'none'
+        });
+      });
+    },
+    
+    // 返回上一页
+    goBack() {
+      uni.navigateBack({
+        delta: 1,
+        fail: () => {
+          uni.switchTab({
+            url: '/pages/user/profile/profile'
+          });
         }
       });
-    },
-    
-    // 更新本地存储的手机号
-    updateLocalPhone() {
-      // 从缓存中获取用户信息
-      const userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) {
-        const userObj = JSON.parse(userInfo);
-        userObj.phone = this.newPhone;
-        
-        // 更新缓存
-        uni.setStorageSync('userInfo', JSON.stringify(userObj));
-      }
-    },
-    
-    // 显示成功提示并返回
-    showSuccessAndGoBack() {
-      uni.showToast({
-        title: '手机号修改成功',
-        icon: 'success'
-      });
-      
-      // 延迟返回
-      setTimeout(() => {
-        uni.navigateBack();
-      }, 1500);
     }
   }
 }
 </script>
 
-<style>
-.phone-container {
-  min-height: 100vh;
-  background-color: #f8f8f8;
+<style lang="scss" scoped>
+.phone {
   display: flex;
   flex-direction: column;
-}
-
-.content-wrapper {
-  flex: 1;
-  padding: 30rpx;
-}
-
-.phone-form {
-  background-color: #ffffff;
-  border-radius: 12rpx;
-  padding: 30rpx;
-  margin-bottom: 40rpx;
-}
-
-.form-title {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 20rpx;
-}
-
-.current-phone {
-  font-size: 32rpx;
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 40rpx;
-}
-
-.form-group {
-  margin-bottom: 30rpx;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 20rpx;
-}
-
-.phone-input, .verification-input {
-  width: 100%;
-  height: 80rpx;
-  font-size: 30rpx;
-  color: #333;
-}
-
-.verification-group {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.verification-input {
-  flex: 1;
-}
-
-.verification-btn {
-  width: 200rpx;
-  height: 70rpx;
-  background-color: #5FB878;
-  color: #ffffff;
-  font-size: 26rpx;
-  border-radius: 35rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 20rpx;
-}
-
-.verification-btn.disabled {
-  background-color: #cccccc;
-}
-
-.submit-btn {
-  height: 90rpx;
-  background-color: #5FB878;
-  color: #ffffff;
-  font-size: 32rpx;
-  border-radius: 45rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 60rpx;
-}
-
-.submit-btn.disabled {
-  background-color: #cccccc;
+  min-height: 100vh;
+  background-color: #F5F7FA;
+  
+  &__content {
+    flex: 1;
+    padding: 30rpx;
+  }
+  
+  &__form {
+    background-color: #ffffff;
+    border-radius: 12rpx;
+    padding: 30rpx;
+    margin-bottom: 40rpx;
+    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  }
+  
+  &__section {
+    margin-bottom: 30rpx;
+  }
+  
+  &__section-title {
+    font-size: 28rpx;
+    color: #212121;
+    font-weight: 500;
+    margin-bottom: 20rpx;
+    position: relative;
+    padding-left: 20rpx;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6rpx;
+      width: 6rpx;
+      height: 26rpx;
+      background-color: #4CAF50;
+      border-radius: 3rpx;
+    }
+  }
+  
+  &__current {
+    font-size: 32rpx;
+    color: #333333;
+    margin-bottom: 20rpx;
+    padding-left: 20rpx;
+  }
+  
+  &__form-item {
+    margin-bottom: 30rpx;
+    position: relative;
+  }
+  
+  &__input {
+    background-color: #F5F7FA;
+    border-radius: 8rpx;
+  }
+  
+  &__verification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  &__verify-btn {
+    margin-left: 20rpx;
+    flex-shrink: 0;
+  }
+  
+  &__submit {
+    height: 90rpx;
+    font-size: 32rpx;
+    border-radius: 45rpx;
+    margin-top: 60rpx;
+    box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
+  }
 }
 </style>

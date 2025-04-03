@@ -1,5 +1,5 @@
 /**
- * validate.js - 表单验证工具
+ * validation.js - 表单验证工具
  */
 
 /**
@@ -10,6 +10,19 @@
 export function validatePhone(value) {
   const reg = /^1[3-9]\d{9}$/;
   return reg.test(value);
+}
+
+/**
+ * 手机号脱敏处理
+ * @param {String} phone 手机号
+ * @returns {String} 脱敏后的手机号
+ */
+export function maskPhoneNumber(phone) {
+  if (!phone || phone.length !== 11) {
+    return '未绑定手机号';
+  }
+  
+  return phone.substring(0, 3) + '****' + phone.substring(7);
 }
 
 /**
@@ -115,5 +128,6 @@ export default {
   validateNumber,
   validateElderlyAge,
   validateBMI,
-  validateProteinIntake
+  validateProteinIntake,
+  maskPhoneNumber
 };

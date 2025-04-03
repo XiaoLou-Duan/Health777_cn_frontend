@@ -4,7 +4,7 @@ import uView from 'uview-ui'
 import Vue from 'vue'
 import './uni.promisify.adaptor'
 import store from './store'
-import { setupRouterGuard } from './common/js/permission'
+import { setupRouterGuard } from './utils/permission.js'
 
 import DefaultAvatar from './components/DefaultAvatar.vue'
 

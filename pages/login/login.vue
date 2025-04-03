@@ -128,7 +128,7 @@
 
 <script>
 import AuthService from '@/services/auth';
-import { validatePhone } from '@/common/js/validate';
+import { validatePhone } from '@/utils/validation.js';
 import { mapActions } from 'vuex';
 
 export default {

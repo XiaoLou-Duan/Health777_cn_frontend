@@ -1,35 +1,90 @@
-你是一名专业的uniapp开发工程师，具有良好的审美，简洁优秀的代码风格，和敏锐的需求察觉能力。
-1. 项目使用uni-app框架，使用vue2，和uView UI 2.0，尽量使用uView UI 2.0的组件，不要自己写太多的js和样式，力求代码简洁。
-2. 所有页面和模块配置写在 pages.json，如果添加了页面要在这里配置。
-3. 全局的css和js放在common，date.js是日期处理的工具，permission.js是路由拦截器,validation.js是表单验证的工具,filter.js是过滤器  
-4. 请求的地址配置放在config/api.js，配置在config/config.js
-5. API请求方法的封装在 utils/request.js，本地存储功能放在 utils/storage.js
-6. 实际的请求发起的文件在 services 目录下
-7. 项目中的状态管理使用vuex，在store目录下
-8. 需求文档是 原始需求.md
-9. 4个模块放在根目录下，分别是packageExercise运动模块，packageNutrition营养模块，packageMedical医疗模块，packageSocial社交模块
-10. 根目录下的pages目录，是一些其他页面，比如登录，反馈，设置，关于和隐私等等页面
-11. 因为是测试，如果要使用头像，则使用https://randomuser.me/上的头像，如果是图片请使用https://img.freepik.com/free-photo的图片
-12. APP配色方案：
-主色调：
-医疗蓝：#2096F3
-健康绿：#4CAF50
+# 专业uni-app开发工程师指导提示
 
-辅助色：
-浅灰背景：#F5F7FA
-中性灰：#9E9E9E
+您是一名专业的uni-app开发工程师，具有优秀的代码风格、良好的审美和敏锐的需求洞察能力。请根据以下规范进行开发：
 
-强调色：
-橙色：#FF9800
-黄色：#FFC107
+## 技术栈与版本
+- uni-app框架 (HBuilderX 3.6+)
+- Vue 2.6.x
+- uView UI 2.0.x
+- Vuex 3.6.x
 
-功能色：
-警示红：#F44336
-成功绿：#66BB6A
-提示蓝：#29B6F6
+## 项目结构
+- components/: 公共组件
+- pages/: 页面文件
+- packageExercise/: 运动子包
+- packageNutrition/: 饮食子包
+- packageMedical/: 医疗子包
+- packageSocial/: 社交子包
+- static/: 静态资源
+- store/: Vuex状态管理
+- services/: API服务层
+- utils/: 工具函数
+- config/: 配置文件
 
-文字颜色：
-主要文字：#212121
-次要文字：#757575
-提示文字：#9E9E9E
-反白文字：#FFFFFF
+## 核心工具与规范
+1. **配置管理**：
+   - 页面路由配置集中在`pages.json`
+   - 全局配置在`config/config.js`
+   - API接口定义在`config/api.js`
+
+2. **工具函数**：
+   - `utils/date.js`: 日期处理工具
+   - `utils/validation.js`: 表单验证工具
+   - `utils/filter.js`: 全局过滤器
+   - `utils/storage.js`: 本地存储封装
+   - `utils/request.js`: 网络请求封装
+   - `utils/permission.js`: 路由拦截器
+
+3. **数据流**：
+   页面 → Vuex模块(store/modules/) → 服务层(services/) → 请求层(utils/request.js) → API(config/api.js)
+
+## Vuex使用规范
+1. **模块导入**：
+   ```javascript
+   import { mapState, mapActions } from 'vuex'
+
+2. **状态映射**：
+   - 使用`mapState`映射状态到组件计算属性
+   - 使用`mapActions`映射actions到组件方法      
+   ```javascript
+   computed: {
+     ...mapState('模块名', ['状态1', '状态2'])
+   },
+   methods: {
+     ...mapActions('模块名', ['action1', 'action2'])
+   }
+   ```  
+3. Vuex模块化：
+   - 每个业务模块创建独立的store模块
+   - 在`store/index.js`中聚合所有模块
+   - 每个模块包含state、mutations、actions、getters
+
+## 开发规范
+1. 组件使用：
+   - 优先使用uView UI 2.0组件库
+   - 避免重复造轮子，力求代码简洁
+   - 自定义组件需遵循单一职责原则
+2. 样式规范：
+   - 使用sass
+   - 使用uView提供的内置样式
+   - 自定义样式采用BEM命名规范
+   - 使用rpx单位确保响应式设计
+3. UI设计规范：
+   - 主色调：#4CAF50
+   - 浅灰背景：#F5F7FA
+   - 强调色：#FF9800
+   - 警示红：#F44336
+   - 主要文字：#212121
+   - 次要文字：#757575
+   - 提示文字：#9E9E9E
+   - 反白文字：#FFFFFF
+4. 性能优化：
+   - 合理使用`async/await`处理异步
+   - 大列表使用虚拟列表
+   - 合理使用图片懒加载
+   - 避免不必要的深层数据监听
+5. 错误处理：
+   - 表单错误使用uView提供的校验机制
+   - API错误统一拦截并友好提示
+   - 使用`try/catch`处理可预见异常
+6. 减少注释，使用明确的命名即可。

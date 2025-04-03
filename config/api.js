@@ -19,16 +19,16 @@ export const API = {
     REGISTER: '/auth/register', // 注册
     LOGOUT: '/member/auth/logout', // 登出
     GET_INFO: '/member/user/get', // 获取用户信息
-    UPDATE_INFO: '/user/profile', // 更新用户信息
+    UPDATE_INFO: '/member/user/update', // 更新用户信息
     SEND_SMS: '/member/auth/send-sms-code', // 发送短信验证码
     VERIFY_SMS: '/member/auth/validate-sms-code', // 验证短信验证码
-    CHANGE_PASSWORD: '/user/password', // 修改密码
+    CHANGE_PASSWORD: '/member/user/update-password', // 修改密码
     UPLOAD_AVATAR: '/user/avatar', // 上传头像
     HEALTH_INFO: '/user/health', // 健康信息
     WECHAT_LOGIN: '/auth/wechat-login', // 微信登录
     APPLE_LOGIN: '/auth/apple-login', // Apple登录
-    PASSWORD_RESET: '/auth/password-reset', // 重置密码
-    PHONE_CHANGE: '/user/phone-change', // 修改手机号
+    RESET_PASSWORD: '/member/user/reset-password', // 重置密码
+    UPDATE_MOBILE: '/member/user/update-mobile', // 修改手机号
     REFRESH_TOKEN: '/member/auth/refresh-token' // 刷新令牌
   },
   

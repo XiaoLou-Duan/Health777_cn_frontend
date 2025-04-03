@@ -3,7 +3,7 @@
  */
 import { getApiUrl } from '@/config/api';
 import Storage from './storage';
-import { publicApiPaths } from '@/common/js/permission';
+import { publicApiPaths } from '@/utils/permission.js';
 
 /**
  * 请求拦截器
