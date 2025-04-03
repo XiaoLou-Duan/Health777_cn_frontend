@@ -36,7 +36,7 @@ export function setupRouterGuard() {
       
       // 再次检查登录状态
       if (!store.getters['user/isLoggedIn']) {
-        uni.navigateTo({
+        uni.redirectTo({
           url: '/pages/login/login'
         });
         return false;

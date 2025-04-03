@@ -9,14 +9,14 @@
   align-items: center;
   padding: 20rpx 0;
   margin-bottom: 20rpx;
-  
+
   .avatar {
     width: 80rpx;
     height: 80rpx;
     border-radius: 50%;
     margin-right: 20rpx;
   }
-  
+
   .greeting {
     flex: 1;
     padding-left: 10rpx;
@@ -24,7 +24,7 @@
       font-size: 28rpx;
       color: #666;
     }
-    
+
     .username {
       font-size: 36rpx;
       font-weight: bold;
@@ -32,15 +32,15 @@
       margin-left: 10rpx;
     }
   }
-  
+
   .notification {
     position: relative;
-    
+
     .badge {
       position: absolute;
       top: -8rpx;
       right: -8rpx;
-      background-color: #FF5A5F;
+      background-color: #ff5a5f;
       color: #fff;
       font-size: 20rpx;
       min-width: 30rpx;
@@ -51,14 +51,17 @@
       padding: 0 6rpx;
     }
   }
-  
+
   .setting-icon {
     margin-left: 20rpx;
   }
 }
 
 // 卡片通用样式
-.health-card, .trend-card, .reminder-card, .community-card {
+.health-card,
+.trend-card,
+.reminder-card,
+.community-card {
   background-color: #fff;
   border-radius: 20rpx;
   padding: 30rpx;
@@ -71,14 +74,15 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20rpx;
-  
+
   .card-title {
     font-size: 32rpx;
     font-weight: bold;
     color: #333;
   }
-  
-  .today-date, .view-more {
+
+  .today-date,
+  .view-more {
     font-size: 24rpx;
     color: #999;
   }
@@ -88,24 +92,24 @@
 .health-data-grid {
   display: flex;
   flex-wrap: wrap;
-  
+
   .health-data-item {
     width: 50%;
     padding: 20rpx 0;
     text-align: center;
-    
+
     .data-value {
       font-size: 48rpx;
       color: #333;
       font-weight: bold;
-      
+
       .unit {
         font-size: 24rpx;
         color: #999;
         margin-left: 4rpx;
       }
     }
-    
+
     .data-label {
       font-size: 26rpx;
       color: #666;
@@ -119,12 +123,12 @@
   height: 300rpx;
   margin: 30rpx 0;
   position: relative;
-  
+
   .month-labels {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10rpx;
-    
+
     .month-label {
       font-size: 24rpx;
       color: #999;
@@ -132,20 +136,20 @@
       width: 16.66%;
     }
   }
-  
+
   .chart-bars {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     height: 250rpx;
-    
+
     .chart-bar {
       width: 40rpx;
       border-radius: 20rpx 20rpx 0 0;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      
+
       .bar-value {
         font-size: 20rpx;
         color: #fff;
@@ -157,7 +161,7 @@
 
 .trend-summary {
   padding: 20rpx 0 0;
-  
+
   .trend-text {
     font-size: 28rpx;
     color: #666;
@@ -170,13 +174,13 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 30rpx;
-  
+
   .function-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 25%;
-    
+
     .function-icon {
       width: 100rpx;
       height: 100rpx;
@@ -186,7 +190,7 @@
       align-items: center;
       margin-bottom: 16rpx;
     }
-    
+
     .function-name {
       font-size: 26rpx;
       color: #333;
@@ -201,11 +205,11 @@
     align-items: center;
     padding: 20rpx 0;
     border-bottom: 1rpx solid #f0f0f0;
-    
+
     &:last-child {
       border-bottom: none;
     }
-    
+
     .reminder-icon {
       width: 70rpx;
       height: 70rpx;
@@ -214,29 +218,29 @@
       justify-content: center;
       align-items: center;
       margin-right: 20rpx;
-      
+
       &.medicine {
-        background-color: #FF9500;
+        background-color: #ff9500;
       }
-      
+
       &.exercise {
-        background-color: #4CD964;
+        background-color: #4cd964;
       }
-      
+
       &.appointment {
-        background-color: #007AFF;
+        background-color: #007aff;
       }
     }
-    
+
     .reminder-content {
       flex: 1;
-      
+
       .reminder-title {
         font-size: 30rpx;
         color: #333;
         margin-bottom: 6rpx;
       }
-      
+
       .reminder-time {
         font-size: 24rpx;
         color: #999;
@@ -251,23 +255,23 @@
   .community-item {
     padding: 20rpx 0;
     border-bottom: 1rpx solid #f0f0f0;
-    
+
     &:last-child {
       border-bottom: none;
     }
-    
+
     .post-header {
       display: flex;
       align-items: center;
       margin-bottom: 16rpx;
-      
+
       .post-avatar {
         width: 60rpx;
         height: 60rpx;
         border-radius: 50%;
         margin-right: 16rpx;
       }
-      
+
       .post-info {
         .post-author {
           font-size: 28rpx;
@@ -275,21 +279,21 @@
           font-weight: bold;
           margin-right: 16rpx;
         }
-        
+
         .post-time {
           font-size: 24rpx;
           color: #999;
         }
       }
     }
-    
+
     .post-title {
       font-size: 32rpx;
       color: #333;
       font-weight: bold;
       margin-bottom: 10rpx;
     }
-    
+
     .post-content {
       font-size: 28rpx;
       color: #666;
@@ -301,19 +305,19 @@
       line-clamp: 2;
       overflow: hidden;
     }
-    
+
     .post-images {
       display: flex;
       margin-bottom: 16rpx;
       position: relative;
-      
+
       .post-image {
         width: 180rpx;
         height: 180rpx;
         margin-right: 10rpx;
         border-radius: 8rpx;
       }
-      
+
       .image-count {
         position: absolute;
         right: 0;
@@ -325,15 +329,15 @@
         border-radius: 0 0 8rpx 0;
       }
     }
-    
+
     .post-stats {
       display: flex;
-      
+
       .stat-item {
         display: flex;
         align-items: center;
         margin-right: 30rpx;
-        
+
         text {
           font-size: 24rpx;
           color: #999;

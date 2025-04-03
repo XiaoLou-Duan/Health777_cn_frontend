@@ -3,103 +3,104 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "肌少症健康管理"
+        "navigationBarTitleText": "肌少症健康管理",
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/login/login",
       "style": {
-        "navigationBarTitleText": "登录"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/setting/setting",
       "style": {
-        "navigationBarTitleText": "设置"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/user/edit/edit",
       "style": {
-        "navigationBarTitleText": "编辑个人信息"
+        "navigationStyle": "custom" 
       }
     },
     {
       "path": "pages/user/password/password",
       "style": {
-        "navigationBarTitleText": "修改密码"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/user/phone/phone",
       "style": {
-        "navigationBarTitleText": "修改手机号"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/user/profile/profile",
       "style": {
-        "navigationBarTitleText": "个人资料"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/reminder/reminder-settings",
       "style": {
-        "navigationBarTitleText": "提醒设置"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/reminder/reminder-type-settings",
       "style": {
-        "navigationBarTitleText": "提醒类型设置"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/setting/notification/notification",
       "style": {
-        "navigationBarTitleText": "消息通知"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/setting/privacy/privacy",
       "style": {
-        "navigationBarTitleText": "隐私设置"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/about/about",
       "style": {
-        "navigationBarTitleText": "关于我们"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/about/privacy-policy",
       "style": {
-        "navigationBarTitleText": "隐私政策"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/about/user-agreement",
       "style": {
-        "navigationBarTitleText": "用户协议"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/feedback/feedback",
       "style": {
-        "navigationBarTitleText": "意见反馈"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/feedback/history",
       "style": {
-        "navigationBarTitleText": "反馈历史"
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/feedback/detail",
       "style": {
-        "navigationBarTitleText": "反馈详情"
+        "navigationStyle": "custom"
       }
     }
   ],
@@ -110,43 +111,43 @@
         {
           "path": "pages/index/index",
           "style": {
-            "navigationBarTitleText": "营养健康"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/food-recognition/food-recognition",
           "style": {
-            "navigationBarTitleText": "AI食物识别"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/protein-analysis/protein-analysis",
           "style": {
-            "navigationBarTitleText": "蛋白质摄入分析"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/diet-suggestion/diet-suggestion",
           "style": {
-            "navigationBarTitleText": "个性化饮食建议"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/whey-protein/whey-protein",
           "style": {
-            "navigationBarTitleText": "乳清蛋白管理"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/food-library/food-library",
           "style": {
-            "navigationBarTitleText": "食物库"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/nutrition-history/nutrition-history",
           "style": {
-            "navigationBarTitleText": "营养记录"
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -157,31 +158,31 @@
         {
           "path": "pages/index/index",
           "style": {
-            "navigationBarTitleText": "运动健康"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/exercise-guidance/exercise-guidance",
           "style": {
-            "navigationBarTitleText": "运动检测与指导"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/exercise-detection/exercise-detection",
           "style": {
-            "navigationBarTitleText": "简易运动检测"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/exercise-video/exercise-video",
           "style": {
-            "navigationBarTitleText": "运动指导视频"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/exercise-stats/exercise-stats",
           "style": {
-            "navigationBarTitleText": "运动成果统计"
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -192,37 +193,37 @@
         {
           "path": "pages/index/index",
           "style": {
-            "navigationBarTitleText": "社交健康"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/points/points",
           "style": {
-            "navigationBarTitleText": "积分系统"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/rewards/rewards",
           "style": {
-            "navigationBarTitleText": "虚拟奖励"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/community/community",
           "style": {
-            "navigationBarTitleText": "社区"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/community/post-detail/post-detail",
           "style": {
-            "navigationBarTitleText": "帖子详情"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/community/post-create/post-create",
           "style": {
-            "navigationBarTitleText": "发布帖子"
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -233,43 +234,43 @@
         {
           "path": "pages/index/index",
           "style": {
-            "navigationBarTitleText": "医疗健康"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/consultation/consultation",
           "style": {
-            "navigationBarTitleText": "医生咨询"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/appointment/appointment",
           "style": {
-            "navigationBarTitleText": "预约系统"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/doctor-detail/doctor-detail",
           "style": {
-            "navigationBarTitleText": "医生详情"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/chat/consultation-chat",
           "style": {
-            "navigationBarTitleText": "在线咨询"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/doctor-detail/reviews/doctor-reviews",
           "style": {
-            "navigationBarTitleText": "医生评价"
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pages/medical-record/medical-record",
           "style": {
-            "navigationBarTitleText": "病情资料"
+            "navigationStyle": "custom"
           }
         }
       ]
