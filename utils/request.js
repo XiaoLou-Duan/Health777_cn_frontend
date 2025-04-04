@@ -73,7 +73,7 @@ async function refreshToken() {
     // 使用uni.request直接发送请求，避免循环调用request
     return new Promise((resolve, reject) => {
       uni.request({
-        url: getApiUrl('/app-api/member/auth/refresh-token'),
+        url: getApiUrl('/member/auth/refresh-token?refreshToken='+refreshToken),
         method: 'POST',
         data: { refreshToken },
         success: (res) => {
