@@ -10,11 +10,11 @@
 				<text class="username" @click="goToEditProfile">{{ userInfo.nickName || '未登录' }}</text>
 			</view>
 			<view class="notification" @click="goToNotifications">
-				<text class="iconfont icon-bell-fill" style="font-size: 24rpx; color: #666;"></text>
+				<uni-icons type="notification-filled" size="24" color="#666"></uni-icons>
 				<view class="badge" v-if="notificationCount > 0">{{ notificationCount }}</view>
 			</view>
 			<view class="setting-icon" @click="navigateTo('/pages/setting/setting')">
-				<text class="iconfont icon-setting-fill" style="font-size: 24rpx; color: #666;"></text>
+				<uni-icons type="gear-filled" size="24" color="#666"></uni-icons>
 			</view>
 		</view>
 
@@ -31,7 +31,7 @@
 			<view class="trend-simple-chart">
 				<view class="month-labels">
 					<text v-for="(month, index) in chartData.categories" :key="index" class="month-label">{{ month
-						}}</text>
+					}}</text>
 				</view>
 				<view class="chart-bars">
 					<view v-for="(value, index) in chartData.series[0].data" :key="index" class="chart-bar"
@@ -50,7 +50,7 @@
 			<view class="function-item" v-for="(item, index) in functionList" :key="index"
 				@click="navigateTo(item.path)">
 				<view class="function-icon" :style="{ backgroundColor: item.bgColor }">
-					<text class="iconfont" :class="['icon-' + item.icon]" style="font-size: 30rpx; color: #fff;"></text>
+					<uni-icons :type="getIconType(item.icon)" size="30" color="#fff"></uni-icons>
 				</view>
 				<text class="function-name">{{ item.name }}</text>
 			</view>
@@ -66,13 +66,13 @@
 				<view class="reminder-item" v-for="(item, index) in reminders" :key="index"
 					@click="handleReminder(item)">
 					<view class="reminder-icon" :class="item.type">
-						<text class="iconfont" :class="['icon-' + getReminderIcon(item.type)]" style="font-size: 24rpx; color: #fff;"></text>
+						<uni-icons :type="getReminderIcon(item.type)" size="24" color="#fff"></uni-icons>
 					</view>
 					<view class="reminder-content">
 						<text class="reminder-title">{{ item.title }}</text>
 						<text class="reminder-time">{{ item.time }}</text>
 					</view>
-					<text class="iconfont icon-arrow-right" style="font-size: 18rpx; color: #ccc;"></text>
+					<uni-icons type="right" size="18" color="#ccc"></uni-icons>
 				</view>
 			</view>
 		</view>
@@ -103,11 +103,11 @@
 					</view>
 					<view class="post-stats">
 						<view class="stat-item">
-							<text class="iconfont icon-heart" style="font-size: 16rpx; color: #999;"></text>
+							<uni-icons type="heart" size="16" color="#999"></uni-icons>
 							<text>{{ item.likes }}</text>
 						</view>
 						<view class="stat-item">
-							<text class="iconfont icon-chat" style="font-size: 16rpx; color: #999;"></text>
+							<uni-icons type="chat" size="16" color="#999"></uni-icons>
 							<text>{{ item.comments }}</text>
 						</view>
 					</view>
@@ -116,8 +116,8 @@
 		</view>
 	</view>
 </template>
-  
-  <script>
+
+<script>
 import HealthOverview from '@/components/health-overview/health-overview.vue';
 
 export default {
@@ -217,6 +217,18 @@ export default {
 		this.getHealthData();
 	},
 	methods: {
+		// 将uview图标名称转换为uni-icons类型
+		getIconType(icon) {
+			// 图标映射关系
+			const iconMap = {
+				'question': 'help',
+				'camera': 'camera',
+				'info': 'info',
+				'phone': 'phone'
+			};
+			return iconMap[icon] || icon;
+		},
+
 		formatDate(date) {
 			const year = date.getFullYear();
 			const month = date.getMonth() + 1;
@@ -271,25 +283,27 @@ export default {
 			}
 		},
 		getReminderIcon(type) {
-			// 根据提醒类型返回对应的图标
-			const iconMap = {
-				medicine: 'calendar',
-				exercise: 'man',
-				appointment: 'calendar',
-				default: 'bell'
-			};
-			return iconMap[type] || iconMap.default;
+			switch (type) {
+				case 'medicine':
+					return 'medicine-box'; // 使用uni-icons中的药箱图标
+				case 'exercise':
+					return 'star'; // 使用uni-icons中的星星图标
+				case 'appointment':
+					return 'calendar'; // 使用uni-icons中的日历图标
+				default:
+					return 'notification'; // 使用uni-icons中的通知图标
+			}
 		},
 		navigateToProfile() {
 			console.log('跳转到个人资料页面');
 			uni.navigateTo({
 				url: '/pages/user/profile/profile'
 			});
-	  }
+		}
 	}
-  }
-  </script>
-  
-  <style lang="scss">
-  @import './index.scss';
-  </style>
+}
+</script>
+
+<style lang="scss">
+@import './index.scss';
+</style>

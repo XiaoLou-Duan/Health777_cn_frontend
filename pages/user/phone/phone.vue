@@ -1,12 +1,6 @@
 <template>
   <view class="phone">
-    <view class="custom-navbar">
-      <view class="navbar-left" @click="goBack">
-        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
-      </view>
-      <view class="navbar-title">修改手机号</view>
-      <view class="navbar-right"></view>
-    </view>
+    <uni-nav-bar title="修改手机号" :border="false" left-icon="left" @clickLeft="goBack" status-bar></uni-nav-bar>
     <view class="phone__content">
       <view class="phone__form">
         <view class="phone__section">
@@ -17,7 +11,7 @@
         <view class="phone__section">
           <view class="phone__section-title">更换手机号</view>
           <view class="phone__form-item">
-            <input
+            <uni-easyinput
               v-model="newPhone"
               type="number"
               placeholder="请输入新手机号"
@@ -27,31 +21,31 @@
           </view>
           
           <view class="phone__form-item phone__verification">
-            <input
+            <uni-easyinput
               v-model="verificationCode"
               type="number"
               placeholder="请输入验证码"
               maxlength="4"
               class="phone__input"
             />
-            <button
+            <uni-button
               class="phone__verify-btn"
               :disabled="!canSendCode"
               :type="countDown > 0 ? 'default' : 'primary'"
               @click="handleSendCode"
             >
               {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
-            </button>
+            </uni-button>
           </view>
         </view>
       </view>
       
-      <button 
+      <uni-button 
         type="primary" 
         class="phone__submit" 
         :disabled="!isValid"
         @click="handleChangePhone"
-      >确认修改</button>
+      >确认修改</uni-button>
     </view>
   </view>
 </template>

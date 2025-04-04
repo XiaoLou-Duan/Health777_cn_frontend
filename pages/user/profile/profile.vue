@@ -1,12 +1,6 @@
 <template>
   <view class="profile-container">
-    <view class="custom-navbar">
-      <view class="navbar-left" @click="goBack">
-        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
-      </view>
-      <view class="navbar-title">个人资料</view>
-      <view class="navbar-right"></view>
-    </view>
+    <uni-nav-bar title="个人资料" :border="false" left-icon="left" @clickLeft="goBack" status-bar></uni-nav-bar>
     <view class="content-wrapper">
       <!-- 基本信息区域 -->
       <view class="info-card">
@@ -68,7 +62,7 @@
       </view>
       
       <!-- 修改按钮 -->
-      <view class="edit-btn" @click="goToEdit">编辑个人资料</view>
+      <uni-button type="primary" class="edit-btn" @click="goToEdit">编辑个人资料</uni-button>
     </view>
   </view>
 </template>
@@ -179,7 +173,6 @@ export default {
 .content-wrapper {
   flex: 1;
   padding: 30rpx;
-  margin-top: 44px;
 }
 
 .info-card, .health-card {

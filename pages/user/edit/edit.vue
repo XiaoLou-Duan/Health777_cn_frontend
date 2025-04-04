@@ -1,12 +1,6 @@
 <template>
   <view class="user-edit">
-    <view class="custom-navbar">
-      <view class="navbar-left" @click="goBack">
-        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
-      </view>
-      <view class="navbar-title">编辑个人信息</view>
-      <view class="navbar-right"></view>
-    </view>
+    <uni-nav-bar title="编辑个人信息" :border="false" left-icon="left" @clickLeft="goBack" status-bar></uni-nav-bar>
     <view class="user-edit__content">
       <view class="user-edit__form">
         <!-- 头像修改 -->
@@ -16,7 +10,7 @@
             <image class="user-edit__avatar-image" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill">
             </image>
             <view class="user-edit__avatar-badge">
-              <text class="iconfont icon-camera" style="font-size: 20rpx; color: #FFFFFF;"></text>
+              <uni-icons type="camera" size="20" color="#FFFFFF"></uni-icons>
             </view>
           </view>
         </view>
@@ -24,56 +18,46 @@
         <!-- 个人信息表单 -->
         <view class="user-edit__info">
           <view class="user-edit__section-title">基本信息</view>
-          <form class="custom-form" ref="uForm">
-            <view class="form-item" style="border-bottom: 1rpx solid #eee;">
-              <text class="form-label">昵称</text>
-              <input class="form-input" v-model="userInfo.nickname" placeholder="请输入昵称" />
-            </view>
+          <uni-forms ref="uForm" :model="userInfo" :rules="rules" label-position="left" label-width="auto">
+            <uni-forms-item label="昵称" name="nickname" required>
+              <uni-easyinput v-model="userInfo.nickname" placeholder="请输入昵称" />
+            </uni-forms-item>
 
-            <view class="form-item" style="border-bottom: 1rpx solid #eee;">
-              <text class="form-label">性别</text>
-              <radio-group @change="handleSexChange">
-                <label class="radio-label"><radio value="1" :checked="userInfo.sex == 1" color="#4CAF50" />男</label>
-                <label class="radio-label" style="margin-left: 30rpx;"><radio value="2" :checked="userInfo.sex == 2" color="#4CAF50" />女</label>
-              </radio-group>
-            </view>
+            <uni-forms-item label="性别" name="sex" required>
+              <uni-data-checkbox v-model="userInfo.sex" :localdata="[{text: '男', value: 1}, {text: '女', value: 2}]" />
+            </uni-forms-item>
 
             <!-- 手机号显示 -->
-            <view class="form-item">
-              <text class="form-label">手机号</text>
-              <text class="user-edit__phone">{{ maskPhone(userInfo.mobile) }}</text>
-              <button type="primary" @click="goToChangeMobile" class="user-edit__btn-change">修改</button>
-            </view>
+            <uni-forms-item label="手机号" name="mobile">
+              <view class="user-edit__phone-container">
+                <text class="user-edit__phone">{{ maskPhone(userInfo.mobile) }}</text>
+                <uni-button type="primary" size="mini" @click="goToChangeMobile" class="user-edit__btn-change">修改</uni-button>
+              </view>
+            </uni-forms-item>
             
             <!-- 修改密码 -->
-            <view class="form-item">
-              <text class="form-label">密码</text>
-              <text class="user-edit__phone">******</text>
-              <button type="primary" @click="goToChangePassword" class="user-edit__btn-change">修改</button>
-            </view>
-          </form>
+            <uni-forms-item label="密码" name="password">
+              <view class="user-edit__phone-container">
+                <text class="user-edit__phone">******</text>
+                <uni-button type="primary" size="mini" @click="goToChangePassword" class="user-edit__btn-change">修改</uni-button>
+              </view>
+            </uni-forms-item>
+          </uni-forms>
         </view>
       </view>
 
-      <button type="primary" class="user-edit__submit" @click="saveUserInfo" :loading="loading">保存修改</button>
+      <uni-button type="primary" class="user-edit__submit" @click="saveUserInfo" :loading="loading">保存修改</uni-button>
     </view>
 
     <!-- 上传头像操作菜单 -->
-    <!-- 自定义操作表 -->
-    <view class="custom-action-sheet" v-if="showAvatarActions">
-      <view class="action-sheet-mask" @click="showAvatarActions = false"></view>
-      <view class="action-sheet-content">
-        <view 
-          class="action-item" 
-          v-for="(item, index) in avatarActions" 
-          :key="index"
-          @click="handleAvatarAction(item, index)"
-        >
-          <text :style="{color: item.color}">{{ item.name }}</text>
-        </view>
-        <view class="action-cancel" @click="showAvatarActions = false">取消</view>
-      </view>
-    </view>
+    <!-- 使用uni-ui的操作表 -->
+    <uni-popup ref="avatarActionPopup" type="bottom">
+      <uni-list>
+        <uni-list-item v-for="(item, index) in avatarActions" :key="index"
+          :title="item.name" @click="handleAvatarAction(item, index)" />
+        <uni-list-item title="取消" @click="showAvatarActions = false" />
+      </uni-list>
+    </uni-popup>
   </view>
 </template>
 
@@ -178,12 +162,14 @@ export default {
 
     // 选择头像
     chooseAvatar() {
+      this.$refs.avatarActionPopup.open();
       this.showAvatarActions = true;
     },
 
     // 处理头像选择操作
     handleAvatarAction(item, index) {
       // 关闭操作菜单
+      this.$refs.avatarActionPopup.close();
       this.showAvatarActions = false;
       
       if (index === 0) {
@@ -321,7 +307,6 @@ export default {
   }
   &__content {
     flex: 1;
-    margin-top: 44px;
     padding: 30rpx; 
   }
   
@@ -385,7 +370,6 @@ export default {
   }
   
   &__submit {
-    height: 90rpx;
     font-size: 32rpx;
     border-radius: 45rpx;
     margin-top: 60rpx;

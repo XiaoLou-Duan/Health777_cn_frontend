@@ -33,7 +33,7 @@
       
       <!-- 手机号输入 -->
       <view class="input-group">
-        <text class="iconfont icon-phone" style="font-size: 36rpx; color: #2096F3;"></text>
+        <uni-icons type="phone" size="36" color="#2096F3"></uni-icons>
         <input
           class="input-field"
           type="number"
@@ -45,7 +45,7 @@
       
       <!-- 密码输入 - 密码登录方式 -->
       <view class="input-group" v-if="(loginType === 'password' && !isRegister && !isForgotPassword) || isRegister || isForgotPassword">
-        <text class="iconfont icon-lock" style="font-size: 36rpx; color: #2096F3;"></text>
+        <uni-icons type="locked" size="36" color="#2096F3"></uni-icons>
         <input
           class="input-field"
           :type="showPassword ? 'text' : 'password'"
@@ -53,13 +53,13 @@
           placeholder="请输入密码"
         />
         <view class="password-icon" @click="togglePasswordVisibility">
-          <text class="iconfont" :class="showPassword ? 'icon-eye' : 'icon-eye-off'" style="font-size: 36rpx; color: #c0c4cc;"></text>
+          <uni-icons :type="showPassword ? 'eye' : 'eye-slash'" size="36" color="#c0c4cc"></uni-icons>
         </view>
       </view>
       
       <!-- 验证码输入 - 验证码登录方式 -->
       <view class="input-group" v-if="loginType === 'sms' || isRegister || isForgotPassword">
-        <text class="iconfont icon-checkmark-circle" style="font-size: 36rpx; color: #2096F3;"></text>
+        <uni-icons type="checkbox-filled" size="36" color="#2096F3"></uni-icons>
         <input
           class="input-field verification-input"
           type="number"
@@ -78,7 +78,7 @@
       
       <!-- 注册时的确认密码 -->
       <view class="input-group" v-if="isRegister">
-        <text class="iconfont icon-lock" style="font-size: 36rpx; color: #2096F3;"></text>
+        <uni-icons type="locked" size="36" color="#2096F3"></uni-icons>
         <input
           class="input-field"
           :type="showConfirmPassword ? 'text' : 'password'"
@@ -86,7 +86,7 @@
           placeholder="请确认密码"
         />
         <view class="password-icon" @click="toggleConfirmPasswordVisibility">
-          <text class="iconfont" :class="showConfirmPassword ? 'icon-eye' : 'icon-eye-off'" style="font-size: 36rpx; color: #c0c4cc;"></text>
+          <uni-icons :type="showConfirmPassword ? 'eye' : 'eye-slash'" size="36" color="#c0c4cc"></uni-icons>
         </view>
       </view>
       
@@ -110,11 +110,11 @@
     <!-- 底部协议提示 -->
     <view class="agreement-tip">
       <view class="checkbox" @click="toggleAgree">
-        <text 
-          class="iconfont" 
-          :class="isAgree ? 'icon-checkbox-mark' : 'icon-checkbox'" 
-          :style="{fontSize: '30rpx', color: isAgree ? '#4CAF50' : '#9E9E9E'}"
-        ></text>
+        <uni-icons 
+          :type="isAgree ? 'checkbox-filled' : 'square'" 
+          size="30" 
+          :color="isAgree ? '#4CAF50' : '#9E9E9E'"
+        ></uni-icons>
       </view>
       <text class="agreement-text">
         已阅读并同意

@@ -1,12 +1,6 @@
 <template>
   <view class="password">
-    <view class="custom-navbar">
-      <view class="navbar-left" @click="goBack">
-        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
-      </view>
-      <view class="navbar-title">修改密码</view>
-      <view class="navbar-right"></view>
-    </view>
+    <uni-nav-bar title="修改密码" :border="false" left-icon="left" @clickLeft="goBack" status-bar></uni-nav-bar>
     <view class="password__content">
       <view class="password__form">
         <view class="password__phone-info">
@@ -14,24 +8,25 @@
           <text class="password__phone-value">{{userPhone}}</text>
         </view>
         <view class="password__form-item password__verification">
-          <input
+          <uni-easyinput
             v-model="code"
             type="number"
             placeholder="请输入手机验证码"
             maxlength="4"
             class="password__input"
           />
-          <button
+          <uni-button
             class="password__verify-btn"
             :disabled="countDown > 0"
+            size="mini"
             :type="countDown > 0 ? 'default' : 'primary'"
             @click="sendVerificationCode"
           >
             {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
-          </button>
+          </uni-button>
         </view>
         <view class="password__form-item">
-          <input
+          <uni-easyinput
             v-model="password"
             type="password"
             placeholder="请输入新密码"
@@ -39,7 +34,7 @@
           />
         </view>
         <view class="password__form-item">
-          <input
+          <uni-easyinput
             v-model="confirmPassword"
             type="password"
             placeholder="再次输入新密码"
@@ -48,17 +43,17 @@
         </view>
         
         <view class="password__tips">
-          <text class="iconfont icon-info-circle" style="color: #9E9E9E; font-size: 24rpx;"></text>
+          <uni-icons type="info" size="24" color="#9E9E9E"></uni-icons>
           <text class="password__tips-text">密码长度为8-20位，必须包含数字和字母</text>
         </view>
       </view>
       
-      <button 
+      <uni-button 
         type="primary" 
         class="password__submit" 
         :disabled="!isValid"
         @click="handleChangePassword"
-      >确认修改</button>
+      >确认修改</uni-button>
     </view>
   </view>
 </template>
@@ -309,7 +304,6 @@ export default {
   background-color: #F5F7FA;
   
   &__content {
-    margin-top:44px;
     flex: 1;
     padding: 30rpx;
 
@@ -378,7 +372,6 @@ export default {
   }
   
   &__submit {
-    height: 90rpx;
     font-size: 32rpx;
     border-radius: 45rpx;
     margin-top: 60rpx;

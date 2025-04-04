@@ -78,7 +78,7 @@ async function responseInterceptor(response, originalConfig) {
   const needAuth = !publicApiPaths.some(path => requestUrl.includes(path));
   
   // 如果返回的状态码为401，说明 token已过期或无效
-  if (response.statusCode === 401 || response.data.code === 401) {
+  if (response.code === 401) {
     // 如果是刷新token的请求失败，直接返回错误
     if (requestUrl.includes('/refresh-token')) {
       return handleLogout();
