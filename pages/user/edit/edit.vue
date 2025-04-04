@@ -1,6 +1,12 @@
 <template>
   <view class="user-edit">
-    <u-navbar title="编辑个人信息" :border="false" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <view class="custom-navbar">
+      <view class="navbar-left" @click="goBack">
+        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
+      </view>
+      <view class="navbar-title">编辑个人信息</view>
+      <view class="navbar-right"></view>
+    </view>
     <view class="user-edit__content">
       <view class="user-edit__form">
         <!-- 头像修改 -->
@@ -10,7 +16,7 @@
             <image class="user-edit__avatar-image" :src="userInfo.avatar || '/static/images/default-avatar.png'" mode="aspectFill">
             </image>
             <view class="user-edit__avatar-badge">
-              <u-icon name="camera" size="20" color="#FFFFFF"></u-icon>
+              <text class="iconfont icon-camera" style="font-size: 20rpx; color: #FFFFFF;"></text>
             </view>
           </view>
         </view>
@@ -18,38 +24,56 @@
         <!-- 个人信息表单 -->
         <view class="user-edit__info">
           <view class="user-edit__section-title">基本信息</view>
-          <u-form labelWidth="auto" :model="userInfo" :rules="rules" ref="uForm" errorType="message">
-            <u-form-item label="昵称" prop="nickname" :borderBottom="true">
-              <u-input v-model="userInfo.nickname" placeholder="请输入昵称" />
-            </u-form-item>
+          <form class="custom-form" ref="uForm">
+            <view class="form-item" style="border-bottom: 1rpx solid #eee;">
+              <text class="form-label">昵称</text>
+              <input class="form-input" v-model="userInfo.nickname" placeholder="请输入昵称" />
+            </view>
 
-            <u-form-item label="性别" prop="sex" :borderBottom="true">
-              <u-radio-group v-model="userInfo.sex">
-                <u-radio :name="1" label="男"></u-radio>
-                <u-radio :name="2" label="女" style="margin-left: 30rpx;"></u-radio>
-              </u-radio-group>
-            </u-form-item>
+            <view class="form-item" style="border-bottom: 1rpx solid #eee;">
+              <text class="form-label">性别</text>
+              <radio-group @change="handleSexChange">
+                <label class="radio-label"><radio value="1" :checked="userInfo.sex == 1" color="#4CAF50" />男</label>
+                <label class="radio-label" style="margin-left: 30rpx;"><radio value="2" :checked="userInfo.sex == 2" color="#4CAF50" />女</label>
+              </radio-group>
+            </view>
 
             <!-- 手机号显示 -->
-            <u-form-item label="手机号" prop="mobile">
+            <view class="form-item">
+              <text class="form-label">手机号</text>
               <text class="user-edit__phone">{{ maskPhone(userInfo.mobile) }}</text>
-              <u-button type="primary" @click="goToChangeMobile" class="user-edit__btn-change">修改</u-button>
-            </u-form-item>
+              <button type="primary" @click="goToChangeMobile" class="user-edit__btn-change">修改</button>
+            </view>
             
             <!-- 修改密码 -->
-            <u-form-item label="密码" prop="password">
+            <view class="form-item">
+              <text class="form-label">密码</text>
               <text class="user-edit__phone">******</text>
-              <u-button type="primary" @click="goToChangePassword" class="user-edit__btn-change">修改</u-button>
-            </u-form-item>
-          </u-form>
+              <button type="primary" @click="goToChangePassword" class="user-edit__btn-change">修改</button>
+            </view>
+          </form>
         </view>
       </view>
 
-      <u-button type="primary" class="user-edit__submit" @click="saveUserInfo" :loading="loading">保存修改</u-button>
+      <button type="primary" class="user-edit__submit" @click="saveUserInfo" :loading="loading">保存修改</button>
     </view>
 
     <!-- 上传头像操作菜单 -->
-    <u-action-sheet :list="avatarActions" v-model="showAvatarActions" @click="handleAvatarAction" :cancelText="'取消'"></u-action-sheet>
+    <!-- 自定义操作表 -->
+    <view class="custom-action-sheet" v-if="showAvatarActions">
+      <view class="action-sheet-mask" @click="showAvatarActions = false"></view>
+      <view class="action-sheet-content">
+        <view 
+          class="action-item" 
+          v-for="(item, index) in avatarActions" 
+          :key="index"
+          @click="handleAvatarAction(item, index)"
+        >
+          <text :style="{color: item.color}">{{ item.name }}</text>
+        </view>
+        <view class="action-cancel" @click="showAvatarActions = false">取消</view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -71,11 +95,11 @@ export default {
       showAvatarActions: false,
       avatarActions: [
         {
-          text: '拍照',
+          name: '拍照',
           color: '#333333'
         },
         {
-          text: '从相册选择',
+          name: '从相册选择',
           color: '#333333'
         }
       ],
@@ -95,10 +119,15 @@ export default {
     this.fetchUserInfo();
   },
   onReady() {
-		this.$refs.uForm.setRules(this.rules);
+		// 原生表单不需要设置规则
 	},
   methods: {
     ...mapActions('user', ['getUserInfo', 'updateUserInfo']),
+    
+    // 处理性别选择变化
+    handleSexChange(e) {
+      this.userInfo.sex = parseInt(e.detail.value);
+    },
     
     // 获取用户信息
     fetchUserInfo() {
@@ -153,7 +182,10 @@ export default {
     },
 
     // 处理头像选择操作
-    handleAvatarAction(index) {
+    handleAvatarAction(item, index) {
+      // 关闭操作菜单
+      this.showAvatarActions = false;
+      
       if (index === 0) {
         // 拍照
         this.takePhoto();
@@ -214,12 +246,9 @@ export default {
         uni.hideLoading();
         console.error('上传头像失败:', err);
         
-        // 模拟上传成功
-        this.userInfo.avatar = filePath;
-        
         uni.showToast({
-          title: '头像上传成功',
-          icon: 'success'
+          title: err.message || '上传失败，请重试',
+          icon: 'none'
         });
       });
     },
@@ -232,7 +261,6 @@ export default {
       if (this.loading) return;
       this.loading = true;
       
-      // 使用Promise方式进行表单验证，根据uView官方文档
       this.$refs.uForm.validate().then(valid => {
         this.submitUserInfo();
       }).catch(errors => {

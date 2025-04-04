@@ -1,6 +1,12 @@
 <template>
   <view class="profile-container">
-    <u-navbar title="个人资料" :border="false" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <view class="custom-navbar">
+      <view class="navbar-left" @click="goBack">
+        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
+      </view>
+      <view class="navbar-title">个人资料</view>
+      <view class="navbar-right"></view>
+    </view>
     <view class="content-wrapper">
       <!-- 基本信息区域 -->
       <view class="info-card">

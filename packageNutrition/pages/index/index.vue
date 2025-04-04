@@ -35,7 +35,6 @@
           <text class="right-link" @click="navToProteinAnalysis">详细 ></text>
         </view>
         <view class="protein-chart-container">
-          <!-- 临时替换图表组件，使用uView的统计卡片替代 -->
           <view class="protein-chart-alternative">
             <view class="reference-line"></view>
             <text class="reference-label">标准线(70g)</text>

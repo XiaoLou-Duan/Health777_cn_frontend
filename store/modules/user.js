@@ -1,8 +1,9 @@
 /**
  * 用户模块状态管理
  */
-import { API } from '@/config/api.js';
+import { API, getApiUrl } from '@/config/api.js';
 import AuthService from '@/services/auth';
+import Storage from '@/utils/storage';
 
 const state = {
   // 登录状态
@@ -438,6 +439,43 @@ const actions = {
       }
     } catch (error) {
       console.error('修改密码失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
+  },
+  
+  // 上传用户头像
+  async uploadAvatar({ commit, state }, { filePath }) {
+    if (!state.token) return { success: false, message: '未登录' };
+    
+    try {
+      return new Promise((resolve, reject) => {
+        uni.uploadFile({
+          url: getApiUrl('/app-api/member/user/update-avatar'),
+          filePath: filePath,
+          name: 'avatarFile', // 与后端接口参数名一致
+          header: {
+            'Authorization': `Bearer ${state.token}`
+          },
+          success: (uploadRes) => {
+            // uni.uploadFile 返回的数据是字符串，需要解析成对象
+            const result = typeof uploadRes.data === 'string' ? JSON.parse(uploadRes.data) : uploadRes.data;
+            
+            if (result.code === 0) {
+              // 更新用户信息中的头像
+              commit('UPDATE_USER_INFO', { avatar: result.data });
+              resolve({ success: true, data: { url: result.data } });
+            } else {
+              resolve({ success: false, message: result.message || '上传头像失败' });
+            }
+          },
+          fail: (err) => {
+            console.error('上传头像失败', err);
+            reject({ success: false, message: '网络错误，请重试' });
+          }
+        });
+      });
+    } catch (error) {
+      console.error('上传头像失败', error);
       return { success: false, message: '网络错误，请重试' };
     }
   },

@@ -15,7 +15,7 @@
 ## 🛠️ 技术栈
 
 - 前端框架：uni-app
-- UI 组件库：uview-ui、uni-ui
+- UI 组件库：uni-ui
 - 图片识别 API：阿里云图像识别
 - 运行平台：Android、iOS、H5
 

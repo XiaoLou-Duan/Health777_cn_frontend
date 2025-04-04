@@ -10,11 +10,11 @@
 				<text class="username" @click="goToEditProfile">{{ userInfo.nickName || '未登录' }}</text>
 			</view>
 			<view class="notification" @click="goToNotifications">
-				<u-icon name="bell-fill" size="24" color="#666"></u-icon>
+				<text class="iconfont icon-bell-fill" style="font-size: 24rpx; color: #666;"></text>
 				<view class="badge" v-if="notificationCount > 0">{{ notificationCount }}</view>
 			</view>
 			<view class="setting-icon" @click="navigateTo('/pages/setting/setting')">
-				<u-icon name="setting-fill" size="24" color="#666"></u-icon>
+				<text class="iconfont icon-setting-fill" style="font-size: 24rpx; color: #666;"></text>
 			</view>
 		</view>
 
@@ -50,7 +50,7 @@
 			<view class="function-item" v-for="(item, index) in functionList" :key="index"
 				@click="navigateTo(item.path)">
 				<view class="function-icon" :style="{ backgroundColor: item.bgColor }">
-					<u-icon :name="item.icon" size="30" color="#fff"></u-icon>
+					<text class="iconfont" :class="['icon-' + item.icon]" style="font-size: 30rpx; color: #fff;"></text>
 				</view>
 				<text class="function-name">{{ item.name }}</text>
 			</view>
@@ -66,13 +66,13 @@
 				<view class="reminder-item" v-for="(item, index) in reminders" :key="index"
 					@click="handleReminder(item)">
 					<view class="reminder-icon" :class="item.type">
-						<u-icon :name="getReminderIcon(item.type)" size="24" color="#fff"></u-icon>
+						<text class="iconfont" :class="['icon-' + getReminderIcon(item.type)]" style="font-size: 24rpx; color: #fff;"></text>
 					</view>
 					<view class="reminder-content">
 						<text class="reminder-title">{{ item.title }}</text>
 						<text class="reminder-time">{{ item.time }}</text>
 					</view>
-					<u-icon name="arrow-right" size="18" color="#ccc"></u-icon>
+					<text class="iconfont icon-arrow-right" style="font-size: 18rpx; color: #ccc;"></text>
 				</view>
 			</view>
 		</view>
@@ -103,11 +103,11 @@
 					</view>
 					<view class="post-stats">
 						<view class="stat-item">
-							<u-icon name="heart" size="16" color="#999"></u-icon>
+							<text class="iconfont icon-heart" style="font-size: 16rpx; color: #999;"></text>
 							<text>{{ item.likes }}</text>
 						</view>
 						<view class="stat-item">
-							<u-icon name="chat" size="16" color="#999"></u-icon>
+							<text class="iconfont icon-chat" style="font-size: 16rpx; color: #999;"></text>
 							<text>{{ item.comments }}</text>
 						</view>
 					</view>

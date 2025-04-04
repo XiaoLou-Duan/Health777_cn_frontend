@@ -14,14 +14,5 @@
 
 <script>
 export default {
-  // ...existing code...
-  
-  components: {
-    // 确保引入了 u-loading-icon 组件
-    'u-loading-icon': () => import('uview-ui/components/u-loading-icon/u-loading-icon.vue')
-    // ...existing code...
-  },
-  
-  // ...existing code...
 }
 </script>

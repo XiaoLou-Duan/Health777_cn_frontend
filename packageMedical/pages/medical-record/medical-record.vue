@@ -98,8 +98,7 @@ export default {
     this.loadRecords();
   },
   components: {
-    // 确保引入了 u-loading-icon 组件
-    'u-loading-icon': () => import('uview-ui/components/u-loading-icon/u-loading-icon.vue')
+    
   },
   methods: {
     // 切换过滤条件

@@ -1,5 +1,5 @@
 import App from './App'
-import uView from 'uview-ui'
+
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
@@ -10,8 +10,6 @@ import DefaultAvatar from './components/DefaultAvatar.vue'
 
 Vue.component('default-avatar', DefaultAvatar)
 // main.js，注意要在use方法之后执行
-
-Vue.use(uView)
 
 Vue.config.productionTip = false
 App.mpType = 'app'

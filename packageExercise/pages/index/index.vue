@@ -603,17 +603,6 @@
 	margin-bottom: 10rpx;
 }
 
-/* 确保图标能正确居中显示 */
-.function-icon {
-	/* 删除 display: flex !important; */
-	/* 删除自定义的对齐方式，使用 uView 默认的对齐方式 */
-}
-
-/* 调整uView图标的视觉效果 */
-.u-icon {
-	/* 删除这些样式覆盖，避免与 uView 原生样式冲突 */
-}
-
 /* 添加图表替代样式 */
 	.chart-alternative {
 		padding: 20rpx 0;

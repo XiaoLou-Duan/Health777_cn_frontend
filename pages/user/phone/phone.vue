@@ -1,6 +1,12 @@
 <template>
   <view class="phone">
-    <u-navbar title="修改手机号" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <view class="custom-navbar">
+      <view class="navbar-left" @click="goBack">
+        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
+      </view>
+      <view class="navbar-title">修改手机号</view>
+      <view class="navbar-right"></view>
+    </view>
     <view class="phone__content">
       <view class="phone__form">
         <view class="phone__section">
@@ -11,7 +17,7 @@
         <view class="phone__section">
           <view class="phone__section-title">更换手机号</view>
           <view class="phone__form-item">
-            <u-input
+            <input
               v-model="newPhone"
               type="number"
               placeholder="请输入新手机号"
@@ -21,31 +27,31 @@
           </view>
           
           <view class="phone__form-item phone__verification">
-            <u-input
+            <input
               v-model="verificationCode"
               type="number"
               placeholder="请输入验证码"
               maxlength="4"
               class="phone__input"
             />
-            <u-button
+            <button
               class="phone__verify-btn"
               :disabled="!canSendCode"
               :type="countDown > 0 ? 'default' : 'primary'"
               @click="handleSendCode"
             >
               {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
-            </u-button>
+            </button>
           </view>
         </view>
       </view>
       
-      <u-button 
+      <button 
         type="primary" 
         class="phone__submit" 
         :disabled="!isValid"
         @click="handleChangePhone"
-      >确认修改</u-button>
+      >确认修改</button>
     </view>
   </view>
 </template>

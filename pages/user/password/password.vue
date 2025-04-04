@@ -1,6 +1,12 @@
 <template>
   <view class="password">
-    <u-navbar title="修改密码" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <view class="custom-navbar">
+      <view class="navbar-left" @click="goBack">
+        <text class="iconfont icon-arrow-left" style="color: #333333;"></text>
+      </view>
+      <view class="navbar-title">修改密码</view>
+      <view class="navbar-right"></view>
+    </view>
     <view class="password__content">
       <view class="password__form">
         <view class="password__phone-info">
@@ -8,24 +14,24 @@
           <text class="password__phone-value">{{userPhone}}</text>
         </view>
         <view class="password__form-item password__verification">
-          <u-input
+          <input
             v-model="code"
             type="number"
             placeholder="请输入手机验证码"
             maxlength="4"
             class="password__input"
           />
-          <u-button
+          <button
             class="password__verify-btn"
             :disabled="countDown > 0"
             :type="countDown > 0 ? 'default' : 'primary'"
             @click="sendVerificationCode"
           >
             {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
-          </u-button>
+          </button>
         </view>
         <view class="password__form-item">
-          <u-input
+          <input
             v-model="password"
             type="password"
             placeholder="请输入新密码"
@@ -33,7 +39,7 @@
           />
         </view>
         <view class="password__form-item">
-          <u-input
+          <input
             v-model="confirmPassword"
             type="password"
             placeholder="再次输入新密码"
@@ -42,17 +48,17 @@
         </view>
         
         <view class="password__tips">
-          <u-icon name="info-circle" color="#9E9E9E" size="24"></u-icon>
+          <text class="iconfont icon-info-circle" style="color: #9E9E9E; font-size: 24rpx;"></text>
           <text class="password__tips-text">密码长度为8-20位，必须包含数字和字母</text>
         </view>
       </view>
       
-      <u-button 
+      <button 
         type="primary" 
         class="password__submit" 
         :disabled="!isValid"
         @click="handleChangePassword"
-      >确认修改</u-button>
+      >确认修改</button>
     </view>
   </view>
 </template>
