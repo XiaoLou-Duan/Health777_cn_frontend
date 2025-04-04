@@ -239,9 +239,6 @@ export default {
       });
     },
 
-
-
-
     // 保存用户信息
     saveUserInfo() {
       if (this.loading) return;

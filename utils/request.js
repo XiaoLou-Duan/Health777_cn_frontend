@@ -1,27 +1,59 @@
-/**
- * request.js - HTTP请求封装
- */
 import { getApiUrl } from '@/config/api';
 import Storage from './storage';
 import { publicApiPaths } from '@/utils/permission.js';
 
-// 是否正在刷新token
 let isRefreshingToken = false;
-// 请求队列，存储待重发请求
 let requestQueue = [];
 
-/**
- * 请求拦截器
- * @param {Object} config 请求配置
- * @returns {Object} 处理后的请求配置
- */
 function requestInterceptor(config) {
-  // 获取token
   const token = Storage.get('token');
   
   // 检查当前请求是否需要登录检测
   // 使用permission.js中定义的公共API路径列表
   const needAuth = !publicApiPaths.some(path => config.url.includes(path));
+  
+  // 检查token是否即将过期，如果是公共API路径则不检查
+  if (needAuth && token) {
+    const expiresTime = Storage.get('expiresTime');
+    if (expiresTime) {
+      // 将expiresTime转换为Date对象
+      const expiresDate = new Date(expiresTime);
+      const now = new Date();
+      
+      // 如果token将在5分钟内过期，尝试提前刷新
+      const fiveMinutes = 5 * 60 * 1000; // 5分钟，单位毫秒
+      if ((expiresDate.getTime() - now.getTime()) < fiveMinutes) {
+        // 如果当前没有在刷新token，则尝试刷新
+        if (!isRefreshingToken) {
+          console.log('Token即将过期，尝试提前刷新');
+          refreshToken()
+            .then(result => {
+              if (result && result.code === 0 && result.data) {
+                const tokenData = result.data;
+                Storage.set('token', tokenData.accessToken);
+                Storage.set('refreshToken', tokenData.refreshToken);
+                if (tokenData.expiresTime) {
+                  Storage.set('expiresTime', tokenData.expiresTime);
+                }
+                
+                try {
+                  const store = require('@/store').default;
+                  store.commit('user/SET_TOKEN', tokenData.accessToken);
+                } catch (error) {
+                  console.error('更新Vuex状态失败:', error);
+                }
+                
+                console.log('Token提前刷新成功');
+              }
+            })
+            .catch(error => {
+              console.error('提前刷新Token失败:', error);
+              // 失败了也没关系，后续请求会触发正常的刷新流程
+            });
+        }
+      }
+    }
+  }
   
   config.header = {
     ...config.header,
@@ -31,10 +63,6 @@ function requestInterceptor(config) {
   return config;
 }
 
-/**
- * 刷新令牌
- * @returns {Promise} 刷新结果
- */
 async function refreshToken() {
   const refreshToken = Storage.get('refreshToken');
   if (!refreshToken) {
@@ -49,91 +77,121 @@ async function refreshToken() {
         method: 'POST',
         data: { refreshToken },
         success: (res) => {
-          if (res.statusCode === 200 && res.data.code === 0) {
-            resolve(res.data);
+          if (res.data && res.data.code === 0) {
+            // 确保返回的数据结构符合后续处理的预期
+            resolve({
+              code: 0,
+              data: res.data.data, // 直接返回data部分，包含accessToken, refreshToken等
+              message: res.data.message || '刷新令牌成功'
+            });
           } else {
-            reject(res.data.message || '刷新令牌失败');
+            reject(res.data?.message || '刷新令牌失败');
           }
         },
         fail: (err) => {
+          console.error('刷新令牌请求失败:', err);
           reject(err);
         }
       });
     });
   } catch (error) {
+    console.error('刷新令牌异常:', error);
     return Promise.reject(error);
   }
 }
 
-/**
- * 响应拦截器
- * @param {Object} response 响应数据
- * @param {Object} originalConfig 原始请求配置
- * @returns {Object} 处理后的响应数据
- */
 async function responseInterceptor(response, originalConfig) {
-  // 检查当前请求是否需要登录检测
-  // 使用permission.js中定义的公共API路径列表
-  const requestUrl = response.config ? response.config.url : '';
-  const needAuth = !publicApiPaths.some(path => requestUrl.includes(path));
+  const requestUrl = originalConfig ? originalConfig.url : '';
   
-  // 如果返回的状态码为401，说明 token已过期或无效
-  if (response.code === 401) {
-    // 如果是刷新token的请求失败，直接返回错误
+  // 检查响应状态码
+  if (response.data && response.data.code === 401) {
+    console.log('收到401响应，请求URL:', requestUrl);
+    
+    // 如果是刷新token的请求返回401，直接登出
     if (requestUrl.includes('/refresh-token')) {
+      console.log('刷新令牌请求失败，执行登出');
       return handleLogout();
     }
     
     // 如果不是刷新token的请求，尝试刷新token
     if (!isRefreshingToken) {
       isRefreshingToken = true;
+      console.log('开始刷新令牌流程');
       
       try {
         // 获取刷新令牌
         const refreshTokenValue = Storage.get('refreshToken');
         if (!refreshTokenValue) {
+          console.error('本地没有存储刷新令牌');
           throw new Error('没有刷新令牌');
         }
         
         // 刷新令牌
         const result = await refreshToken();
+        console.log('刷新令牌结果:', result);
         
-        if (result && result.data) {
+        if (result && result.code === 0 && result.data) {
           // 更新存储的token信息
           const tokenData = result.data;
+          console.log('获取到新的令牌');
+          
+          // 存储新的token
           Storage.set('token', tokenData.accessToken);
-          if (tokenData.refreshToken) {
-            Storage.set('refreshToken', tokenData.refreshToken);
-          }
+          Storage.set('refreshToken', tokenData.refreshToken);
           if (tokenData.expiresTime) {
             Storage.set('expiresTime', tokenData.expiresTime);
           }
           
-          // 更新Vuex中的token
-          const store = require('@/store').default;
-          store.commit('user/SET_TOKEN', tokenData.accessToken);
+          // 更新Vuex中的token，使用动态导入避免循环引用
+          try {
+            const store = require('@/store').default;
+            store.commit('user/SET_TOKEN', tokenData.accessToken);
+          } catch (storeError) {
+            console.error('更新Vuex状态失败:', storeError);
+            // 继续执行，不影响主流程
+          }
           
           // 重新发送队列中的请求
-          requestQueue.forEach(cb => cb());
+          console.log(`处理等待队列中的 ${requestQueue.length} 个请求`);
+          requestQueue.forEach(cb => cb(tokenData.accessToken));
           requestQueue = [];
           
           // 重新发送当前请求
           originalConfig.header.Authorization = `Bearer ${tokenData.accessToken}`;
           return request(originalConfig);
         } else {
-          throw new Error('刷新令牌失败');
+          console.error('刷新令牌响应格式不正确:', result);
+          throw new Error(result?.message || '刷新令牌失败');
         }
       } catch (error) {
-        console.error('刷新令牌失败:', error);
+        console.error('刷新令牌过程中出错:', error);
+        // 清空请求队列，所有等待的请求都会收到登出错误
+        requestQueue.forEach(cb => cb(null, error));
+        requestQueue = [];
         return handleLogout();
       } finally {
         isRefreshingToken = false;
       }
     } else {
       // 将请求加入队列
-      return new Promise(resolve => {
-        requestQueue.push(() => {
-          originalConfig.header.Authorization = `Bearer ${Storage.get('token')}`;
+      console.log('令牌刷新中，将请求加入队列');
+      return new Promise((resolve, reject) => {
+        requestQueue.push((newToken, error) => {
+          if (error) {
+            // 如果刷新令牌过程出错，拒绝该请求
+            reject(error);
+            return;
+          }
+          
+          if (newToken) {
+            // 使用新令牌更新请求头
+            originalConfig.header.Authorization = `Bearer ${newToken}`;
+          } else {
+            // 使用存储中的令牌（以防万一）
+            originalConfig.header.Authorization = `Bearer ${Storage.get('token')}`;
+          }
+          
+          // 重新发送请求
           resolve(request(originalConfig));
         });
       });
@@ -147,6 +205,8 @@ async function responseInterceptor(response, originalConfig) {
  * 处理登出
  */
 function handleLogout() {
+  console.log('执行登出操作');
+  
   // 清除本地存储的用户信息和token
   Storage.remove('userInfo');
   Storage.remove('token');
@@ -154,11 +214,16 @@ function handleLogout() {
   Storage.remove('expiresTime');
   Storage.remove('userId');
   
-  // 清除Vuex中的用户状态
-  const store = require('@/store').default;
-  store.commit('user/SET_LOGIN_STATE', false);
-  store.commit('user/SET_USER_INFO', null);
-  store.commit('user/SET_TOKEN', '');
+  // 清除Vuex中的用户状态，使用try-catch避免可能的循环引用问题
+  try {
+    const store = require('@/store').default;
+    store.commit('user/SET_LOGIN_STATE', false);
+    store.commit('user/SET_USER_INFO', null);
+    store.commit('user/SET_TOKEN', '');
+  } catch (error) {
+    console.error('清除Vuex状态失败:', error);
+    // 继续执行，不影响主流程
+  }
   
   // 如果当前页面不是登录页，则显示提示并跳转
   const pages = getCurrentPages();
