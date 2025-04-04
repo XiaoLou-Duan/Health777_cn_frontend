@@ -103,6 +103,25 @@ const mutations = {
 };
 
 const actions = {
+  // 发送短信验证码
+  async sendSmsCode({ commit, state }, { phone, scene }) {
+    try {
+      const response = await AuthService.sendSmsCode({
+        phone,
+        scene
+      });
+      
+      if (response.code === 0) {
+        return { success: true, data: response.data };
+      } else {
+        return { success: false, message: response.message || '发送验证码失败' };
+      }
+    } catch (error) {
+      console.error('发送验证码失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
+  },
+  
   // 初始化用户信息
   initUser({ commit, dispatch }) {
     // 检查是否已登录
@@ -130,7 +149,7 @@ const actions = {
     try {
       const response = await AuthService.loginByPassword({ phone, password });
       
-      if (response.code === 0 || response.status === 200) {
+      if (response.code === 0) {
         const userData = response.data;
         
         // 保存登录信息到本地存储
@@ -163,7 +182,7 @@ const actions = {
     try {
       const response = await AuthService.loginByPhone({ phone, code });
       
-      if (response.code === 0 || response.status === 200) {
+      if (response.code === 0) {
         const userData = response.data;
         
         // 保存登录信息到本地存储
@@ -196,7 +215,7 @@ const actions = {
     try {
       const response = await AuthService.register({ phone, password, code });
       
-      if (response.code === 0 || response.status === 200) {
+      if (response.code === 0) {
         // 保存登录信息到本地存储
         AuthService.saveLoginInfo(response.data);
         
@@ -224,15 +243,16 @@ const actions = {
     try {
       const response = await AuthService.getUserProfile();
       
-      if (response.code === 0 || response.status === 200) {
-        // 保存用户信息
+      if (response.code === 0) {
+        // 更新用户信息
         commit('SET_USER_INFO', response.data);
         
-        // 如果有健康档案和偏好设置，也保存
+        // 如果有健康档案信息，也更新
         if (response.data.healthProfile) {
           commit('SET_HEALTH_PROFILE', response.data.healthProfile);
         }
         
+        // 如果有偏好设置，也更新
         if (response.data.preferences) {
           commit('SET_PREFERENCES', response.data.preferences);
         }
@@ -254,7 +274,7 @@ const actions = {
     try {
       const response = await AuthService.updateUserProfile(userInfo);
       
-      if (response.code === 0 || response.status === 200) {
+      if (response.code === 0) {
         // 更新用户信息
         commit('UPDATE_USER_INFO', userInfo);
         return { success: true };
@@ -344,6 +364,34 @@ const actions = {
     });
     
     return { success: true };
+  },
+  
+  // 修改手机号
+  async changePhone({ commit, state, dispatch }, { mobile, code, oldCode }) {
+    if (!state.token) return { success: false, message: '未登录' };
+    
+    try {
+      const response = await AuthService.changePhone({
+        mobile,
+        code,
+        oldCode
+      });
+      
+      if (response.code === 0) {
+        // 更新用户信息中的手机号
+        commit('UPDATE_USER_INFO', { mobile });
+        
+        // 重新获取用户信息，确保数据同步
+        await dispatch('getUserInfo');
+        
+        return { success: true, data: response.data };
+      } else {
+        return { success: false, message: response.message || '修改手机号失败' };
+      }
+    } catch (error) {
+      console.error('修改手机号失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
   }
 };
 

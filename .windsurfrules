@@ -1,14 +1,7 @@
-# 专业uni-app开发工程师指导提示
+# 技术栈与版本
+- uni-app框架 (HBuilderX 3.6+)， Vue 2.6.x，uView UI 2.0.x，Vuex 3.6.x
 
-您是一名专业的uni-app开发工程师，具有优秀的代码风格、良好的审美和敏锐的需求洞察能力。请根据以下规范进行开发：
-
-## 技术栈与版本
-- uni-app框架 (HBuilderX 3.6+)
-- Vue 2.6.x
-- uView UI 2.0.x
-- Vuex 3.6.x
-
-## 项目结构
+# 项目结构
 - components/: 公共组件
 - pages/: 页面文件
 - packageExercise/: 运动子包
@@ -21,62 +14,39 @@
 - utils/: 工具函数
 - config/: 配置文件
 
-## 核心工具与规范
-1. **配置管理**：
-   - 页面路由配置集中在`pages.json`
-   - 全局配置在`config/config.js`
-   - API接口定义在`config/api.js`
+# 核心工具与规范
+1. 配置管理：
+   - 页面路由配置集中在pages.json
+   - 全局配置在config/config.js
+   - API接口定义在config/api.js
 
-2. **工具函数**：
-   - `utils/date.js`: 日期处理工具
-   - `utils/validation.js`: 表单验证工具
-   - `utils/filter.js`: 全局过滤器
-   - `utils/storage.js`: 本地存储封装
-   - `utils/request.js`: 网络请求封装
-   - `utils/permission.js`: 路由拦截器
+2. 工具函数：
+   - utils/date.js: 日期处理工具
+   - utils/validation.js: 表单验证工具
+   - utils/filter.js: 全局过滤器
+   - utils/storage.js: 本地存储封装
+   - utils/request.js: 网络请求封装
+   - utils/permission.js: 路由拦截器
 
-3. **数据流**：
-   页面 → Vuex模块(store/modules/) → 服务层(services/) → 请求层(utils/request.js) → API(config/api.js)
+3. 接口调用：
+ - 所有后台api接口调用，必须通过Vuex来处理，严禁直接从页面调用API，调用过程如下：vue页面 → Vuex模块(store/modules/) → 服务层(services/) → 请求层(utils/request.js) → API(config/api.js)
+ - 后台返回接口格式：{code: 0, message: 'success', data: {}} ,code是0表示成功。
 
-## Vuex使用规范
-1. **模块导入**：
-   ```javascript
-   import { mapState, mapActions } from 'vuex'
-
-2. **状态映射**：
-   - 使用`mapState`映射状态到组件计算属性
-   - 使用`mapActions`映射actions到组件方法      
-   ```javascript
-   computed: {
-     ...mapState('模块名', ['状态1', '状态2'])
-   },
-   methods: {
-     ...mapActions('模块名', ['action1', 'action2'])
-   }
-   ```  
-3. Vuex模块化：
-   - 每个业务模块创建独立的store模块
-   - 在`store/index.js`中聚合所有模块
+# Vuex使用规范
+   - 使用mapState，mapActions映射state和actions到组件方法
+   - 每个业务模块创建独立的store模块，并在store/index.js中聚合所有模块
    - 每个模块包含state、mutations、actions、getters
 
-4. u-form 智能通过如下方法设置规则
-   ```javascript
+# from 表单说明
+ - u-form 智能通过如下方法设置规则:
    onReady() {
      //onReady 为uni-app支持的生命周期之一
      this.$refs.uForm.setRules(this.rules)
    }
-   ```   
 
-## 开发规范
-1. 组件使用：
-   - 优先使用uView UI 2.0组件库
-   - 避免重复造轮子，力求代码简洁
-   - 自定义组件需遵循单一职责原则
-2. 样式规范：
-   - 使用sass
-   - 使用uView提供的内置样式
-   - 自定义样式采用BEM命名规范
-   - 使用rpx单位确保响应式设计
+# 开发规范
+1. 组件使用：优先使用uView UI 2.0组件库，避免重复造轮子，力求代码简洁，自定义组件需遵循单一职责原则。
+2. 样式规范：使用sass语言，优先使用uView提供的内置样式，自定义样式采用BEM命名规范，使用rpx单位确保响应式设计。
 3. UI设计规范：
    - 主色调：#4CAF50
    - 浅灰背景：#F5F7FA
@@ -86,13 +56,6 @@
    - 次要文字：#757575
    - 提示文字：#9E9E9E
    - 反白文字：#FFFFFF
-4. 性能优化：
-   - 合理使用`async/await`处理异步
-   - 大列表使用虚拟列表
-   - 合理使用图片懒加载
-   - 避免不必要的深层数据监听
-5. 错误处理：
-   - 表单错误使用uView提供的校验机制
-   - API错误统一拦截并友好提示
-   - 使用`try/catch`处理可预见异常
-6. 减少注释，使用明确的命名即可。
+4. 性能优化：合理使用async/await处理异步，大列表使用虚拟列表，合理使用图片懒加载，避免不必要的深层数据监听。
+5. 错误处理：表单错误使用uView提供的校验机制，API错误统一拦截并友好提示，使用try/catch处理可预见异常。
+6. 按钮点击事件命名：以handle开头，如handleSendCode、handleChangePhone

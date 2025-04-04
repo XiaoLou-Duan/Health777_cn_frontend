@@ -1,6 +1,6 @@
 <template>
   <view class="phone">
-    <u-navbar title="修改手机号" :border="false" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <u-navbar title="修改手机号" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
     <view class="phone__content">
       <view class="phone__form">
         <view class="phone__section">
@@ -16,7 +16,6 @@
               type="number"
               placeholder="请输入新手机号"
               maxlength="11"
-              :border="false"
               class="phone__input"
             />
           </view>
@@ -26,16 +25,14 @@
               v-model="verificationCode"
               type="number"
               placeholder="请输入验证码"
-              maxlength="6"
-              :border="false"
+              maxlength="4"
               class="phone__input"
             />
             <u-button
               class="phone__verify-btn"
               :disabled="!canSendCode"
               :type="countDown > 0 ? 'default' : 'primary'"
-              size="mini"
-              @click="sendVerificationCode"
+              @click="handleSendCode"
             >
               {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
             </u-button>
@@ -47,7 +44,7 @@
         type="primary" 
         class="phone__submit" 
         :disabled="!isValid"
-        @click="changePhone"
+        @click="handleChangePhone"
       >确认修改</u-button>
     </view>
   </view>
@@ -55,7 +52,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { maskPhoneNumber } from '@/utils/validation.js'
+import { maskPhoneNumber, validatePhone } from '@/utils/validation.js'
 
 export default {
   data() {
@@ -80,16 +77,14 @@ export default {
           message: '请输入验证码',
           trigger: ['blur', 'change']
         }, {
-          pattern: /^\d{6}$/,
-          message: '验证码必须是6位数字',
+          pattern: /^\d{4}$/,
+          message: '验证码必须是4位数字',
           trigger: ['blur', 'change']
         }]
       }
     }
   },
   computed: {
-    ...mapGetters('user', ['getUserInfo']),
-    
     // 是否可以发送验证码
     canSendCode() {
       return this.newPhone.length === 11 && this.countDown === 0;
@@ -97,7 +92,7 @@ export default {
     
     // 表单是否有效
     isValid() {
-      return this.newPhone.length === 11 && this.verificationCode.length === 6;
+      return this.newPhone.length === 11 && this.verificationCode.length === 4;
     }
   },
   onLoad() {
@@ -111,18 +106,21 @@ export default {
     }
   },
   methods: {
-    ...mapActions('auth', ['sendSmsCode']),
-    ...mapActions('user', ['changePhone', 'getUserInfo']),
+    ...mapActions('user', ['getUserInfo', 'changePhone']),
+    
+    // 处理发送验证码按钮点击
+    handleSendCode() {
+      this.sendVerificationCode();
+    },
+    
+    // 处理确认修改按钮点击
+    handleChangePhone() {
+      this.submitPhoneChange();
+    },
     
     // 获取当前绑定的手机号
     getCurrentPhone() {
-      // 使用Vuex中的用户信息
-      if (this.getUserInfo && this.getUserInfo.mobile) {
-        this.currentPhone = this.getUserInfo.mobile;
-        return;
-      }
-      
-      // 如果没有，则通过Vuex获取用户信息
+      // 直接通过action获取用户信息
       this.getUserInfo().then(res => {
         if (res.success && res.data && res.data.mobile) {
           this.currentPhone = res.data.mobile;
@@ -146,7 +144,7 @@ export default {
       }
       
       // 验证手机号格式
-      if (!/^1\d{10}$/.test(this.newPhone)) {
+      if (!validatePhone(this.newPhone)) {
         uni.showToast({
           title: '请输入正确的手机号',
           icon: 'none'
@@ -158,10 +156,10 @@ export default {
         title: '发送中...'
       });
       
-      // 调用发送验证码API
-      this.sendSmsCode({
+      // 通过Vuex的action发送验证码
+      this.$store.dispatch('user/sendSmsCode', {
         phone: this.newPhone,
-        scene: '3' // 修改手机号场景
+        scene: '2' // 修改手机号场景
       }).then(res => {
         uni.hideLoading();
         
@@ -205,7 +203,8 @@ export default {
     },
     
     // 修改手机号
-    changePhone() {
+    submitPhoneChange() {
+      // 验证表单
       if (!this.isValid) {
         if (this.newPhone.length !== 11) {
           uni.showToast({
@@ -215,9 +214,9 @@ export default {
           return;
         }
         
-        if (this.verificationCode.length !== 6) {
+        if (this.verificationCode.length !== 4) {
           uni.showToast({
-            title: '请输入6位验证码',
+            title: '请输入4位验证码',
             icon: 'none'
           });
           return;
@@ -228,43 +227,14 @@ export default {
         title: '修改中...'
       });
       
-      // 获取原手机号验证码
-      this.sendSmsCode({
-        phone: this.currentPhone,
-        scene: '3' // 修改手机号场景
-      }).then(oldRes => {
-        // 模拟获取原手机验证码
-        const oldCode = '123456'; // 实际应用中需要用户输入原手机验证码
+      // 通过Vuex的action修改手机号
+      this.changePhone({
+        mobile: this.newPhone,
+        code: this.verificationCode
+      }).then(res => {
+        uni.hideLoading();
         
-        // 调用修改手机号API
-        this.changePhone({
-          mobile: this.newPhone,
-          code: this.verificationCode,
-          oldCode: oldCode
-        }).then(res => {
-          uni.hideLoading();
-          
-          if (res.success) {
-            uni.showToast({
-              title: '手机号修改成功',
-              icon: 'success',
-              duration: 1500
-            });
-            
-            setTimeout(() => {
-              uni.navigateBack();
-            }, 1500);
-          } else {
-            uni.showToast({
-              title: res.message || '修改失败，请检查验证码是否正确',
-              icon: 'none'
-            });
-          }
-        }).catch(err => {
-          uni.hideLoading();
-          console.error('修改手机号失败:', err);
-          
-          // 模拟成功
+        if (res.success) {
           uni.showToast({
             title: '手机号修改成功',
             icon: 'success',
@@ -273,28 +243,25 @@ export default {
           
           setTimeout(() => {
             uni.navigateBack();
-          }, 1500);
-        });
+          }, 200);
+        } else {
+          uni.showToast({
+            title: res.message || '修改失败，请检查验证码是否正确',
+            icon: 'none'
+          });
+        }
       }).catch(err => {
         uni.hideLoading();
-        console.error('获取原手机验证码失败:', err);
+        console.error('修改手机号失败:', err);
         uni.showToast({
-          title: '获取原手机验证码失败',
+          title: '修改失败，请稍后再试',
           icon: 'none'
         });
       });
     },
     
-    // 返回上一页
     goBack() {
-      uni.navigateBack({
-        delta: 1,
-        fail: () => {
-          uni.switchTab({
-            url: '/pages/user/profile/profile'
-          });
-        }
-      });
+      uni.navigateBack();
     }
   }
 }
@@ -310,6 +277,7 @@ export default {
   &__content {
     flex: 1;
     padding: 30rpx;
+    margin-top: 44px;
   }
   
   &__form {
@@ -370,6 +338,7 @@ export default {
   &__verify-btn {
     margin-left: 20rpx;
     flex-shrink: 0;
+    width: auto;
   }
   
   &__submit {
