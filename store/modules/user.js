@@ -366,6 +366,35 @@ const actions = {
     return { success: true };
   },
   
+  // 刷新令牌
+  async refreshToken({ commit }) {
+    try {
+      const refreshToken = Storage.get('refreshToken');
+      if (!refreshToken) {
+        return { success: false, message: '无刷新令牌' };
+      }
+      
+      const response = await AuthService.refreshToken(refreshToken);
+      
+      if (response.code === 0) {
+        const tokenData = response.data;
+        
+        // 更新存储的token信息
+        AuthService.saveLoginInfo(tokenData);
+        
+        // 更新Vuex状态
+        commit('SET_TOKEN', tokenData.accessToken);
+        
+        return { success: true, data: tokenData };
+      } else {
+        return { success: false, message: response.message || '刷新令牌失败' };
+      }
+    } catch (error) {
+      console.error('刷新令牌失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
+  },
+  
   // 修改手机号
   async changePhone({ commit, state, dispatch }, { mobile, code, oldCode }) {
     if (!state.token) return { success: false, message: '未登录' };
