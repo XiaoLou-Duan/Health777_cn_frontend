@@ -392,7 +392,26 @@ const actions = {
       console.error('修改手机号失败', error);
       return { success: false, message: '网络错误，请重试' };
     }
-  }
+  },
+  
+  // 修改密码
+  async changePassword({ commit, state }, { password, code }) {
+    try {
+      const response = await AuthService.changePassword({
+        password,
+        code
+      });
+      
+      if (response.code === 0) {
+        return { success: true, data: response.data };
+      } else {
+        return { success: false, message: response.message || '修改密码失败' };
+      }
+    } catch (error) {
+      console.error('修改密码失败', error);
+      return { success: false, message: '网络错误，请重试' };
+    }
+  },
 };
 
 export default {

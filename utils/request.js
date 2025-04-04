@@ -18,13 +18,10 @@ function requestInterceptor(config) {
   // 使用permission.js中定义的公共API路径列表
   const needAuth = !publicApiPaths.some(path => config.url.includes(path));
   
-  // 如果有token且需要登录检测，添加到header
-  if (token && needAuth) {
-    config.header = {
-      ...config.header,
-      'Authorization': `Bearer ${token}`
-    };
-  }
+  config.header = {
+    ...config.header,
+    'Authorization': `Bearer ${token}`
+  };
   
   return config;
 }

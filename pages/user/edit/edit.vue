@@ -20,7 +20,7 @@
           <view class="user-edit__section-title">基本信息</view>
           <u-form labelWidth="auto" :model="userInfo" :rules="rules" ref="uForm" errorType="message">
             <u-form-item label="昵称" prop="nickname" :borderBottom="true">
-              <u-input v-model="userInfo.nickname" placeholder="请输入昵称" border="none" />
+              <u-input v-model="userInfo.nickname" placeholder="请输入昵称" />
             </u-form-item>
 
             <u-form-item label="性别" prop="sex" :borderBottom="true">
@@ -34,6 +34,12 @@
             <u-form-item label="手机号" prop="mobile">
               <text class="user-edit__phone">{{ maskPhone(userInfo.mobile) }}</text>
               <u-button type="primary" @click="goToChangeMobile" class="user-edit__btn-change">修改</u-button>
+            </u-form-item>
+            
+            <!-- 修改密码 -->
+            <u-form-item label="密码" prop="password">
+              <text class="user-edit__phone">******</text>
+              <u-button type="primary" @click="goToChangePassword" class="user-edit__btn-change">修改</u-button>
             </u-form-item>
           </u-form>
         </view>
@@ -70,10 +76,6 @@ export default {
         },
         {
           text: '从相册选择',
-          color: '#333333'
-        },
-        {
-          text: '使用随机头像',
           color: '#333333'
         }
       ],
@@ -137,6 +139,13 @@ export default {
         url: '/pages/user/phone/phone'
       });
     },
+    
+    // 跳转到修改密码页面
+    goToChangePassword() {
+      uni.navigateTo({
+        url: '/pages/user/password/password'
+      });
+    },
 
     // 选择头像
     chooseAvatar() {
@@ -151,9 +160,6 @@ export default {
       } else if (index === 1) {
         // 从相册选择
         this.chooseFromAlbum();
-      } else if (index === 2) {
-        // 使用随机头像
-        this.useRandomAvatar();
       }
     },
 
@@ -218,54 +224,24 @@ export default {
       });
     },
 
-    // 使用随机头像
-    useRandomAvatar() {
-      uni.showLoading({
-        title: '加载中...'
-      });
 
-      // 生成随机性别和ID
-      const gender = Math.random() > 0.5 ? 'men' : 'women';
-      const randomId = Math.floor(Math.random() * 99) + 1;
 
-      // 构建randomuser头像URL
-      const avatarUrl = `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
-
-      // 设置头像
-      setTimeout(() => {
-        this.userInfo.avatar = avatarUrl;
-
-        uni.hideLoading();
-
-        uni.showToast({
-          title: '头像设置成功',
-          icon: 'success'
-        });
-      }, 500);
-    },
 
     // 保存用户信息
     saveUserInfo() {
-      console.log('保存按钮被点击');
-      
-      // 防止重复提交
       if (this.loading) return;
       this.loading = true;
       
       // 使用Promise方式进行表单验证，根据uView官方文档
       this.$refs.uForm.validate().then(valid => {
-        console.log('表单验证通过');
-        // 验证通过，执行提交操作
         this.submitUserInfo();
       }).catch(errors => {
-        console.log('表单验证失败:', errors);
         this.loading = false;
         uni.showToast({
           title: '请完善表单信息',
           icon: 'none'
         });
       });
-      
     },
     
     // 提交用户信息
@@ -285,10 +261,7 @@ export default {
             icon: 'success',
             duration: 1500
           });
-          
-          setTimeout(() => {
-            uni.navigateBack();
-          }, 200);
+          uni.navigateBack();
         } else {
           uni.showToast({
             title: (res && res.message) || '保存失败，请稍后再试',
@@ -298,18 +271,12 @@ export default {
       }).catch(err => {
         uni.hideLoading();
         this.loading = false;
-        setTimeout(() => {
-          uni.navigateBack();
-        }, 200);
+        uni.navigateBack();
       });
     },
-    
-    // 返回上一页
+
     goBack() {
       uni.navigateBack();
-      // uni.navigateTo({
-      //   url: '/pages/user/profile/profile'
-      // });
     }
   }
 }

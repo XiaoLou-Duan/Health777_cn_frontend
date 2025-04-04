@@ -46,12 +46,12 @@ export function validateIdCard(value) {
 }
 
 /**
- * 验证密码（8-20位，包含大小写字母和数字）
+ * 验证密码（8-20位，包含大小写字母和数字，允许特殊字符 !-$&_）
  * @param {String} value 需要验证的密码
  * @returns {Boolean} 验证结果
  */
 export function validatePassword(value) {
-  const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
+  const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!\-$&_]{8,20}$/;
   return reg.test(value);
 }
 

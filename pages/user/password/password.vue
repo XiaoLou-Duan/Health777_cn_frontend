@@ -1,22 +1,24 @@
 <template>
   <view class="password">
-    <u-navbar title="修改密码" :border="false" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
+    <u-navbar title="修改密码" back-icon-color="#333333" @leftClick="goBack"></u-navbar>
     <view class="password__content">
       <view class="password__form">
+        <view class="password__phone-info">
+          <text class="password__phone-label">当前手机号：</text>
+          <text class="password__phone-value">{{userPhone}}</text>
+        </view>
         <view class="password__form-item password__verification">
           <u-input
             v-model="code"
             type="number"
             placeholder="请输入手机验证码"
-            maxlength="6"
-            :border="false"
+            maxlength="4"
             class="password__input"
           />
           <u-button
             class="password__verify-btn"
             :disabled="countDown > 0"
             :type="countDown > 0 ? 'default' : 'primary'"
-            size="mini"
             @click="sendVerificationCode"
           >
             {{ countDown > 0 ? `${countDown}秒后重发` : '获取验证码' }}
@@ -27,7 +29,6 @@
             v-model="password"
             type="password"
             placeholder="请输入新密码"
-            :border="false"
             class="password__input"
           />
         </view>
@@ -36,7 +37,6 @@
             v-model="confirmPassword"
             type="password"
             placeholder="再次输入新密码"
-            :border="false"
             class="password__input"
           />
         </view>
@@ -51,7 +51,7 @@
         type="primary" 
         class="password__submit" 
         :disabled="!isValid"
-        @click="changePassword"
+        @click="handleChangePassword"
       >确认修改</u-button>
     </view>
   </view>
@@ -69,14 +69,15 @@ export default {
       confirmPassword: '',
       countDown: 0,
       timer: null,
+      phone: '', // 用户手机号
       rules: {
         code: [{
           required: true,
           message: '请输入验证码',
           trigger: ['blur', 'change']
         }, {
-          pattern: /^\d{6}$/,
-          message: '验证码必须是6位数字',
+          pattern: /^\d{4}$/,
+          message: '验证码必须是4位数字',
           trigger: ['blur', 'change']
         }],
         password: [{
@@ -106,6 +107,10 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['getUserInfo']),
+    // 获取用户手机号
+    userPhone() {
+      return this.getUserInfo && this.getUserInfo.mobile ? this.getUserInfo.mobile : '';
+    },
     
     // 校验表单是否有效
     isValid() {
@@ -114,8 +119,8 @@ export default {
         return false;
       }
       
-      // 验证码必须是6位数字
-      if (!/^\d{6}$/.test(this.code)) {
+      // 验证码必须是4位数字
+      if (!/^\d{4}$/.test(this.code)) {
         return false;
       }
       
@@ -132,6 +137,12 @@ export default {
       return true;
     }
   },
+  onLoad() {
+    // 初始化获取用户手机号
+    if (this.getUserInfo && this.getUserInfo.mobile) {
+      this.phone = this.getUserInfo.mobile;
+    }
+  },
   onUnload() {
     // 清除定时器
     if (this.timer) {
@@ -140,8 +151,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('auth', ['sendSmsCode']),
-    ...mapActions('user', ['changePassword']),
+    ...mapActions('user', ['sendSmsCode','changePassword']),
+    // 重命名方法，避免与Vuex action冲突
     
     // 发送验证码
     sendVerificationCode() {
@@ -155,8 +166,8 @@ export default {
       
       // 调用发送验证码API
       this.sendSmsCode({
-        phone: this.getUserInfo.mobile,
-        scene: '2' // 修改密码场景
+        phone: this.phone || this.userPhone,
+        scene: '3' // 修改密码场景
       }).then(res => {
         uni.hideLoading();
         
@@ -174,38 +185,20 @@ export default {
         }
       }).catch(err => {
         uni.hideLoading();
-        console.error('发送验证码失败:', err);
-        
-        // 模拟发送成功
-        this.startCountDown();
         uni.showToast({
           title: '验证码已发送',
           icon: 'success'
         });
       });
     },
-    
-    // 开始倒计时
-    startCountDown() {
-      this.countDown = 60;
-      
-      this.timer = setInterval(() => {
-        if (this.countDown > 0) {
-          this.countDown--;
-        } else {
-          clearInterval(this.timer);
-          this.timer = null;
-        }
-      }, 1000);
-    },
-    
+
     // 检查密码规则
     checkPasswordRule(password) {
       return validatePassword(password);
     },
     
     // 修改密码
-    changePassword() {
+    handleChangePassword() {
       if (!this.isValid) {
         this.showValidationError();
         return;
@@ -216,7 +209,7 @@ export default {
       });
       
       // 调用修改密码API
-      this.changePassword({
+      this.$store.dispatch('user/changePassword', {
         password: this.password,
         code: this.code
       }).then(res => {
@@ -228,10 +221,7 @@ export default {
             icon: 'success',
             duration: 1500
           });
-          
-          setTimeout(() => {
-            uni.navigateBack();
-          }, 1500);
+          uni.navigateBack();
         } else {
           uni.showToast({
             title: res.message || '修改失败，请检查验证码是否正确',
@@ -240,18 +230,6 @@ export default {
         }
       }).catch(err => {
         uni.hideLoading();
-        console.error('修改密码失败:', err);
-        
-        // 模拟修改成功
-        uni.showToast({
-          title: '密码修改成功',
-          icon: 'success',
-          duration: 1500
-        });
-        
-        setTimeout(() => {
-          uni.navigateBack();
-        }, 1500);
       });
     },
     
@@ -266,9 +244,9 @@ export default {
         return;
       }
       
-      if (!/^\d{6}$/.test(this.code)) {
+      if (!/^\d{4}$/.test(this.code)) {
         uni.showToast({
-          title: '验证码必须是6位数字',
+          title: '验证码必须是4位数字',
           icon: 'none'
         });
         return;
@@ -325,8 +303,10 @@ export default {
   background-color: #F5F7FA;
   
   &__content {
+    margin-top:44px;
     flex: 1;
     padding: 30rpx;
+
   }
   
   &__form {
@@ -335,6 +315,26 @@ export default {
     padding: 40rpx 30rpx;
     margin-bottom: 40rpx;
     box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  }
+  
+  &__phone-info {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 0;
+    margin-bottom: 30rpx;
+    border-bottom: 1px solid #F5F7FA;
+  }
+  
+  &__phone-label {
+    font-size: 28rpx;
+    color: #757575;
+    margin-right: 10rpx;
+  }
+  
+  &__phone-value {
+    font-size: 28rpx;
+    color: #212121;
+    font-weight: 500;
   }
   
   &__form-item {
@@ -356,6 +356,7 @@ export default {
   &__verify-btn {
     margin-left: 20rpx;
     flex-shrink: 0;
+    width: auto;
   }
   
   &__tips {
