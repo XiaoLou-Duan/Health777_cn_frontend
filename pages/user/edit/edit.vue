@@ -54,8 +54,8 @@
     <uni-popup ref="avatarActionPopup" type="bottom">
       <uni-list>
         <uni-list-item v-for="(item, index) in avatarActions" :key="index"
-          :title="item.name" @click="handleAvatarAction(item, index)" />
-        <uni-list-item title="取消" @click="showAvatarActions = false" />
+          :title="item.name" @click="handleAvatarAction(item, index)" clickable />
+        <uni-list-item title="取消" @click="showAvatarActions = false" clickable />
       </uni-list>
     </uni-popup>
   </view>
@@ -171,7 +171,7 @@ export default {
       // 关闭操作菜单
       this.$refs.avatarActionPopup.close();
       this.showAvatarActions = false;
-      
+      console.log('选择头像', item, index);
       if (index === 0) {
         // 拍照
         this.takePhoto();
@@ -183,6 +183,7 @@ export default {
 
     // 拍照
     takePhoto() {
+      console.log('拍照');
       uni.chooseImage({
         count: 1,
         sourceType: ['camera'],
@@ -194,6 +195,7 @@ export default {
 
     // 从相册选择
     chooseFromAlbum() {
+      console.log('从相册选择');
       uni.chooseImage({
         count: 1,
         sourceType: ['album'],

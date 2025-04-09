@@ -1,7 +1,7 @@
 const baseUrl = {
-  dev: 'http://localhost:48080', // 开发环境
-  test: 'https://test-api.hearthgood.com', // 测试环境
-  prod: 'https://api.hearthgood.com' // 生产环境
+  dev: 'http://127.0.0.1:48080', // 开发环境
+  test: 'https://www.health777.cn/app', // 测试环境
+  prod: 'https://www.health777.cn/app' // 生产环境
 };
 
 // 当前环境

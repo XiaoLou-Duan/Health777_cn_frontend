@@ -450,7 +450,7 @@ const actions = {
     try {
       return new Promise((resolve, reject) => {
         uni.uploadFile({
-          url: getApiUrl('/app-api/member/user/update-avatar'),
+          url: getApiUrl('/member/user/update-avatar'),
           filePath: filePath,
           name: 'avatarFile', // 与后端接口参数名一致
           header: {
