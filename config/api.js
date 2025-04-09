@@ -1,11 +1,11 @@
 const baseUrl = {
-  dev: 'http://127.0.0.1:48080', // 开发环境
+  dev: 'https://www.health777.cn/app', // 开发环境
   test: 'https://www.health777.cn/app', // 测试环境
   prod: 'https://www.health777.cn/app' // 生产环境
 };
 
 // 当前环境
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'prod';
 
 // 超时时间
 const timeout = 60000;
